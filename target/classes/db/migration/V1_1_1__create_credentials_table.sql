@@ -1,5 +1,0 @@
-CREATE TABLE credentials (
-    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
-    username VARCHAR(32) NOT NULL UNIQUE,
-    password VARCHAR(256) NOT NULL
-);

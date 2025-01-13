@@ -1,8 +1,8 @@
 package com.cuenta.contador.infra;
 
 public class Pair<L, R> {
-    private final L left;
-    private final R right;
+    private L left;
+    private R right;
 
     public Pair(L left, R right) {
         this.left = left;

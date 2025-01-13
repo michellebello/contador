@@ -46,6 +46,9 @@ public class SessionStore {
     }
 
     public String getUsernameForSession(UUID sessionId) {
+        if (!isValidSession(sessionId)) {
+            return null;
+        }
         return db.select(SESSION.USERNAME)
                 .from(SESSION)
                 .where(SESSION.SESSION_.eq(String.valueOf(sessionId)))

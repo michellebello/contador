@@ -21,6 +21,9 @@ public class ContextService {
 
     public UserID getUserID(UUID sessionId) {
         String username = sessionService.getUsernameForSession(sessionId);
+        if (username == null) {
+            throw new IllegalStateException("Session not found");
+        }
         return credentialService.getUserID(username);
     }
 }

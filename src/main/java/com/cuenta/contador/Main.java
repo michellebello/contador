@@ -6,9 +6,7 @@ import com.cuenta.contador.server.resource.AuthenticationResource;
 import com.cuenta.contador.server.resource.MyResource;
 import com.cuenta.contador.server.serializer.SerializerBinder;
 import com.cuenta.contador.service.ServiceBinder;
-import com.cuenta.contador.service.requestfilter.AuthenticationFilter;
-import com.cuenta.contador.service.requestfilter.RequestLogger;
-import com.cuenta.contador.service.requestfilter.ResponseLogger;
+import com.cuenta.contador.service.requestfilter.*;
 import com.cuenta.contador.store.StoreBinder;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
@@ -47,7 +45,9 @@ public class Main {
                 .register(StoreBinder.class)
                 .register(AuthenticationFilter.class)
                 .register(RequestLogger.class)
-                .register(ResponseLogger.class);
+                .register(ResponseLogger.class)
+                .register(UserContextWriteFilter.class)
+                .register(UserContextClearFilter.class);
 //        rc.
 
         // create and start a new instance of grizzly http server

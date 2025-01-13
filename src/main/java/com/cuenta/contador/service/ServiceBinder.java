@@ -2,6 +2,7 @@ package com.cuenta.contador.service;
 
 import com.cuenta.contador.service.auth.AuthenticationService;
 import com.cuenta.contador.service.auth.AuthenticationServiceImpl;
+import com.cuenta.contador.service.context.ContextService;
 import com.cuenta.contador.service.credential.CredentialService;
 import com.cuenta.contador.service.credential.CredentialServiceImpl;
 import com.cuenta.contador.service.session.SessionService;
@@ -18,5 +19,6 @@ public class ServiceBinder extends AbstractBinder {
         bind(SessionServiceImpl.class).to(SessionService.class);
         bind(AuthenticationServiceImpl.class).to(AuthenticationService.class);
         bind(UserServiceImpl.class).to(UserService.class);
+        bind(ContextService.class).to(ContextService.class);
     }
 }
