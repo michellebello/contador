@@ -2,7 +2,8 @@ package com.cuenta.contador;
 
 import com.cuenta.contador.infra.InfraBinder;
 import com.cuenta.contador.infra.MigrationHandler;
-import com.cuenta.contador.server.resource.AuthenticationResource;
+import com.cuenta.contador.server.resource.account.AccountResource;
+import com.cuenta.contador.server.resource.credential.AuthenticationResource;
 import com.cuenta.contador.server.resource.MyResource;
 import com.cuenta.contador.server.serializer.SerializerBinder;
 import com.cuenta.contador.service.ServiceBinder;
@@ -38,6 +39,7 @@ public class Main {
         final ResourceConfig rc = new ResourceConfig()
                 .register(MyResource.class)
                 .register(AuthenticationResource.class)
+                .register(AccountResource.class)
                 .register(JacksonFeature.class)
                 .register(ServiceBinder.class)
                 .register(SerializerBinder.class)

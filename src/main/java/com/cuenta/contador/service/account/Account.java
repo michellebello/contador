@@ -2,29 +2,36 @@ package com.cuenta.contador.service.account;
 import com.cuenta.contador.infra.ID;
 import com.cuenta.contador.service.user.User.UserID;
 
+import java.util.Objects;
+
 public class Account {
     private AccountID id;
-    private UserID user_id;
     private String name;
     private String number;
     private String type;
     private double balance;
 
+    public Account(AccountID id, String name, String number, String type, double balance){
+        this.id = id;
+        this.name = name;
+        this.number = number;
+        this.type = type;
+        this.balance = balance;
+    }
 
-    public AccountID getAccountId(){
+    public Account(String name, String number, String type, double balance){
+        this.name = name;
+        this.number = number;
+        this.type = type;
+        this.balance = balance;
+    }
+
+    public AccountID getId() {
         return id;
     }
 
-    public void setAccountId(AccountID id){
+    public void setId(AccountID id) {
         this.id = id;
-    }
-
-    public UserID getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(UserID user_id) {
-        this.user_id = user_id;
     }
 
     public String getName() {
@@ -60,14 +67,16 @@ public class Account {
     }
 
     @Override
-    public String toString() {
-        return "Account{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", number='" + number + '\'' +
-                ", type='" + type + '\'' +
-                ", balance=" + balance +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return Double.compare(balance, account.balance) == 0 && Objects.equals(id, account.id) && Objects.equals(name, account.name) && Objects.equals(number, account.number) && Objects.equals(type, account.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, number, type, balance);
     }
 
     public static class AccountID extends ID<Account> {

@@ -1,4 +1,4 @@
-package com.cuenta.contador.server.json;
+package com.cuenta.contador.server.json.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

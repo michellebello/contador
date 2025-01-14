@@ -1,5 +1,9 @@
-package com.cuenta.contador.server.json;
+package com.cuenta.contador.server.json.user;
 
+import com.cuenta.contador.server.json.account.AccountJson;
+import com.cuenta.contador.server.json.credential.CredentialJson;
+import com.cuenta.contador.server.json.user.UserJson;
+import com.cuenta.contador.service.account.Account;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RegisterJson {

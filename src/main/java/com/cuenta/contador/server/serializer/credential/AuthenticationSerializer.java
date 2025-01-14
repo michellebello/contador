@@ -1,9 +1,9 @@
-package com.cuenta.contador.server.serializer;
+package com.cuenta.contador.server.serializer.credential;
 
 import com.cuenta.contador.infra.Pair;
-import com.cuenta.contador.server.json.CredentialJson;
-import com.cuenta.contador.server.json.RegisterJson;
-import com.cuenta.contador.server.json.UserJson;
+import com.cuenta.contador.server.json.credential.CredentialJson;
+import com.cuenta.contador.server.json.user.RegisterJson;
+import com.cuenta.contador.server.json.user.UserJson;
 import com.cuenta.contador.service.credential.Credential;
 import com.cuenta.contador.service.user.User;
 

@@ -1,9 +1,12 @@
 package com.cuenta.contador.service.account;
 
+import com.cuenta.contador.service.user.User.UserID;
+import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.store.account.AccountStore;
 import com.cuenta.contador.service.account.Account.AccountID;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class AccountServiceImpl implements AccountService {
     private final AccountStore accountStore;
@@ -15,12 +18,21 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account getAccount(AccountID id){
-        return accountStore.getAccount(id);
+        UserID userId = UserContext.getUserID();
+        return accountStore.getAccount(userId, id);
+    }
+
+    @Override
+    public List<Account> getAccounts(List<AccountID> ids) {
+        UserID userId = UserContext.getUserID();
+        return accountStore.getAccounts(userId, ids);
     }
 
     @Override
     public void createAccount(Account account){
-        accountStore.storeAccount(account);
+        // in debug mode stop
+        UserID userId = UserContext.getUserID();
+        accountStore.storeAccount(userId, account);
     }
 
 

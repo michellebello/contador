@@ -1,6 +1,7 @@
 package com.cuenta.contador.infra;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public abstract class ID<T> implements Serializable {
@@ -12,6 +13,10 @@ public abstract class ID<T> implements Serializable {
 
     public int getIntId() {
         return id;
+    }
+
+    public static <T> List<Integer> getIntIds(List<? extends ID<T>> ids) {
+        return ids.stream().map(ID::getIntId).toList();
     }
 
     @Override

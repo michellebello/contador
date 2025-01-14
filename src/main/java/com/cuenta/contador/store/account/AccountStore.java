@@ -1,13 +1,19 @@
 package com.cuenta.contador.store.account;
 
 import com.cuenta.contador.infra.DSLContextProvider;
+import com.cuenta.contador.infra.ID;
 import com.cuenta.contador.jooq_auto_generated.tables.records.AccountRecord;
 import com.cuenta.contador.service.account.Account;
 import com.cuenta.contador.service.account.Account.AccountID;
 import com.cuenta.contador.service.user.User.UserID;
 import org.jooq.DSLContext;
+import org.jooq.SelectConditionStep;
 
 import javax.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.cuenta.contador.jooq_auto_generated.Tables.ACCOUNT;
 
@@ -19,40 +25,50 @@ public class AccountStore {
         this.db = dbProvider.get();
     }
 
-    public void storeAccount (Account account){
-        AccountRecord record = toRecord(account);
+    public void storeAccount(UserID userId, Account account){
+        AccountRecord record = toRecord(userId, account);
         db.insertInto(ACCOUNT).set(record).execute();
-
     }
 
-    public Account getAccount(AccountID id){
-        AccountRecord record = db.selectFrom(ACCOUNT).where(ACCOUNT.ID.eq(id.getIntId())).fetchOne();
-        if (record==null){
+    public Account getAccount(UserID userId, AccountID id){
+        AccountRecord record = db
+                .selectFrom(ACCOUNT)
+                .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
+                .and(ACCOUNT.ID.eq(id.getIntId()))
+                .fetchOne();
+        if (record == null){
             return null;
         }
         return fromRecord(record);
     }
 
-    private AccountRecord toRecord(Account account){
+    public List<Account> getAccounts(UserID userId, List<AccountID> ids) {
+        SelectConditionStep<AccountRecord> partialQuery = db
+                .selectFrom(ACCOUNT)
+                .where(ACCOUNT.USER_ID.eq(userId.getIntId()));
+        if (!ids.isEmpty()) {
+            partialQuery = partialQuery.and(ACCOUNT.ID.in(ID.getIntIds(ids)));
+        }
+        return Arrays.stream(partialQuery.fetchArray()).map(this::fromRecord).toList();
+    }
+
+    private AccountRecord toRecord(UserID userId, Account account){
         AccountRecord record = new AccountRecord();
-        record.setId(account.getAccountId().getIntId());
-        record.setUserId(account.getUser_id().getIntId());
+        record.setUserId(userId.getIntId());
         record.setName(account.getName());
         record.setNumber(account.getNumber());
         record.setType(account.getType());
-        record.getBalance();
+        record.setBalance(account.getBalance());
         return record;
     }
 
     private Account fromRecord(AccountRecord record){
-        Account account = new Account();
-        account.setAccountId(AccountID.of(record.getId()));
-        account.setUser_id(UserID.of(record.getUserId()));
-        account.setName(record.getName());
-        account.setNumber(record.getNumber());
-        account.setType(record.getType());
-        account.setBalance(record.getBalance());
-        return account;
+        return new Account(
+                AccountID.of(record.getId()),
+                record.getName(),
+                record.getNumber(),
+                record.getType(),
+                record.getBalance());
     }
 
 }
