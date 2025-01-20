@@ -1,14 +1,14 @@
 package com.cuenta.contador.service.requestfilter;
 
 import com.cuenta.contador.service.context.ContextService;
-import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
 
-import javax.inject.Inject;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.container.ContainerRequestContext;
+import jakarta.ws.rs.container.ContainerRequestFilter;
+
 import java.io.IOException;
 import java.util.UUID;
 

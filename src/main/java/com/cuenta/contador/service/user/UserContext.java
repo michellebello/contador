@@ -6,7 +6,7 @@ import com.cuenta.contador.service.user.User.UserID;
 import java.util.UUID;
 
 public class UserContext {
-    private final static ThreadLocal<Pair<UUID, UserID>> userContext = ThreadLocal.withInitial(() -> null);
+    private final static ThreadLocal<Pair<UUID, UserID>> userContext = new ThreadLocal<>();
 
     public static UserID getUserID() {
         if (userContext.get() == null) {
@@ -16,9 +16,6 @@ public class UserContext {
     }
 
     public static void setUserContext(UUID sessionId, UserID userId) {
-        if (userContext.get() != null) {
-            throw new IllegalStateException("Tried to set user context without clearing it first");
-        }
         userContext.set(new Pair<>(sessionId, userId));
     }
 

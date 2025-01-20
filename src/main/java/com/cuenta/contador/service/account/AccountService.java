@@ -9,4 +9,5 @@ public interface AccountService {
     List<Account> getAccounts(List<AccountID> ids);
 
     void createAccount(Account account);
+    void deleteAccount(AccountID id);
 }

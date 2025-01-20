@@ -5,7 +5,7 @@ import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.store.account.AccountStore;
 import com.cuenta.contador.service.account.Account.AccountID;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class AccountServiceImpl implements AccountService {
@@ -33,6 +33,12 @@ public class AccountServiceImpl implements AccountService {
         // in debug mode stop
         UserID userId = UserContext.getUserID();
         accountStore.storeAccount(userId, account);
+    }
+
+    @Override
+    public void deleteAccount(AccountID id){
+        UserID userId = UserContext.getUserID();
+        accountStore.deleteAccount(userId, id);
     }
 
 

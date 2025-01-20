@@ -5,7 +5,7 @@ import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.store.credential.CredentialStore;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 

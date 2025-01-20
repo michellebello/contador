@@ -1,7 +1,5 @@
 package com.cuenta.contador.server.json.account;
 
-import com.cuenta.contador.service.account.Account.AccountID;
-import com.cuenta.contador.service.user.User.UserID;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AccountJson {

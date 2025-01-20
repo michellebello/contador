@@ -9,9 +9,8 @@ import com.cuenta.contador.service.user.User.UserID;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -52,6 +51,13 @@ public class AccountStore {
         return Arrays.stream(partialQuery.fetchArray()).map(this::fromRecord).toList();
     }
 
+    public void deleteAccount(UserID userId,AccountID id) {
+        db.deleteFrom(ACCOUNT)
+                .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
+                .and(ACCOUNT.ID.eq(id.getIntId()))
+                .execute();
+    }
+
     private AccountRecord toRecord(UserID userId, Account account){
         AccountRecord record = new AccountRecord();
         record.setUserId(userId.getIntId());
@@ -70,5 +76,4 @@ public class AccountStore {
                 record.getType(),
                 record.getBalance());
     }
-
 }

@@ -7,7 +7,7 @@ import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserService;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;

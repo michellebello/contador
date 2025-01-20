@@ -3,7 +3,7 @@ package com.cuenta.contador.infra;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 
-import javax.inject.Provider;
+import jakarta.inject.Provider;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;

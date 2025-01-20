@@ -6,7 +6,7 @@ import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 import org.jooq.DSLContext;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import static com.cuenta.contador.jooq_auto_generated.Tables.USER;
 

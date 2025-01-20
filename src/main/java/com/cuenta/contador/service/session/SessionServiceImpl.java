@@ -2,7 +2,7 @@ package com.cuenta.contador.service.session;
 
 import com.cuenta.contador.store.session.SessionStore;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.UUID;
 
 public class SessionServiceImpl implements SessionService {

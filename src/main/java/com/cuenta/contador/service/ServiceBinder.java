@@ -9,6 +9,8 @@ import com.cuenta.contador.service.credential.CredentialService;
 import com.cuenta.contador.service.credential.CredentialServiceImpl;
 import com.cuenta.contador.service.session.SessionService;
 import com.cuenta.contador.service.session.SessionServiceImpl;
+import com.cuenta.contador.service.transaction.TransactionService;
+import com.cuenta.contador.service.transaction.TransactionServiceImpl;
 import com.cuenta.contador.service.user.UserService;
 import com.cuenta.contador.service.user.UserServiceImpl;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -23,5 +25,6 @@ public class ServiceBinder extends AbstractBinder {
         bind(UserServiceImpl.class).to(UserService.class);
         bind(ContextService.class).to(ContextService.class);
         bind(AccountServiceImpl.class).to(AccountService.class);
+        bind(TransactionServiceImpl.class).to(TransactionService.class);
     }
 }

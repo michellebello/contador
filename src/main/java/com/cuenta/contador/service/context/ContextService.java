@@ -6,7 +6,7 @@ import com.cuenta.contador.service.session.SessionService;
 import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.UUID;
 
 public class ContextService {

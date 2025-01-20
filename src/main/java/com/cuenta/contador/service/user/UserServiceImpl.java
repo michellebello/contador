@@ -3,7 +3,7 @@ package com.cuenta.contador.service.user;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.store.user.UserStore;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 public class UserServiceImpl implements UserService {
     private final UserStore userStore;

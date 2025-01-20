@@ -5,7 +5,7 @@ import com.cuenta.contador.jooq_auto_generated.tables.records.SessionRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
