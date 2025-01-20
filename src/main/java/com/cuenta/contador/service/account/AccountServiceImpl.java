@@ -36,6 +36,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void updateAccount(AccountID accountId, Account account){
+        UserID userId = UserContext.getUserID();
+        accountStore.updateAccount(userId, accountId, account);
+    }
+
+    @Override
     public void deleteAccount(AccountID id){
         UserID userId = UserContext.getUserID();
         accountStore.deleteAccount(userId, id);

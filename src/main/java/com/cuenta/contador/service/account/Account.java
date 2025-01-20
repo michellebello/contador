@@ -9,7 +9,7 @@ public class Account {
     private String name;
     private String number;
     private String type;
-    private double balance;
+    private Double balance;
 
     public Account(AccountID id, String name, String number, String type, double balance){
         this.id = id;
@@ -58,11 +58,11 @@ public class Account {
         this.type = type;
     }
 
-    public double getBalance() {
+    public Double getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(Double balance) {
         this.balance = balance;
     }
 

@@ -44,11 +44,31 @@ public class AccountResource {
                 .toList();
     }
 
-    @PUT
+    @POST
     public Response createAccount(AccountJson accountJson) {
         Account account = accountSerializer.fromAccountJson(accountJson);
         accountService.createAccount(account);
         return Response.ok().build();
+    }
+
+    @PATCH
+    @Path("{" + ACCOUNT_ID + "}")
+    public Response updateAccount(@PathParam(ACCOUNT_ID) int accountId, AccountJson accountJson){
+        if (accountJson == null){
+            Response.status(Response.Status.BAD_REQUEST).entity("Account cannot be updated without any data").build();
+        }
+        Account currAcount = accountService.getAccount(AccountID.of(accountId));
+        if (currAcount == null){
+            return Response.status(Response.Status.NOT_FOUND).entity("Account not found, please create account first").build();
+        }
+        Account accountToUpdate = accountSerializer.fromPartialAccountJson(accountJson, currAcount);
+        try {
+            accountService.updateAccount(AccountID.of(accountId), accountToUpdate);
+            return Response.ok("Account successfully updated with new data").build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Server error try again").build();
+        }
+
     }
 
     @DELETE

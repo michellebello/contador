@@ -12,7 +12,7 @@ public class AccountJson {
     @JsonProperty
     private String type;
     @JsonProperty
-    private double balance;
+    private Double balance;
 
     public Integer getId() {
         return id;
@@ -46,11 +46,11 @@ public class AccountJson {
         this.type = type;
     }
 
-    public double getBalance() {
+    public Double  getBalance() {
         return balance;
     }
 
-    public void setBalance(double balance) {
+    public void setBalance(Double  balance) {
         this.balance = balance;
     }
 }

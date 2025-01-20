@@ -14,6 +14,17 @@ public class AccountSerializer {
         );
     }
 
+    // for patch methods, we might have some null entries
+    public Account fromPartialAccountJson(AccountJson accountJson, Account currAccount){
+        return new Account(
+                currAccount.getId(),
+                accountJson.getName() != null ? accountJson.getName() : currAccount.getName(),
+                accountJson.getNumber() != null? accountJson.getNumber() : currAccount.getNumber(),
+                accountJson.getType() != null? accountJson.getType() : currAccount.getType(),
+                accountJson.getBalance() != null  ? accountJson.getBalance() : currAccount.getBalance()
+        );
+    }
+
     public AccountJson toAccountJson(Account account) {
         AccountJson json = new AccountJson();
         json.setId(account.getId().getIntId());

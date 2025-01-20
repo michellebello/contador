@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.cuenta.contador.jooq_auto_generated.Tables.ACCOUNT;
-
 public class AccountStore {
     private final DSLContext db;
 
@@ -51,6 +50,17 @@ public class AccountStore {
         return Arrays.stream(partialQuery.fetchArray()).map(this::fromRecord).toList();
     }
 
+    public void updateAccount(UserID userId, AccountID accountId, Account account) {
+         db.update(ACCOUNT)
+                .set(ACCOUNT.NAME, account.getName())
+                .set(ACCOUNT.NUMBER, account.getNumber())
+                .set(ACCOUNT.TYPE, account.getType())
+                .set(ACCOUNT.BALANCE, account.getBalance())
+                .where(ACCOUNT.ID.eq(accountId.getIntId()))
+                .and(ACCOUNT.USER_ID.eq(userId.getIntId()))
+                .execute();
+    }
+
     public void deleteAccount(UserID userId,AccountID id) {
         db.deleteFrom(ACCOUNT)
                 .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
@@ -76,4 +86,5 @@ public class AccountStore {
                 record.getType(),
                 record.getBalance());
     }
+
 }
