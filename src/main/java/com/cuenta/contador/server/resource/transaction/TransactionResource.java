@@ -10,6 +10,7 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
 import java.util.List;
 
 @Path("transactions")
@@ -29,7 +30,6 @@ public class TransactionResource {
 
     @POST
     public Response storeTransaction(TransactionJson transactionJson){
-        System.out.println("Received JSON: " + transactionJson);
         Transaction transaction = TransactionSerializer.fromTransactionJson(transactionJson);
         transactionService.storeTransaction(transaction);
         return Response.ok().build();
@@ -37,13 +37,26 @@ public class TransactionResource {
 
     @GET
     @Path("{"+ TRANSACTION_ID +"}")
-    public TransactionJson getTransaction(@PathParam(TRANSACTION_ID) int transaction_id){
-        Transaction transaction = transactionService.getTransaction(TransactionID.of(transaction_id));
-        return TransactionSerializer.toTransactionJson(transaction);
+    public TransactionJson getTransaction(@PathParam(TRANSACTION_ID) int transactionId){
+        Transaction transaction = transactionService.getTransaction(TransactionID.of(transactionId));
+        return transactionSerializer.toTransactionJson(transaction);
     }
 
     @GET
-    public List<Transaction> getTransactions(){
-        return List.of();
+    public List<TransactionJson> getTransactions(){
+        List<Transaction> transactions = transactionService.getTransactions(List.of());
+        System.out.println("getTransactions: Query executed successfully, fetched " + transactions.size() + " transactions");
+        return transactions.stream().map(transactionSerializer::toTransactionJson).toList();
+    }
+
+    @DELETE
+    @Path("{"+ TRANSACTION_ID +"}")
+    public Response deleteTransaction(@PathParam(TRANSACTION_ID) int transactionId){
+        try {
+            transactionService.deleteTransaction(TransactionID.of(transactionId));
+            return Response.ok("Successfully deleted transaction").build();
+        } catch (Exception e){
+            return Response.status(401).build();
+        }
     }
 }

@@ -39,4 +39,10 @@ public class TransactionServiceImpl implements TransactionService{
         UserID userId = UserContext.getUserID();
         return transactionStore.getTransactionsByAccount(userId, accountId);
     }
+
+    @Override
+    public void deleteTransaction(TransactionID transactionId){
+        UserID userId = UserContext.getUserID();
+        transactionStore.deleteTransaction(userId, transactionId);
+    }
 }

@@ -31,7 +31,7 @@ public class TransactionSerializer {
     }
 
     // toTransactionJson (takes in Transaction and returns a TransactionJson)
-    public static TransactionJson toTransactionJson(Transaction transaction){
+    public TransactionJson toTransactionJson(Transaction transaction){
         TransactionJson transactionJson = new TransactionJson();
         transactionJson.setId(transaction.getId().getIntId());
         transactionJson.setAccountId(transaction.getAccountId().getIntId());

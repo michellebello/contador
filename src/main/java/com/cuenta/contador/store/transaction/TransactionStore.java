@@ -88,4 +88,11 @@ public class TransactionStore {
         record.setCreatedOn(transaction.getCreatedOn());
         return record;
     }
+
+    public void deleteTransaction(UserID userId, TransactionID transactionId){
+        db.deleteFrom(TRANSACTION)
+                .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
+                .and(TRANSACTION.ID.eq(transactionId.getIntId()))
+                .execute();
+    }
 }
