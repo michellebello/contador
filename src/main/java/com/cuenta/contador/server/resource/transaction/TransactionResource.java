@@ -37,9 +37,15 @@ public class TransactionResource {
 
     @GET
     @Path("{"+ TRANSACTION_ID +"}")
-    public TransactionJson getTransaction(@PathParam(TRANSACTION_ID) int transactionId){
+    public Response getTransaction(@PathParam(TRANSACTION_ID) int transactionId){
         Transaction transaction = transactionService.getTransaction(TransactionID.of(transactionId));
-        return transactionSerializer.toTransactionJson(transaction);
+        if (transaction != null){
+            TransactionJson transactionJson = transactionSerializer.toTransactionJson(transaction);
+            return Response.ok(transactionJson).build();
+        } else {
+            String message = "Transaction with id " + transactionId + " not found";
+            return Response.status(Response.Status.NOT_FOUND).entity(message).build();
+        }
     }
 
     @GET

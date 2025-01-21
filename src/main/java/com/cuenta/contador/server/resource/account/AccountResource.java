@@ -31,9 +31,15 @@ public class AccountResource {
 
     @GET
     @Path("{" + ACCOUNT_ID + "}")
-    public AccountJson getAccount(@PathParam(ACCOUNT_ID) int accountId){
+    public Response getAccount(@PathParam(ACCOUNT_ID) int accountId){
         Account account = accountService.getAccount(AccountID.of(accountId));
-        return accountSerializer.toAccountJson(account);
+        if (account != null){
+            AccountJson accountJson = accountSerializer.toAccountJson(account);
+            return Response.ok(accountJson).build();
+        } else {
+            String message = "Account with id " + accountId + " does not exist";
+            return Response.status(Response.Status.NOT_FOUND).entity(message).build();
+        }
     }
 
     @GET
