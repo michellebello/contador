@@ -15,5 +15,6 @@ public interface TransactionService {
 
     public List<Transaction> getTransactionsByAccount(AccountID accountId);
 
+    void updateTransaction(TransactionID transactionId, Transaction transaction);
     void deleteTransaction(TransactionID transactionId);
 }

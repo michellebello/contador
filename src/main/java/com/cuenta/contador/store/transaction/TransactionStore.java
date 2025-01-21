@@ -67,6 +67,24 @@ public class TransactionStore {
         return transactions;
     }
 
+    public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {
+        db.update(TRANSACTION)
+                .set(TRANSACTION.NAME, transaction.getName())
+                .set(TRANSACTION.TYPE, transaction.getType())
+                .set(TRANSACTION.AMOUNT, transaction.getAmount())
+                .set(TRANSACTION.CREATED_ON, transaction.getCreatedOn())
+                .where(TRANSACTION.ID.eq(transactionId.getIntId()))
+                .and(TRANSACTION.USER_ID.eq(userId.getIntId()))
+                .execute();
+    }
+
+    public void deleteTransaction(UserID userId, TransactionID transactionId){
+        db.deleteFrom(TRANSACTION)
+                .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
+                .and(TRANSACTION.ID.eq(transactionId.getIntId()))
+                .execute();
+    }
+
     private Transaction fromRecord(TransactionRecord record){
         return new Transaction(
                 TransactionID.of(record.getId()),
@@ -89,10 +107,4 @@ public class TransactionStore {
         return record;
     }
 
-    public void deleteTransaction(UserID userId, TransactionID transactionId){
-        db.deleteFrom(TRANSACTION)
-                .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
-                .and(TRANSACTION.ID.eq(transactionId.getIntId()))
-                .execute();
-    }
 }

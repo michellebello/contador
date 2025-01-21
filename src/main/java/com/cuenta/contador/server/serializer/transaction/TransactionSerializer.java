@@ -19,7 +19,7 @@ public class TransactionSerializer {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
     // fromTransactionJson (takes in TransactionJson and returns a Transaction)
-    public static Transaction fromTransactionJson(TransactionJson transactionJson){
+    public Transaction fromTransactionJson(TransactionJson transactionJson){
         return new Transaction(
                 transactionJson.getId() == null ? null : TransactionID.of(transactionJson.getId()),
                 AccountID.of(transactionJson.getAccountId()),
@@ -27,6 +27,18 @@ public class TransactionSerializer {
                 transactionJson.getType(),
                 transactionJson.getAmount(),
                 transactionJson.getCreatedOn()
+        );
+    }
+
+    // need to have partial fromTransactionJson for PATCH endpoint
+    public Transaction fromPartialTransactionJson(TransactionJson transactionJson, Transaction currTransaction){
+        return new Transaction(
+                currTransaction.getId(),
+                transactionJson.getAccountId() != null? AccountID.of(transactionJson.getAccountId()) : currTransaction.getAccountId(),
+                transactionJson.getName() != null? transactionJson.getName() : currTransaction.getName(),
+                transactionJson.getType() != null? transactionJson.getType() : currTransaction.getType(),
+                transactionJson.getAmount() != null? transactionJson.getAmount() : currTransaction.getAmount(),
+                transactionJson.getCreatedOn() != null? transactionJson.getCreatedOn() : currTransaction.getCreatedOn()
         );
     }
 

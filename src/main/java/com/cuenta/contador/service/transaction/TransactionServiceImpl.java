@@ -41,6 +41,11 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
+    public void updateTransaction(TransactionID transactionId, Transaction transaction){
+        UserID userId = UserContext.getUserID();
+        transactionStore.updateTransaction(userId, transactionId, transaction);
+    }
+    @Override
     public void deleteTransaction(TransactionID transactionId){
         UserID userId = UserContext.getUserID();
         transactionStore.deleteTransaction(userId, transactionId);

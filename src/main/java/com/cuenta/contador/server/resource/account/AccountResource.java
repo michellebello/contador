@@ -55,11 +55,11 @@ public class AccountResource {
     @Path("{" + ACCOUNT_ID + "}")
     public Response updateAccount(@PathParam(ACCOUNT_ID) int accountId, AccountJson accountJson){
         if (accountJson == null){
-            Response.status(Response.Status.BAD_REQUEST).entity("Account cannot be updated without any data").build();
+            Response.status(Response.Status.BAD_REQUEST).entity("Account cannot be updated without any data, please provide data to update transaction.").build();
         }
         Account currAcount = accountService.getAccount(AccountID.of(accountId));
         if (currAcount == null){
-            return Response.status(Response.Status.NOT_FOUND).entity("Account not found, please create account first").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Account with id " + accountId + " not found").build();
         }
         Account accountToUpdate = accountSerializer.fromPartialAccountJson(accountJson, currAcount);
         try {

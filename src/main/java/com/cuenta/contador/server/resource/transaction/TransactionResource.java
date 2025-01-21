@@ -30,7 +30,7 @@ public class TransactionResource {
 
     @POST
     public Response storeTransaction(TransactionJson transactionJson){
-        Transaction transaction = TransactionSerializer.fromTransactionJson(transactionJson);
+        Transaction transaction = transactionSerializer.fromTransactionJson(transactionJson);
         transactionService.storeTransaction(transaction);
         return Response.ok().build();
     }
@@ -47,6 +47,25 @@ public class TransactionResource {
         List<Transaction> transactions = transactionService.getTransactions(List.of());
         System.out.println("getTransactions: Query executed successfully, fetched " + transactions.size() + " transactions");
         return transactions.stream().map(transactionSerializer::toTransactionJson).toList();
+    }
+
+    @PATCH
+    @Path("{" + TRANSACTION_ID + "}")
+    public Response updateTransaction(@PathParam(TRANSACTION_ID) int transactionId, TransactionJson transactionJson){
+        if (transactionJson == null){
+            return Response.status(Response.Status.BAD_REQUEST).entity("Transaction cannot be update with any data, please provide data to update transaction.").build();
+        }
+        Transaction currTransaction = transactionService.getTransaction(TransactionID.of(transactionId));
+        if (currTransaction == null){
+            return Response.status(Response.Status.NOT_FOUND).entity("Transaction with id " + transactionId + " not found").build();
+        }
+        Transaction transactionToUpdate = transactionSerializer.fromPartialTransactionJson(transactionJson, currTransaction);
+        try {
+            transactionService.updateTransaction(TransactionID.of(transactionId), transactionToUpdate);
+            return Response.ok("Transaction successfully updated.").build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
+        }
     }
 
     @DELETE
