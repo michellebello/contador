@@ -71,11 +71,15 @@ public class TransactionResource {
     @DELETE
     @Path("{"+ TRANSACTION_ID +"}")
     public Response deleteTransaction(@PathParam(TRANSACTION_ID) int transactionId){
+        Transaction transactionToDelete = transactionService.getTransaction(TransactionID.of(transactionId));
+        if (transactionToDelete == null){
+            return Response.status(Response.Status.BAD_REQUEST).entity("Transaction with id " + transactionId + " not found.").build();
+        }
         try {
             transactionService.deleteTransaction(TransactionID.of(transactionId));
             return Response.ok("Successfully deleted transaction").build();
         } catch (Exception e){
-            return Response.status(401).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Server error try again").build();
         }
     }
 }

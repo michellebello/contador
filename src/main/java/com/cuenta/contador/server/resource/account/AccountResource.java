@@ -6,6 +6,7 @@ import com.cuenta.contador.service.account.Account;
 import com.cuenta.contador.service.account.Account.AccountID;
 import com.cuenta.contador.service.account.AccountService;
 
+import com.cuenta.contador.service.transaction.Transaction;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -74,11 +75,15 @@ public class AccountResource {
     @DELETE
     @Path("{" + ACCOUNT_ID + "}")
     public Response deleteAccount(@PathParam(ACCOUNT_ID) int accountId){
+        Account accountToDelete = accountService.getAccount(AccountID.of(accountId));
+        if (accountToDelete == null){
+            Response.status(Response.Status.NOT_FOUND).entity("Account with id " + accountId + " not found").build();
+        }
         try {
             accountService.deleteAccount(AccountID.of(accountId));
             return Response.ok("account deleted").build();
         } catch (Exception e){
-            return Response.status(404).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Server error try again").build();
         }
     }
 }
