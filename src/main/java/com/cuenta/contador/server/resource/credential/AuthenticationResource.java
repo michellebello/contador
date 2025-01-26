@@ -48,12 +48,12 @@ public class AuthenticationResource {
             return Response.ok(sessionId).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.UNAUTHORIZED)
-                    .entity(new ErrorMessage(e.getMessage())) // Use the message from the exception
-                    .type(MediaType.APPLICATION_JSON) // Explicitly set content type to JSON
+                    .entity(new ErrorMessage(e.getMessage()))
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                    .entity(new ErrorMessage("An unexpected error occurred"))
+                    .entity(new ErrorMessage("An error occurred, please try again"))
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         }
