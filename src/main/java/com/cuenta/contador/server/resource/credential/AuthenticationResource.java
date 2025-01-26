@@ -39,22 +39,22 @@ public class AuthenticationResource {
         }
     }
 
-    @Path("login")
     @POST
+    @Path("login")
     public Response login(CredentialJson credentialJson) {
         try {
             Credential credential = authenticationSerializer.fromCredentialJson(credentialJson);
             UUID sessionId = authenticationService.authenticate(credential.getUsername(), credential.getPassword());
             return Response.ok(sessionId).build();
-        } catch (NotAuthorizedException e) {
-            // Respond with specific error message for wrong password or username
-            return Response.status(401) // Unauthorized error code
-                    .entity(new ErrorMessage(e.getMessage())) // Send the error message to frontend
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity(new ErrorMessage(e.getMessage())) // Use the message from the exception
+                    .type(MediaType.APPLICATION_JSON) // Explicitly set content type to JSON
                     .build();
         } catch (Exception e) {
-            // General error case
-            return Response.status(500) // Internal Server Error
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(new ErrorMessage("An unexpected error occurred"))
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         }
     }

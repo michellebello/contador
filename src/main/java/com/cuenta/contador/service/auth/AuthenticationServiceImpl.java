@@ -27,23 +27,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UUID authenticate(String username, String password) throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalAccessException {
+    public UUID authenticate(String username, String password)
+            throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalAccessException {
         Credential credential = credentialService.getCredentials(username);
         if (credential == null) {
-            // If the username doesn't exist, you can also throw an exception here
-            throw new NotAuthorizedException("Username not found");
+            throw new IllegalArgumentException("Username not found");
         }
-
-        // Check if the username and password match
         if (!username.equals(credential.getUsername()) || !Encryptor.validatePassword(password, credential.getPassword())) {
-            // Log the error or check if this block is being reached
-            System.out.println("Username or password does not match");
-            throw new NotAuthorizedException("Password does not match");
+            throw new IllegalArgumentException("Password does not match");
         }
-
-        // If everything is correct, create a session
         return createSession(username);
     }
+
 
     @Override
     public UUID createUser(Credential credential, User userInfo) throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalAccessException {
