@@ -8,6 +8,8 @@ import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserService;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.NotAuthorizedException;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
@@ -28,13 +30,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     public UUID authenticate(String username, String password) throws NoSuchAlgorithmException, InvalidKeySpecException, IllegalAccessException {
         Credential credential = credentialService.getCredentials(username);
         if (credential == null) {
-            return null;
+            // If the username doesn't exist, you can also throw an exception here
+            throw new NotAuthorizedException("Username not found");
         }
 
-        if (username.equals(credential.getUsername()) && Encryptor.validatePassword(password, credential.getPassword())) {
-            return createSession(username);
+        // Check if the username and password match
+        if (!username.equals(credential.getUsername()) || !Encryptor.validatePassword(password, credential.getPassword())) {
+            // Log the error or check if this block is being reached
+            System.out.println("Username or password does not match");
+            throw new NotAuthorizedException("Password does not match");
         }
-        return null;
+
+        // If everything is correct, create a session
+        return createSession(username);
     }
 
     @Override
