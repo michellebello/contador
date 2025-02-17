@@ -4,6 +4,7 @@ import java.util.UUID;
 
 public interface SessionService {
     UUID createSession(String username);
+    void deleteSession(UUID sessionId);
 
     boolean isValidSession(UUID sessionId);
 

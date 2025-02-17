@@ -14,5 +14,7 @@ public interface AuthenticationService {
 
     UUID createSession(String username) throws IllegalAccessException;
 
+    void deleteSession(UUID sessionId);
+
     boolean isValidSession(UUID sessionId);
 }

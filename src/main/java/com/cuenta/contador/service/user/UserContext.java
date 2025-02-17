@@ -15,6 +15,13 @@ public class UserContext {
         return userContext.get().getRight();
     }
 
+    public static UUID getSessionId() {
+        if (userContext.get() == null) {
+            throw new IllegalStateException("Tried to get session without setting it first");
+        }
+        return userContext.get().getLeft();
+    }
+
     public static void setUserContext(UUID sessionId, UserID userId) {
         userContext.set(new Pair<>(sessionId, userId));
     }

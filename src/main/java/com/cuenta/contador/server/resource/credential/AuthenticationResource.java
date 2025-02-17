@@ -1,6 +1,7 @@
 package com.cuenta.contador.server.resource.credential;
 
 import com.cuenta.contador.infra.Pair;
+import com.cuenta.contador.infra.Unauthenticated;
 import com.cuenta.contador.server.json.credential.CredentialJson;
 import com.cuenta.contador.server.json.user.RegisterJson;
 import com.cuenta.contador.server.serializer.credential.AuthenticationSerializer;
@@ -8,6 +9,7 @@ import com.cuenta.contador.service.auth.AuthenticationService;
 import com.cuenta.contador.service.credential.Credential;
 import com.cuenta.contador.service.user.User;
 
+import com.cuenta.contador.service.user.UserContext;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -29,6 +31,7 @@ public class AuthenticationResource {
 
     @Path("register")
     @POST
+    @Unauthenticated
     public Response register(RegisterJson registerJson) {
         try {
             Pair<Credential, User> credentialUserPair = authenticationSerializer.fromRegisterJson(registerJson);
@@ -41,6 +44,7 @@ public class AuthenticationResource {
 
     @POST
     @Path("login")
+    @Unauthenticated
     public Response login(CredentialJson credentialJson) {
         try {
             Credential credential = authenticationSerializer.fromCredentialJson(credentialJson);
@@ -56,6 +60,18 @@ public class AuthenticationResource {
                     .entity(new ErrorMessage("An error occurred, please try again"))
                     .type(MediaType.APPLICATION_JSON)
                     .build();
+        }
+    }
+
+    @POST
+    @Path("logout")
+    public Response logout(){
+        UUID sessionId = UserContext.getSessionId();
+        try {
+            authenticationService.deleteSession(sessionId);
+            return Response.status(200).entity("SessionId deleted").build();
+        } catch(Exception e) {
+            return Response.status(Response.Status.NOT_FOUND).entity("SessionId not found, try again").build();
         }
     }
 

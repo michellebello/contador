@@ -1,11 +1,15 @@
 package com.cuenta.contador.store.session;
 
 import com.cuenta.contador.infra.DSLContextProvider;
+import com.cuenta.contador.jooq_auto_generated.tables.Session;
 import com.cuenta.contador.jooq_auto_generated.tables.records.SessionRecord;
+import jakarta.ws.rs.core.Response;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 
 import jakarta.inject.Inject;
+import org.jooq.SQL;
+
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.UUID;
@@ -30,6 +34,10 @@ public class SessionStore {
         db.insertInto(SESSION)
                 .set(sessionRecord).execute();
         return sessionId;
+    }
+
+    public void deleteSession(UUID sessionId) {
+        db.deleteFrom(SESSION).where(SESSION.SESSION_.eq(String.valueOf(sessionId))).execute();
     }
 
     public boolean isValidSession(UUID sessionId) {

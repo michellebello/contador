@@ -19,6 +19,11 @@ public class SessionServiceImpl implements SessionService {
     }
 
     @Override
+    public void deleteSession(UUID sessionId){
+        sessionStore.deleteSession(sessionId);
+    }
+
+    @Override
     public boolean isValidSession(UUID sessionId) {
         return sessionStore.isValidSession(sessionId);
     }

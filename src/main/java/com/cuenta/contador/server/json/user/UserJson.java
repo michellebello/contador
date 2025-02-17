@@ -3,11 +3,11 @@ package com.cuenta.contador.server.json.user;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserJson {
-    @JsonProperty
-    String firstName;
+        @JsonProperty
+        String firstName;
 
-    @JsonProperty
-    String lastName;
+        @JsonProperty
+        String lastName;
 
     public String getFirstName() {
         return firstName;

@@ -58,7 +58,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public void deleteSession(UUID  sessionId){
+        sessionService.deleteSession(sessionId);
+    }
+
+    @Override
     public boolean isValidSession(UUID sessionId) {
         return sessionService.isValidSession(sessionId);
     }
+
+
 }
