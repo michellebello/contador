@@ -8,6 +8,7 @@ public interface AccountService {
 
     List<Account> getAccounts(List<AccountID> ids);
 
+    List<String> getAccountNumbers();
     void createAccount(Account account);
     void deleteAccount(AccountID id);
     void updateAccount(AccountID accountId, Account account);

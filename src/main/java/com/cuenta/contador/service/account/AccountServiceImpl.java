@@ -29,6 +29,12 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<String> getAccountNumbers() {
+        UserID userId = UserContext.getUserID();
+        return accountStore.getAccountNumbers(userId);
+    }
+
+    @Override
     public void createAccount(Account account){
         // in debug mode stop
         UserID userId = UserContext.getUserID();

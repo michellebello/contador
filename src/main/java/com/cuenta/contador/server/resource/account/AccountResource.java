@@ -7,6 +7,7 @@ import com.cuenta.contador.service.account.Account.AccountID;
 import com.cuenta.contador.service.account.AccountService;
 
 import com.cuenta.contador.service.transaction.Transaction;
+import com.cuenta.contador.service.user.UserContext;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -50,6 +51,21 @@ public class AccountResource {
                 .map(accountSerializer::toAccountJson)
                 .toList();
     }
+
+    @GET
+    @Path("/numbers")
+    public List<AccountJson> getAccountNumbers() {
+        List<Account> accounts = accountService.getAccounts(List.of());
+        return accounts.stream()
+                .map(account -> {
+                    AccountJson accountJson = new AccountJson();
+                    accountJson.setId(account.getId().getIntId());
+                    accountJson.setNumber(account.getNumber());
+                    return accountJson;
+                })
+                .toList();
+    }
+
 
     @POST
     public Response createAccount(AccountJson accountJson) {

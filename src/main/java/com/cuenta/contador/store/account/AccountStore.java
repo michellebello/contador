@@ -50,6 +50,13 @@ public class AccountStore {
         return Arrays.stream(partialQuery.fetchArray()).map(this::fromRecord).toList();
     }
 
+    public List<String> getAccountNumbers(UserID userId) {
+        return db.select(ACCOUNT.NUMBER)
+                .from(ACCOUNT)
+                .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
+                .fetchInto(String.class);
+    }
+
     public void updateAccount(UserID userId, AccountID accountId, Account account) {
          db.update(ACCOUNT)
                 .set(ACCOUNT.NAME, account.getName())
