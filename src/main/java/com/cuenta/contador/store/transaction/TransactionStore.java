@@ -12,6 +12,8 @@ import org.jooq.SelectConditionStep;
 
 import jakarta.inject.Inject;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,12 +46,18 @@ public class TransactionStore {
         return fromRecord(record);
     }
 
-    public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids){
+    public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before){
         SelectConditionStep<TransactionRecord> partialQuery = db
                 .selectFrom(TRANSACTION)
                 .where(TRANSACTION.USER_ID.eq(userId.getIntId()));
         if (!ids.isEmpty()){
             partialQuery = partialQuery.and(TRANSACTION.ID.in(getIntIds(ids)));
+        }
+        if (after != null) {
+            partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.ge(LocalDateTime.from(after)));
+        }
+        if (before != null) {
+            partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.le(LocalDateTime.from(before)));
         }
         return Arrays.stream(partialQuery.fetchArray()).map(this::fromRecord).toList();
     }
@@ -65,6 +73,15 @@ public class TransactionStore {
             transactions.add(fromRecord(record));
         }
         return transactions;
+    }
+
+    public List<Transaction> getTransactionsByDates(UserID userId, String dateFrom, String dateTo) {
+        List<Transaction> transactions = new ArrayList<>();
+        Result<TransactionRecord> transactionList = db
+                .selectFrom(TRANSACTION)
+                .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
+                .and(TRANSACTION.CREATED_ON.between(dateFrom, dateTo))
+                .fetch()
     }
 
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {
@@ -106,5 +123,4 @@ public class TransactionStore {
         record.setCreatedOn(transaction.getCreatedOn());
         return record;
     }
-
 }

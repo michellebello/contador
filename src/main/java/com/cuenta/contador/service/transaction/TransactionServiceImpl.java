@@ -5,6 +5,8 @@ import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.store.transaction.TransactionStore;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
+
+import java.time.LocalDate;
 import java.util.List;
 import jakarta.inject.Inject;
 
@@ -29,9 +31,9 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<Transaction> getTransactions(List<TransactionID> ids){
+    public List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before){
         UserID userId = UserContext.getUserID();
-        return transactionStore.getTransactions(userId, ids);
+        return transactionStore.getTransactions(userId, ids, after, before);
     }
 
     @Override
@@ -39,6 +41,7 @@ public class TransactionServiceImpl implements TransactionService{
         UserID userId = UserContext.getUserID();
         return transactionStore.getTransactionsByAccount(userId, accountId);
     }
+
 
     @Override
     public void updateTransaction(TransactionID transactionId, Transaction transaction){

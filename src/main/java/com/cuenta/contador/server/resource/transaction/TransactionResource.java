@@ -11,6 +11,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Path("transactions")
@@ -18,7 +19,8 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class TransactionResource {
     private static final String TRANSACTION_ID = "transactionId";
-
+    private static final String DATE_AFTER = "dateAfter";
+    private static final String DATE_BEFORE = "dateBefore";
     private final TransactionService transactionService;
     private final TransactionSerializer transactionSerializer;
 
@@ -49,8 +51,11 @@ public class TransactionResource {
     }
 
     @GET
-    public List<TransactionJson> getTransactions(){
-        List<Transaction> transactions = transactionService.getTransactions(List.of());
+    public List<TransactionJson> getTransactions(
+            @QueryParam(DATE_AFTER) LocalDate after,
+            @QueryParam(DATE_BEFORE) LocalDate before
+    ){
+        List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before);
         System.out.println("getTransactions: Query executed successfully, fetched " + transactions.size() + " transactions");
         return transactions.stream().map(transactionSerializer::toTransactionJson).toList();
     }
