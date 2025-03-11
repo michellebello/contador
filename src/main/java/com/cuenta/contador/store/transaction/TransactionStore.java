@@ -14,6 +14,7 @@ import jakarta.inject.Inject;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,34 +55,13 @@ public class TransactionStore {
             partialQuery = partialQuery.and(TRANSACTION.ID.in(getIntIds(ids)));
         }
         if (after != null) {
-            partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.ge(LocalDateTime.from(after)));
+            partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.ge(after.atStartOfDay()));
         }
+
         if (before != null) {
-            partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.le(LocalDateTime.from(before)));
+            partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
         }
         return Arrays.stream(partialQuery.fetchArray()).map(this::fromRecord).toList();
-    }
-
-    public List<Transaction> getTransactionsByAccount(UserID userId, AccountID accountId) {
-        List<Transaction> transactions = new ArrayList<>();
-        Result<TransactionRecord> transactionList = db
-                .selectFrom(TRANSACTION)
-                .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
-                .and(TRANSACTION.ACCOUNT_ID.eq(accountId.getIntId()))
-                .fetch();
-        for(TransactionRecord record : transactionList){
-            transactions.add(fromRecord(record));
-        }
-        return transactions;
-    }
-
-    public List<Transaction> getTransactionsByDates(UserID userId, String dateFrom, String dateTo) {
-        List<Transaction> transactions = new ArrayList<>();
-        Result<TransactionRecord> transactionList = db
-                .selectFrom(TRANSACTION)
-                .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
-                .and(TRANSACTION.CREATED_ON.between(dateFrom, dateTo))
-                .fetch()
     }
 
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {

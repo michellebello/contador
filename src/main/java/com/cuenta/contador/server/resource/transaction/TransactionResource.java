@@ -7,6 +7,7 @@ import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.service.transaction.TransactionService;
 
 import jakarta.inject.Inject;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -19,8 +20,6 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 public class TransactionResource {
     private static final String TRANSACTION_ID = "transactionId";
-    private static final String DATE_AFTER = "dateAfter";
-    private static final String DATE_BEFORE = "dateBefore";
     private final TransactionService transactionService;
     private final TransactionSerializer transactionSerializer;
 
@@ -52,13 +51,22 @@ public class TransactionResource {
 
     @GET
     public List<TransactionJson> getTransactions(
-            @QueryParam(DATE_AFTER) LocalDate after,
-            @QueryParam(DATE_BEFORE) LocalDate before
-    ){
+            @QueryParam("after") String afterString,
+            @QueryParam("before") String beforeString
+    ) {
+        // trim any extra whitespace
+        afterString = (afterString != null) ? afterString.trim() : null;
+        beforeString = (beforeString != null) ? beforeString.trim() : null;;
+
+        LocalDate after = (afterString != null) ? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
+        LocalDate before = (beforeString != null) ? LocalDate.parse(beforeString) : LocalDate.now();
+
         List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before);
+
         System.out.println("getTransactions: Query executed successfully, fetched " + transactions.size() + " transactions");
         return transactions.stream().map(transactionSerializer::toTransactionJson).toList();
     }
+
 
     @PATCH
     @Path("{" + TRANSACTION_ID + "}")
