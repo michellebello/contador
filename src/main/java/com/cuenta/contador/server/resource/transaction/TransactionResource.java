@@ -54,12 +54,12 @@ public class TransactionResource {
             @QueryParam("after") String afterString,
             @QueryParam("before") String beforeString
     ) {
-        // trim any extra whitespace
-        afterString = (afterString != null) ? afterString.trim() : null;
-        beforeString = (beforeString != null) ? beforeString.trim() : null;;
+        // make sure no whitespace
+        afterString = afterString != null? afterString.trim() : null;
+        LocalDate after = afterString != null? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
 
-        LocalDate after = (afterString != null) ? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
-        LocalDate before = (beforeString != null) ? LocalDate.parse(beforeString) : LocalDate.now();
+        beforeString = beforeString != null? beforeString.trim() : null;;
+        LocalDate before = beforeString != null? LocalDate.parse(beforeString) : LocalDate.now();
 
         List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before);
 

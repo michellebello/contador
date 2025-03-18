@@ -7,15 +7,11 @@ import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.jooq_auto_generated.tables.records.TransactionRecord;
 import com.cuenta.contador.service.user.User.UserID;
 import org.jooq.DSLContext;
-import org.jooq.Result;
 import org.jooq.SelectConditionStep;
 
 import jakarta.inject.Inject;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -61,7 +57,10 @@ public class TransactionStore {
         if (before != null) {
             partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
         }
-        return Arrays.stream(partialQuery.fetchArray()).map(this::fromRecord).toList();
+        return Arrays.stream(partialQuery.orderBy(TRANSACTION.CREATED_ON.desc())
+                .fetchArray())
+                .map(this::fromRecord)
+                .toList();
     }
 
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {
