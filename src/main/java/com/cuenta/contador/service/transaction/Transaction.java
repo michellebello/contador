@@ -10,6 +10,8 @@ import java.util.Objects;
 public class Transaction {
     private TransactionID id;
     private AccountID accountId;
+
+    private String accountNumber;
     private String name;
     private String type;
     private Double amount;

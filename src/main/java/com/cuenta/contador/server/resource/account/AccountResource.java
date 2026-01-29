@@ -12,7 +12,13 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.jooq.exception.DataAccessException;
+import org.jooq.exception.IntegrityConstraintViolationException;
+
+import java.lang.reflect.AnnotatedArrayType;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Path("accounts")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -66,12 +72,24 @@ public class AccountResource {
                 .toList();
     }
 
+    @GET
+    @Path("/balance")
+    public Map<String, BigDecimal> getAccountTypeBalance(){
+        return accountService.getBalanceByAccountType();
+    }
+
 
     @POST
     public Response createAccount(AccountJson accountJson) {
+        if (accountJson == null){
+            return Response.status(Response.Status.BAD_REQUEST).entity("Empty body").build();
+        }
         Account account = accountSerializer.fromAccountJson(accountJson);
+        if (accountService.accountNumberExists(account.getNumber())) {
+            return Response.status(Response.Status.CONFLICT).entity("Account number already exists").build();
+        }
         accountService.createAccount(account);
-        return Response.ok().build();
+        return Response.ok().entity("New account added").build();
     }
 
     @PATCH
@@ -84,7 +102,8 @@ public class AccountResource {
         if (currAcount == null){
             return Response.status(Response.Status.NOT_FOUND).entity("Account with id " + accountId + " not found").build();
         }
-        Account accountToUpdate = accountSerializer.fromPartialAccountJson(accountJson, currAcount);
+      assert accountJson != null;
+      Account accountToUpdate = accountSerializer.fromPartialAccountJson(accountJson, currAcount);
         try {
             accountService.updateAccount(AccountID.of(accountId), accountToUpdate);
             return Response.ok("Account successfully updated with new data").build();
@@ -99,7 +118,7 @@ public class AccountResource {
     public Response deleteAccount(@PathParam(ACCOUNT_ID) int accountId){
         Account accountToDelete = accountService.getAccount(AccountID.of(accountId));
         if (accountToDelete == null){
-            Response.status(Response.Status.NOT_FOUND).entity("Account with id " + accountId + " not found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Account with id " + accountId + " not found").build();
         }
         try {
             accountService.deleteAccount(AccountID.of(accountId));

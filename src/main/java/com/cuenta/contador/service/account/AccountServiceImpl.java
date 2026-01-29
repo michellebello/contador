@@ -6,7 +6,10 @@ import com.cuenta.contador.store.account.AccountStore;
 import com.cuenta.contador.service.account.Account.AccountID;
 
 import jakarta.inject.Inject;
+
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 public class AccountServiceImpl implements AccountService {
     private final AccountStore accountStore;
@@ -33,10 +36,20 @@ public class AccountServiceImpl implements AccountService {
         UserID userId = UserContext.getUserID();
         return accountStore.getAccountNumbers(userId);
     }
+    @Override
+    public Map<String, BigDecimal> getBalanceByAccountType() {
+        UserID userId = UserContext.getUserID();
+        return accountStore.getBalanceByAccountType(userId);
+    }
+
+    @Override
+    public boolean accountNumberExists(String accountNumber){
+        UserID userId = UserContext.getUserID();
+        return accountStore.accountNumberExists(userId, accountNumber);
+    }
 
     @Override
     public void createAccount(Account account){
-        // in debug mode stop
         UserID userId = UserContext.getUserID();
         accountStore.storeAccount(userId, account);
     }
@@ -52,6 +65,13 @@ public class AccountServiceImpl implements AccountService {
         UserID userId = UserContext.getUserID();
         accountStore.deleteAccount(userId, id);
     }
+
+    @Override
+    public void updateAccountBalance(AccountID accountId, Double amount){
+        UserID userId = UserContext.getUserID();
+        accountStore.updateAccountBalance(userId, accountId, amount);
+    }
+
 
 
 }

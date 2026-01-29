@@ -13,30 +13,27 @@ import java.io.IOException;
 @Provider
 @PreMatching
 public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilter {
+
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         if ("OPTIONS".equalsIgnoreCase(requestContext.getMethod())) {
-            requestContext.abortWith(
-                    Response.ok()
-                            .header("Access-Control-Allow-Origin", "http://localhost:3000")
-                            .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-                            .header("Access-Control-Allow-Headers", "Content-Type, Authorization, CONTADOR_TOKEN")
-                            .header("Access-Control-Allow-Credentials", "true")
-                            .build()
-            );
-            return; // Ensure no further processing for preflight requests
+            Response response = Response.ok()
+              .header("Access-Control-Allow-Origin", "http://localhost:3000")
+              .header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+              .header("Access-Control-Allow-Headers", "Content-Type, Authorization, CONTADOR_TOKEN")
+              .header("Access-Control-Allow-Credentials", "true")
+              .build();
+            requestContext.abortWith(response);
         }
     }
 
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
         // Before adding the header, check if it already exists
-        if (!responseContext.getHeaders().containsKey("Access-Control-Allow-Origin")) {
-            responseContext.getHeaders().add("Access-Control-Allow-Origin", "http://localhost:3000");
-            responseContext.getHeaders().add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            responseContext.getHeaders().add("Access-Control-Allow-Headers", "Content-Type, Authorization, CONTADOR_TOKEN");
-            responseContext.getHeaders().add("Access-Control-Allow-Credentials", "true");
-        }
+        responseContext.getHeaders().putSingle("Access-Control-Allow-Origin", "http://localhost:3000");
+        responseContext.getHeaders().putSingle("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+        responseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "Content-Type, Authorization, CONTADOR_TOKEN");
+        responseContext.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
     }
 }
 

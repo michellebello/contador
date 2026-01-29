@@ -2,21 +2,26 @@ package com.cuenta.contador.store.transaction;
 
 import com.cuenta.contador.infra.DSLContextProvider;
 import com.cuenta.contador.service.account.Account.AccountID;
+import com.cuenta.contador.service.account.WithAccountNumber;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.jooq_auto_generated.tables.records.TransactionRecord;
+import com.cuenta.contador.service.transaction.TransactionWithAccountNumber;
 import com.cuenta.contador.service.user.User.UserID;
-import org.jooq.DSLContext;
-import org.jooq.SelectConditionStep;
+import org.jooq.*;
 
 import jakarta.inject.Inject;
+import org.jooq.Record;
 
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.cuenta.contador.infra.ID.getIntIds;
+import static com.cuenta.contador.jooq_auto_generated.Tables.ACCOUNT;
 import static com.cuenta.contador.jooq_auto_generated.Tables.TRANSACTION;
+import static java.util.stream.Collectors.toList;
 
 public class TransactionStore {
     private final DSLContext db;
@@ -43,10 +48,22 @@ public class TransactionStore {
         return fromRecord(record);
     }
 
-    public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before){
-        SelectConditionStep<TransactionRecord> partialQuery = db
-                .selectFrom(TRANSACTION)
-                .where(TRANSACTION.USER_ID.eq(userId.getIntId()));
+    public List<TransactionWithAccountNumber> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before){
+        var partialQuery = db
+          .select(
+            TRANSACTION.ID,
+            TRANSACTION.ACCOUNT_ID,
+            TRANSACTION.NAME,
+            TRANSACTION.TYPE,
+            TRANSACTION.AMOUNT,
+            TRANSACTION.CREATED_ON,
+            ACCOUNT.NUMBER
+          )
+          .from(TRANSACTION)
+          .leftJoin(ACCOUNT)
+          .on(TRANSACTION.ACCOUNT_ID.eq(ACCOUNT.ID))
+          .where(TRANSACTION.USER_ID.eq(userId.getIntId()));
+
         if (!ids.isEmpty()){
             partialQuery = partialQuery.and(TRANSACTION.ID.in(getIntIds(ids)));
         }
@@ -57,10 +74,19 @@ public class TransactionStore {
         if (before != null) {
             partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
         }
-        return Arrays.stream(partialQuery.orderBy(TRANSACTION.CREATED_ON.desc())
-                .fetchArray())
-                .map(this::fromRecord)
-                .toList();
+
+        return partialQuery.fetch()
+          .stream()
+          .map(record -> new TransactionWithAccountNumber(
+            TransactionID.of(record.get(TRANSACTION.ID)),
+            AccountID.of(record.get(TRANSACTION.ACCOUNT_ID)),
+            record.get(TRANSACTION.NAME),
+            record.get(TRANSACTION.TYPE),
+            record.get(TRANSACTION.AMOUNT),
+            record.get(TRANSACTION.CREATED_ON),
+            record.get(ACCOUNT.NUMBER)
+          ))
+          .toList();
     }
 
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {

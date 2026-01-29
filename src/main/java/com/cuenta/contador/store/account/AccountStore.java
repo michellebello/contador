@@ -10,9 +10,13 @@ import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 
 import jakarta.inject.Inject;
+import org.jooq.impl.DSL;
+import org.jooq.impl.QOM;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import static com.cuenta.contador.jooq_auto_generated.Tables.ACCOUNT;
 public class AccountStore {
@@ -27,7 +31,14 @@ public class AccountStore {
         AccountRecord record = toRecord(userId, account);
         db.insertInto(ACCOUNT).set(record).execute();
     }
-
+    public boolean accountNumberExists(UserID userId, String accountNumber){
+        AccountRecord record = db
+          .selectFrom(ACCOUNT)
+          .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
+          .and(ACCOUNT.NUMBER.eq(accountNumber))
+          .fetchOne();
+        return record != null;
+    }
     public Account getAccount(UserID userId, AccountID id){
         AccountRecord record = db
                 .selectFrom(ACCOUNT)
@@ -56,6 +67,17 @@ public class AccountStore {
                 .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
                 .fetchInto(String.class);
     }
+
+    public Map<String, BigDecimal> getBalanceByAccountType(UserID userId){
+        return db
+          .select(ACCOUNT.TYPE, DSL.sum(ACCOUNT.BALANCE))
+          .from(ACCOUNT)
+          .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
+          .groupBy(ACCOUNT.TYPE)
+          .fetchMap(ACCOUNT.TYPE, DSL.sum(ACCOUNT.BALANCE));
+
+    }
+
 
     public void updateAccount(UserID userId, AccountID accountId, Account account) {
          db.update(ACCOUNT)
@@ -94,4 +116,8 @@ public class AccountStore {
                 record.getBalance());
     }
 
+    public void updateAccountBalance(UserID userId, AccountID accountId, Double amount) {
+        System.out.println("Updating account " + accountId + " with amount " + amount);
+        db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+    }
 }

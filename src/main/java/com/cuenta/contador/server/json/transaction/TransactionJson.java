@@ -12,6 +12,9 @@ public class TransactionJson {
     private Integer id;
     @JsonProperty
     private Integer accountId;
+
+    @JsonProperty
+    private String accountNumber;
     @JsonProperty
     private String name;
     @JsonProperty
@@ -38,6 +41,7 @@ public class TransactionJson {
     public void setAccountId(Integer accountId) {
         this.accountId = accountId;
     }
+
 
     public String getName() {
         return name;

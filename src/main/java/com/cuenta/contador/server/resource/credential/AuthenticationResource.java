@@ -67,6 +67,7 @@ public class AuthenticationResource {
     @Path("logout")
     public Response logout(){
         UUID sessionId = UserContext.getSessionId();
+        System.out.println("session id is " + sessionId);
         try {
             authenticationService.deleteSession(sessionId);
             return Response.status(200).entity("SessionId deleted").build();

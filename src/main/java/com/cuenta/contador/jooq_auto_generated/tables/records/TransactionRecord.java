@@ -118,6 +118,8 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> {
         return (LocalDateTime) get(6);
     }
 
+
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -153,4 +155,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> {
         setCreatedOn(createdOn);
         resetChangedOnNotNull();
     }
+
+
+
 }

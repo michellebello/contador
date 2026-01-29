@@ -1,27 +1,30 @@
 package com.cuenta.contador.service.transaction;
 
-import com.cuenta.contador.service.account.Account.AccountID;
+import com.cuenta.contador.service.account.AccountService;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.store.transaction.TransactionStore;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import jakarta.inject.Inject;
 
 public class TransactionServiceImpl implements TransactionService{
+    private final AccountService accountService;
     private final TransactionStore transactionStore;
 
     @Inject
-    public TransactionServiceImpl(TransactionStore transactionStore){
+    public TransactionServiceImpl(TransactionStore transactionStore, AccountService accountService){
         this.transactionStore = transactionStore;
+        this.accountService = accountService;
     }
+
 
     @Override
     public void storeTransaction(Transaction transaction){
         UserID userId = UserContext.getUserID();
+        accountService.updateAccountBalance(transaction.getAccountId(), transaction.getAmount());
         transactionStore.storeTransaction(userId,transaction);
     }
 
@@ -32,7 +35,7 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before){
+    public List<TransactionWithAccountNumber> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before){
         UserID userId = UserContext.getUserID();
         return transactionStore.getTransactions(userId, ids, after, before);
     }

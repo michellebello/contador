@@ -6,6 +6,7 @@ import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.service.transaction.TransactionService;
 
+import com.cuenta.contador.service.transaction.TransactionWithAccountNumber;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.*;
@@ -33,7 +34,7 @@ public class TransactionResource {
     public Response storeTransaction(TransactionJson transactionJson){
         Transaction transaction = transactionSerializer.fromTransactionJson(transactionJson);
         transactionService.storeTransaction(transaction);
-        return Response.ok().build();
+        return Response.ok(transaction).build();
     }
 
     @GET
@@ -58,12 +59,11 @@ public class TransactionResource {
         afterString = afterString != null? afterString.trim() : null;
         LocalDate after = afterString != null? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
 
-        beforeString = beforeString != null? beforeString.trim() : null;;
+        beforeString = beforeString != null? beforeString.trim() : null;
         LocalDate before = beforeString != null? LocalDate.parse(beforeString) : LocalDate.now();
 
-        List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before);
+        List<TransactionWithAccountNumber> transactions = transactionService.getTransactions(List.of(), after, before);
 
-        System.out.println("getTransactions: Query executed successfully, fetched " + transactions.size() + " transactions");
         return transactions.stream().map(transactionSerializer::toTransactionJson).toList();
     }
 
