@@ -6,7 +6,6 @@ import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.service.transaction.TransactionService;
 
-import com.cuenta.contador.service.transaction.TransactionWithAccountNumber;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.*;
@@ -62,9 +61,9 @@ public class TransactionResource {
         beforeString = beforeString != null? beforeString.trim() : null;
         LocalDate before = beforeString != null? LocalDate.parse(beforeString) : LocalDate.now();
 
-        List<TransactionWithAccountNumber> transactions = transactionService.getTransactions(List.of(), after, before);
+        List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before);
 
-        return transactions.stream().map(transactionSerializer::toTransactionJson).toList();
+        return transactions.stream().map(transactionSerializer::toJoinedTransactionJson).toList();
     }
 
 

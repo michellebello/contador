@@ -77,9 +77,9 @@ public class Transaction extends TableImpl<TransactionRecord> {
     public final TableField<TransactionRecord, String> NAME = createField(DSL.name("name"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
-     * The column <code>contadordb.transaction.type</code>.
+     * The column <code>contadordb.transaction.category</code>.
      */
-    public final TableField<TransactionRecord, String> TYPE = createField(DSL.name("type"), SQLDataType.VARCHAR(50).nullable(false), this, "");
+    public final TableField<TransactionRecord, String> CATEGORY = createField(DSL.name("category"), SQLDataType.VARCHAR(50).nullable(false), this, "");
 
     /**
      * The column <code>contadordb.transaction.amount</code>.
@@ -95,6 +95,11 @@ public class Transaction extends TableImpl<TransactionRecord> {
      * The column <code>contadordb.transaction.created_on</code>.
      */
     public final TableField<TransactionRecord, LocalDateTime> CREATED_ON = createField(DSL.name("created_on"), SQLDataType.LOCALDATETIME(0).nullable(false), this, "");
+
+    /**
+     * The column <code>contadordb.transaction.type_id</code>.
+     */
+    public final TableField<TransactionRecord, Integer> TYPE_ID = createField(DSL.name("type_id"), SQLDataType.INTEGER, this, "");
 
     private Transaction(Name alias, Table<TransactionRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

@@ -11,7 +11,7 @@ public interface TransactionService {
 
     Transaction getTransaction(TransactionID id);
 
-    public List<TransactionWithAccountNumber> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before);
+    public List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before);
 
     void updateTransaction(TransactionID transactionId, Transaction transaction);
     void deleteTransaction(TransactionID transactionId);

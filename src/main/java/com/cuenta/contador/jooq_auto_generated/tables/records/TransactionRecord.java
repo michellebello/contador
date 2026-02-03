@@ -63,16 +63,16 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> {
     }
 
     /**
-     * Setter for <code>contadordb.transaction.type</code>.
+     * Setter for <code>contadordb.transaction.category</code>.
      */
-    public void setType(String value) {
+    public void setCategory(String value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>contadordb.transaction.type</code>.
+     * Getter for <code>contadordb.transaction.category</code>.
      */
-    public String getType() {
+    public String getCategory() {
         return (String) get(3);
     }
 
@@ -118,7 +118,19 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> {
         return (LocalDateTime) get(6);
     }
 
+    /**
+     * Setter for <code>contadordb.transaction.type_id</code>.
+     */
+    public void setTypeId(Integer value) {
+        set(7, value);
+    }
 
+    /**
+     * Getter for <code>contadordb.transaction.type_id</code>.
+     */
+    public Integer getTypeId() {
+        return (Integer) get(7);
+    }
 
     // -------------------------------------------------------------------------
     // Primary key information
@@ -143,19 +155,17 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> {
     /**
      * Create a detached, initialised TransactionRecord
      */
-    public TransactionRecord(Integer id, Integer userId, String name, String type, Double amount, Integer accountId, LocalDateTime createdOn) {
+    public TransactionRecord(Integer id, Integer userId, String name, String category, Double amount, Integer accountId, LocalDateTime createdOn, Integer typeId) {
         super(Transaction.TRANSACTION);
 
         setId(id);
         setUserId(userId);
         setName(name);
-        setType(type);
+        setCategory(category);
         setAmount(amount);
         setAccountId(accountId);
         setCreatedOn(createdOn);
+        setTypeId(typeId);
         resetChangedOnNotNull();
     }
-
-
-
 }

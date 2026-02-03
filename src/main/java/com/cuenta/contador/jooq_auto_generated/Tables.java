@@ -9,6 +9,7 @@ import com.cuenta.contador.jooq_auto_generated.tables.Credentials;
 import com.cuenta.contador.jooq_auto_generated.tables.FlywaySchemaHistory;
 import com.cuenta.contador.jooq_auto_generated.tables.Session;
 import com.cuenta.contador.jooq_auto_generated.tables.Transaction;
+import com.cuenta.contador.jooq_auto_generated.tables.TransactionType;
 import com.cuenta.contador.jooq_auto_generated.tables.User;
 
 
@@ -42,6 +43,11 @@ public class Tables {
      * The table <code>contadordb.transaction</code>.
      */
     public static final Transaction TRANSACTION = Transaction.TRANSACTION;
+
+    /**
+     * The table <code>contadordb.transaction_type</code>.
+     */
+    public static final TransactionType TRANSACTION_TYPE = TransactionType.TRANSACTION_TYPE;
 
     /**
      * The table <code>contadordb.user</code>.

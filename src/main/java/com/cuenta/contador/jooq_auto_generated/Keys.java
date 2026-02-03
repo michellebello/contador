@@ -9,12 +9,14 @@ import com.cuenta.contador.jooq_auto_generated.tables.Credentials;
 import com.cuenta.contador.jooq_auto_generated.tables.FlywaySchemaHistory;
 import com.cuenta.contador.jooq_auto_generated.tables.Session;
 import com.cuenta.contador.jooq_auto_generated.tables.Transaction;
+import com.cuenta.contador.jooq_auto_generated.tables.TransactionType;
 import com.cuenta.contador.jooq_auto_generated.tables.User;
 import com.cuenta.contador.jooq_auto_generated.tables.records.AccountRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.CredentialsRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.FlywaySchemaHistoryRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.SessionRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.TransactionRecord;
+import com.cuenta.contador.jooq_auto_generated.tables.records.TransactionTypeRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.UserRecord;
 
 import org.jooq.ForeignKey;
@@ -42,6 +44,8 @@ public class Keys {
     public static final UniqueKey<FlywaySchemaHistoryRecord> KEY_FLYWAY_SCHEMA_HISTORY_PRIMARY = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("KEY_flyway_schema_history_PRIMARY"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
     public static final UniqueKey<SessionRecord> KEY_SESSION_PRIMARY = Internal.createUniqueKey(Session.SESSION, DSL.name("KEY_session_PRIMARY"), new TableField[] { Session.SESSION.ID }, true);
     public static final UniqueKey<TransactionRecord> KEY_TRANSACTION_PRIMARY = Internal.createUniqueKey(Transaction.TRANSACTION, DSL.name("KEY_transaction_PRIMARY"), new TableField[] { Transaction.TRANSACTION.ID }, true);
+    public static final UniqueKey<TransactionTypeRecord> KEY_TRANSACTION_TYPE_NAME = Internal.createUniqueKey(TransactionType.TRANSACTION_TYPE, DSL.name("KEY_transaction_type_name"), new TableField[] { TransactionType.TRANSACTION_TYPE.NAME }, true);
+    public static final UniqueKey<TransactionTypeRecord> KEY_TRANSACTION_TYPE_PRIMARY = Internal.createUniqueKey(TransactionType.TRANSACTION_TYPE, DSL.name("KEY_transaction_type_PRIMARY"), new TableField[] { TransactionType.TRANSACTION_TYPE.ID }, true);
     public static final UniqueKey<UserRecord> KEY_USER_PRIMARY = Internal.createUniqueKey(User.USER, DSL.name("KEY_user_PRIMARY"), new TableField[] { User.USER.ID }, true);
 
     // -------------------------------------------------------------------------

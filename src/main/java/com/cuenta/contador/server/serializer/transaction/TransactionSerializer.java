@@ -24,7 +24,7 @@ public class TransactionSerializer {
                 transactionJson.getId() == null ? null : TransactionID.of(transactionJson.getId()),
                 AccountID.of(transactionJson.getAccountId()),
                 transactionJson.getName(),
-                transactionJson.getType(),
+                transactionJson.getCategory(),
                 transactionJson.getAmount(),
                 transactionJson.getCreatedOn()
         );
@@ -36,7 +36,7 @@ public class TransactionSerializer {
                 currTransaction.getId(),
                 transactionJson.getAccountId() != null? AccountID.of(transactionJson.getAccountId()) : currTransaction.getAccountId(),
                 transactionJson.getName() != null? transactionJson.getName() : currTransaction.getName(),
-                transactionJson.getType() != null? transactionJson.getType() : currTransaction.getType(),
+                transactionJson.getCategory() != null? transactionJson.getCategory() : currTransaction.getCategory(),
                 transactionJson.getAmount() != null? transactionJson.getAmount() : currTransaction.getAmount(),
                 transactionJson.getCreatedOn() != null? transactionJson.getCreatedOn() : currTransaction.getCreatedOn()
         );
@@ -48,7 +48,20 @@ public class TransactionSerializer {
         transactionJson.setId(transaction.getId().getIntId());
         transactionJson.setAccountId(transaction.getAccountId().getIntId());
         transactionJson.setName(transaction.getName());
-        transactionJson.setType(transaction.getType());
+        transactionJson.setCategory(transaction.getCategory());
+        transactionJson.setAmount(transaction.getAmount());
+        transactionJson.setCreatedOn(transaction.getCreatedOn());
+        return transactionJson;
+    }
+
+    public TransactionJson toJoinedTransactionJson(Transaction transaction){
+        TransactionJson transactionJson = new TransactionJson();
+        transactionJson.setId(transaction.getId().getIntId());
+        transactionJson.setAccountId(transaction.getAccountId().getIntId());
+        transactionJson.setAccountNumber(transaction.getAccountNumber());
+        transactionJson.setName(transaction.getName());
+        transactionJson.setCategory(transaction.getCategory());
+        transactionJson.setType(transaction.getTypeName());
         transactionJson.setAmount(transaction.getAmount());
         transactionJson.setCreatedOn(transaction.getCreatedOn());
         return transactionJson;

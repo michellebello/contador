@@ -13,23 +13,34 @@ public class Transaction {
 
     private String accountNumber;
     private String name;
-    private String type;
+    private String category;
+
+    private String typeName;
     private Double amount;
     private LocalDateTime createdOn;
 
-    public Transaction(TransactionID id, AccountID accountId, String name, String type, Double amount, LocalDateTime createdOn){
+    public Transaction(TransactionID id, AccountID accountId,String accountNumber,  String name, String category, String typeName, Double amount, LocalDateTime createdOn){
         this.id = id;
         this.accountId = accountId;
+        this.accountNumber = accountNumber;
         this.name = name;
-        this.type = type;
+        this.category = category;
+        this.typeName = typeName;
         this.amount = amount;
         this.createdOn = createdOn;
     }
 
-    public Transaction(AccountID accountId, String name, String type, Double amount, LocalDateTime createdOn) {
+    public Transaction(TransactionID id,
+                       AccountID accountId,
+                       String name,
+                       String category,
+//                       Integer typeId,
+                       Double amount,
+                       LocalDateTime createdOn){
+        this.id = id;
         this.accountId = accountId;
         this.name = name;
-        this.type = type;
+        this.category = category;
         this.amount = amount;
         this.createdOn = createdOn;
     }
@@ -50,6 +61,14 @@ public class Transaction {
         this.accountId = accountId;
     }
 
+    public String getAccountNumber(){
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber){
+        this.accountNumber = accountNumber;
+    }
+
     public String getName() {
         return name;
     }
@@ -58,12 +77,21 @@ public class Transaction {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getCategory() {
+        return category;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getTypeName(){
+        return typeName;
+    }
+
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
     }
 
     public Double getAmount() {
@@ -86,12 +114,12 @@ public class Transaction {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Transaction that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(accountId, that.accountId) && Objects.equals(name, that.name) && Objects.equals(type, that.type) && Objects.equals(amount, that.amount) && Objects.equals(createdOn, that.createdOn);
+        return Objects.equals(id, that.id) && Objects.equals(accountId, that.accountId) && Objects.equals(name, that.name) && Objects.equals(category, that.category) && Objects.equals(amount, that.amount) && Objects.equals(createdOn, that.createdOn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, accountId, name, type, amount, createdOn);
+        return Objects.hash(id, accountId, name, category, amount, createdOn);
     }
 
     public static class TransactionID extends ID<Transaction> {

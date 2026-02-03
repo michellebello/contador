@@ -1,6 +1,5 @@
 package com.cuenta.contador.server.json.transaction;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.Instant;
@@ -18,7 +17,9 @@ public class TransactionJson {
     @JsonProperty
     private String name;
     @JsonProperty
-    private String type;
+    private String typeName;
+    @JsonProperty
+    private String category;
     @JsonProperty
     private Double amount;
     @JsonProperty
@@ -42,6 +43,13 @@ public class TransactionJson {
         this.accountId = accountId;
     }
 
+    public String getAccountNumber(){
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber){
+        this.accountNumber = accountNumber;
+    }
 
     public String getName() {
         return name;
@@ -51,12 +59,20 @@ public class TransactionJson {
         this.name = name;
     }
 
-    public String getType() {
-        return type;
+    public String getCategory() {
+        return category;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getTypeName(){
+        return typeName;
+    }
+
+    public void setType(String typeName){
+        this.typeName = typeName;
     }
 
     public Double getAmount() {

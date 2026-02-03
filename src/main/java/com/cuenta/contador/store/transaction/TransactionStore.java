@@ -2,11 +2,9 @@ package com.cuenta.contador.store.transaction;
 
 import com.cuenta.contador.infra.DSLContextProvider;
 import com.cuenta.contador.service.account.Account.AccountID;
-import com.cuenta.contador.service.account.WithAccountNumber;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.jooq_auto_generated.tables.records.TransactionRecord;
-import com.cuenta.contador.service.transaction.TransactionWithAccountNumber;
 import com.cuenta.contador.service.user.User.UserID;
 import org.jooq.*;
 
@@ -14,14 +12,14 @@ import jakarta.inject.Inject;
 import org.jooq.Record;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import static com.cuenta.contador.infra.ID.getIntIds;
 import static com.cuenta.contador.jooq_auto_generated.Tables.ACCOUNT;
 import static com.cuenta.contador.jooq_auto_generated.Tables.TRANSACTION;
-import static java.util.stream.Collectors.toList;
+import static com.cuenta.contador.jooq_auto_generated.Tables.TRANSACTION_TYPE;
 
 public class TransactionStore {
     private final DSLContext db;
@@ -48,20 +46,21 @@ public class TransactionStore {
         return fromRecord(record);
     }
 
-    public List<TransactionWithAccountNumber> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before){
-        var partialQuery = db
-          .select(
-            TRANSACTION.ID,
-            TRANSACTION.ACCOUNT_ID,
-            TRANSACTION.NAME,
-            TRANSACTION.TYPE,
-            TRANSACTION.AMOUNT,
-            TRANSACTION.CREATED_ON,
-            ACCOUNT.NUMBER
-          )
+    public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before){
+        var partialQuery = db.select(
+          TRANSACTION.ID,
+          TRANSACTION.ACCOUNT_ID,
+          ACCOUNT.NAME,
+          ACCOUNT.NUMBER,
+          TRANSACTION.NAME,
+          TRANSACTION.CATEGORY,
+          TRANSACTION_TYPE.NAME,
+          TRANSACTION.AMOUNT,
+          TRANSACTION.CREATED_ON
+        )
           .from(TRANSACTION)
-          .leftJoin(ACCOUNT)
-          .on(TRANSACTION.ACCOUNT_ID.eq(ACCOUNT.ID))
+          .join(ACCOUNT).on(TRANSACTION.ACCOUNT_ID.eq(ACCOUNT.ID))
+          .join(TRANSACTION_TYPE).on(TRANSACTION.TYPE_ID.eq(TRANSACTION_TYPE.ID))
           .where(TRANSACTION.USER_ID.eq(userId.getIntId()));
 
         if (!ids.isEmpty()){
@@ -75,24 +74,16 @@ public class TransactionStore {
             partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
         }
 
-        return partialQuery.fetch()
-          .stream()
-          .map(record -> new TransactionWithAccountNumber(
-            TransactionID.of(record.get(TRANSACTION.ID)),
-            AccountID.of(record.get(TRANSACTION.ACCOUNT_ID)),
-            record.get(TRANSACTION.NAME),
-            record.get(TRANSACTION.TYPE),
-            record.get(TRANSACTION.AMOUNT),
-            record.get(TRANSACTION.CREATED_ON),
-            record.get(ACCOUNT.NUMBER)
-          ))
-          .toList();
+        return partialQuery
+          .orderBy(TRANSACTION.CREATED_ON.desc())
+          .fetch()
+          .map(this::fromJoinedRecord);
     }
 
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {
         db.update(TRANSACTION)
                 .set(TRANSACTION.NAME, transaction.getName())
-                .set(TRANSACTION.TYPE, transaction.getType())
+                .set(TRANSACTION.CATEGORY, transaction.getCategory())
                 .set(TRANSACTION.AMOUNT, transaction.getAmount())
                 .set(TRANSACTION.CREATED_ON, transaction.getCreatedOn())
                 .where(TRANSACTION.ID.eq(transactionId.getIntId()))
@@ -112,10 +103,30 @@ public class TransactionStore {
                 TransactionID.of(record.getId()),
                 AccountID.of(record.getAccountId()),
                 record.getName(),
-                record.getType(),
+                record.getCategory(),
                 record.getAmount(),
                 record.getCreatedOn()
         );
+    }
+
+    private Transaction fromJoinedRecord(Record record) {
+        String last4AccountNum = record.get(ACCOUNT.NUMBER).substring(record.get(ACCOUNT.NUMBER).length()-4);
+        String accountName = record.get(ACCOUNT.NAME);
+        String formattedAccountNum = accountName + " " + last4AccountNum;
+        System.out.println("DEBUG: accountNumber -> " + formattedAccountNum);
+        System.out.println("DEBUG: typeName -> " + record.get(TRANSACTION_TYPE.NAME));
+
+        return new Transaction(
+          TransactionID.of(record.get(TRANSACTION.ID)),
+          AccountID.of(record.get(TRANSACTION.ACCOUNT_ID)),
+          formattedAccountNum,
+          record.get(TRANSACTION.NAME),
+          record.get(TRANSACTION.CATEGORY),
+          record.get(TRANSACTION_TYPE.NAME),
+          record.get(TRANSACTION.AMOUNT),
+          record.get(TRANSACTION.CREATED_ON)
+        );
+
     }
 
     private TransactionRecord toRecord(UserID userId, Transaction transaction) {
@@ -123,7 +134,7 @@ public class TransactionStore {
         record.setUserId(userId.getIntId());
         record.setAccountId(transaction.getAccountId().getIntId());
         record.setName(transaction.getName());
-        record.setType(transaction.getType());
+        record.setCategory(transaction.getCategory());
         record.setAmount(transaction.getAmount());
         record.setCreatedOn(transaction.getCreatedOn());
         return record;

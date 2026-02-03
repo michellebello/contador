@@ -229,6 +229,7 @@
                             <inputCatalog>public</inputCatalog>
                               -->
                             <inputSchema>contadordb</inputSchema>
+                            <includes>.*</includes>
                         </database>
                         <target>
                             <packageName>com.cuenta.contador.jooq-auto-generated</packageName>

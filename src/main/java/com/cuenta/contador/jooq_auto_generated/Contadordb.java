@@ -9,6 +9,7 @@ import com.cuenta.contador.jooq_auto_generated.tables.Credentials;
 import com.cuenta.contador.jooq_auto_generated.tables.FlywaySchemaHistory;
 import com.cuenta.contador.jooq_auto_generated.tables.Session;
 import com.cuenta.contador.jooq_auto_generated.tables.Transaction;
+import com.cuenta.contador.jooq_auto_generated.tables.TransactionType;
 import com.cuenta.contador.jooq_auto_generated.tables.User;
 
 import java.util.Arrays;
@@ -58,6 +59,11 @@ public class Contadordb extends SchemaImpl {
     public final Transaction TRANSACTION = Transaction.TRANSACTION;
 
     /**
+     * The table <code>contadordb.transaction_type</code>.
+     */
+    public final TransactionType TRANSACTION_TYPE = TransactionType.TRANSACTION_TYPE;
+
+    /**
      * The table <code>contadordb.user</code>.
      */
     public final User USER = User.USER;
@@ -83,6 +89,7 @@ public class Contadordb extends SchemaImpl {
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Session.SESSION,
             Transaction.TRANSACTION,
+            TransactionType.TRANSACTION_TYPE,
             User.USER
         );
     }
