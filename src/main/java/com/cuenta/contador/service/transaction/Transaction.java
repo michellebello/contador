@@ -19,7 +19,7 @@ public class Transaction {
     private Double amount;
     private LocalDateTime createdOn;
 
-    public Transaction(TransactionID id, AccountID accountId,String accountNumber,  String name, String category, String typeName, Double amount, LocalDateTime createdOn){
+    public Transaction(TransactionID id, AccountID accountId, String accountNumber, String name, String category, String typeName, Double amount, LocalDateTime createdOn){
         this.id = id;
         this.accountId = accountId;
         this.accountNumber = accountNumber;
@@ -34,9 +34,19 @@ public class Transaction {
                        AccountID accountId,
                        String name,
                        String category,
-//                       Integer typeId,
+                      String typeName,
                        Double amount,
                        LocalDateTime createdOn){
+        this.id = id;
+        this.accountId = accountId;
+        this.name = name;
+        this.category = category;
+        this.typeName = typeName;
+        this.amount = amount;
+        this.createdOn = createdOn;
+    }
+
+    public Transaction(TransactionID id, AccountID accountId, String name, String category, Double amount, LocalDateTime createdOn) {
         this.id = id;
         this.accountId = accountId;
         this.name = name;
@@ -44,6 +54,7 @@ public class Transaction {
         this.amount = amount;
         this.createdOn = createdOn;
     }
+
 
     public TransactionID getId() {
         return id;

@@ -33,7 +33,7 @@ public class TransactionResource {
     public Response storeTransaction(TransactionJson transactionJson){
         Transaction transaction = transactionSerializer.fromTransactionJson(transactionJson);
         transactionService.storeTransaction(transaction);
-        return Response.ok(transaction).build();
+        return Response.status(Response.Status.CREATED).build();
     }
 
     @GET
@@ -41,7 +41,7 @@ public class TransactionResource {
     public Response getTransaction(@PathParam(TRANSACTION_ID) int transactionId){
         Transaction transaction = transactionService.getTransaction(TransactionID.of(transactionId));
         if (transaction != null){
-            TransactionJson transactionJson = transactionSerializer.toTransactionJson(transaction);
+            TransactionJson transactionJson = transactionSerializer.toJoinedTransactionJson(transaction);
             return Response.ok(transactionJson).build();
         } else {
             String message = "Transaction with id " + transactionId + " not found";

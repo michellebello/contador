@@ -24,8 +24,8 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public void storeTransaction(Transaction transaction){
         UserID userId = UserContext.getUserID();
-        accountService.updateAccountBalance(transaction.getAccountId(), transaction.getAmount());
-        transactionStore.storeTransaction(userId,transaction);
+        accountService.updateAccountBalance(transaction.getAccountId(), transaction.getAmount(), transaction.getTypeName());
+        transactionStore.storeTransaction(userId, transaction);
     }
 
     @Override

@@ -5,13 +5,13 @@ import com.cuenta.contador.infra.ID;
 import com.cuenta.contador.jooq_auto_generated.tables.records.AccountRecord;
 import com.cuenta.contador.service.account.Account;
 import com.cuenta.contador.service.account.Account.AccountID;
+import com.cuenta.contador.service.account.AccountNumber;
 import com.cuenta.contador.service.user.User.UserID;
 import org.jooq.DSLContext;
 import org.jooq.SelectConditionStep;
 
 import jakarta.inject.Inject;
 import org.jooq.impl.DSL;
-import org.jooq.impl.QOM;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -61,11 +61,17 @@ public class AccountStore {
         return Arrays.stream(partialQuery.fetchArray()).map(this::fromRecord).toList();
     }
 
-    public List<String> getAccountNumbers(UserID userId) {
-        return db.select(ACCOUNT.NUMBER)
-                .from(ACCOUNT)
-                .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
-                .fetchInto(String.class);
+    public List<AccountNumber> getAccountNumbers(UserID userId) {
+        return db.select(ACCOUNT.ID, ACCOUNT.NAME, ACCOUNT.NUMBER)
+          .from(ACCOUNT)
+          .where(ACCOUNT.USER_ID.eq(userId.getIntId()))
+          .fetch(record -> {
+              String number = record.get(ACCOUNT.NUMBER);
+              return new AccountNumber(
+                record.get(ACCOUNT.ID),
+                record.get(ACCOUNT.NAME) + " " + number.substring(number.length()-4)
+              );
+          });
     }
 
     public Map<String, BigDecimal> getBalanceByAccountType(UserID userId){
@@ -116,8 +122,12 @@ public class AccountStore {
                 record.getBalance());
     }
 
-    public void updateAccountBalance(UserID userId, AccountID accountId, Double amount) {
+    public void updateAccountBalance(UserID userId, AccountID accountId, Double amount, String transactionType) {
         System.out.println("Updating account " + accountId + " with amount " + amount);
-        db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+        if (transactionType.equals("Expense")){
+            db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.minus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+        } else {
+            db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+        }
     }
 }

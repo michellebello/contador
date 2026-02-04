@@ -11,7 +11,6 @@ public class TransactionJson {
     private Integer id;
     @JsonProperty
     private Integer accountId;
-
     @JsonProperty
     private String accountNumber;
     @JsonProperty

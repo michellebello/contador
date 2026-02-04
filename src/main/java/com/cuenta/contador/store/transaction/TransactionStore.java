@@ -30,21 +30,46 @@ public class TransactionStore {
     }
 
     public void storeTransaction(UserID userId, Transaction transaction){
-        TransactionRecord record = toRecord(userId, transaction);
-        db.insertInto(TRANSACTION).set(record).execute();
+        String transactionType = transaction.getTypeName();
+        Integer typeId = db.select(TRANSACTION_TYPE.ID).from(TRANSACTION_TYPE).where(TRANSACTION_TYPE.NAME.eq(transactionType)).execute();
+
+        db.insertInto(TRANSACTION)
+          .set(TRANSACTION.USER_ID, userId.getIntId())
+          .set(TRANSACTION.ACCOUNT_ID, transaction.getAccountId().getIntId())
+          .set(TRANSACTION.NAME, transaction.getName())
+          .set(TRANSACTION.CATEGORY, transaction.getCategory())
+          .set(TRANSACTION.TYPE_ID, typeId)
+          .set(TRANSACTION.AMOUNT, transaction.getAmount())
+          .set(TRANSACTION.CREATED_ON, transaction.getCreatedOn())
+          .execute();
     }
 
     public Transaction getTransaction(UserID userId, TransactionID id) {
-        TransactionRecord record = db
-                .selectFrom(TRANSACTION)
-                .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
-                .and(TRANSACTION.ID.eq(id.getIntId()))
-                .fetchOne();
-        if (record == null){
-            return null;
-        }
-        return fromRecord(record);
+        var record = db.select(
+            TRANSACTION.ID,
+            TRANSACTION.USER_ID,
+            TRANSACTION.ACCOUNT_ID,
+            ACCOUNT.NAME,
+            ACCOUNT.NUMBER,
+            TRANSACTION.NAME,
+            TRANSACTION.CATEGORY,
+            TRANSACTION_TYPE.NAME,
+            TRANSACTION.AMOUNT,
+            TRANSACTION.CREATED_ON
+          )
+          .from(TRANSACTION)
+          .join(ACCOUNT).on(TRANSACTION.ACCOUNT_ID.eq(ACCOUNT.ID))
+          .join(TRANSACTION_TYPE).on(TRANSACTION.TYPE_ID.eq(TRANSACTION_TYPE.ID))
+          .where(
+            TRANSACTION.USER_ID.eq(userId.getIntId())
+              .and(TRANSACTION.ID.eq(id.getIntId()))
+          )
+          .fetchOne();
+        if (record == null) return null;
+
+        return fromJoinedRecord(record);
     }
+
 
     public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before){
         var partialQuery = db.select(
@@ -113,8 +138,6 @@ public class TransactionStore {
         String last4AccountNum = record.get(ACCOUNT.NUMBER).substring(record.get(ACCOUNT.NUMBER).length()-4);
         String accountName = record.get(ACCOUNT.NAME);
         String formattedAccountNum = accountName + " " + last4AccountNum;
-        System.out.println("DEBUG: accountNumber -> " + formattedAccountNum);
-        System.out.println("DEBUG: typeName -> " + record.get(TRANSACTION_TYPE.NAME));
 
         return new Transaction(
           TransactionID.of(record.get(TRANSACTION.ID)),

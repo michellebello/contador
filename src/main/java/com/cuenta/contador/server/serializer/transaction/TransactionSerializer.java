@@ -25,6 +25,7 @@ public class TransactionSerializer {
                 AccountID.of(transactionJson.getAccountId()),
                 transactionJson.getName(),
                 transactionJson.getCategory(),
+                transactionJson.getTypeName(),
                 transactionJson.getAmount(),
                 transactionJson.getCreatedOn()
         );

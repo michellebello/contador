@@ -32,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<String> getAccountNumbers() {
+    public List<AccountNumber> getAccountNumbers() {
         UserID userId = UserContext.getUserID();
         return accountStore.getAccountNumbers(userId);
     }
@@ -67,9 +67,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updateAccountBalance(AccountID accountId, Double amount){
+    public void updateAccountBalance(AccountID accountId, Double amount, String transactionType){
         UserID userId = UserContext.getUserID();
-        accountStore.updateAccountBalance(userId, accountId, amount);
+        accountStore.updateAccountBalance(userId, accountId, amount, transactionType);
     }
 
 

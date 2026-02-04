@@ -10,7 +10,7 @@ public interface AccountService {
 
     List<Account> getAccounts(List<AccountID> ids);
 
-    List<String> getAccountNumbers();
+    List<AccountNumber> getAccountNumbers();
 
     Map<String, BigDecimal> getBalanceByAccountType();
 
@@ -18,5 +18,5 @@ public interface AccountService {
     void createAccount(Account account);
     void deleteAccount(AccountID id);
     void updateAccount(AccountID accountId, Account account);
-    void updateAccountBalance(AccountID accountId, Double amount);
+    void updateAccountBalance(AccountID accountId, Double amount, String transactionType);
 }
