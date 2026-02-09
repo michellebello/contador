@@ -123,6 +123,11 @@
             <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>annotations</artifactId>
+            <version>9.0.4</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -229,10 +234,16 @@
                             <inputCatalog>public</inputCatalog>
                               -->
                             <inputSchema>contadordb</inputSchema>
-                            <includes>.*</includes>
+                            <forcedTypes>
+                                <forcedType>
+                                    <name>BOOLEAN</name>
+                                    <includeTypes>TINYINT\(1\)</includeTypes>
+                                    <converter>com.cuenta.contador.infra.BooleanConverter</converter>
+                                </forcedType>
+                            </forcedTypes>
                         </database>
                         <target>
-                            <packageName>com.cuenta.contador.jooq-auto-generated</packageName>
+                            <packageName>com.cuenta.contador.jooq_auto_generated</packageName>
                             <directory>src/main/java</directory>
                         </target>
                     </generator>

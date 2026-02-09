@@ -24,6 +24,7 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public void storeTransaction(Transaction transaction){
         UserID userId = UserContext.getUserID();
+        System.out.println("transaction isTaxable sent  " + transaction.getIsTaxable());
         accountService.updateAccountBalance(transaction.getAccountId(), transaction.getAmount(), transaction.getTypeName());
         transactionStore.storeTransaction(userId, transaction);
     }
@@ -43,6 +44,23 @@ public class TransactionServiceImpl implements TransactionService{
     @Override
     public void updateTransaction(TransactionID transactionId, Transaction transaction){
         UserID userId = UserContext.getUserID();
+        if (transaction.getAmount() != null){
+            double prev = transactionStore.getTransactionAmount(userId, transactionId);
+            String type = transactionStore.getTransactionType(userId, transactionId);
+            double difference = (prev - transaction.getAmount());
+            if (type.equals("Expense")){
+              if (difference >= 0) {
+                  difference *=-1;
+                  accountService.updateAccountBalance(transaction.getAccountId(), difference, type);
+              } else {
+                accountService.updateAccountBalance(transaction.getAccountId(), difference, type);
+              }
+            } else {
+
+            }
+
+
+        }
         transactionStore.updateTransaction(userId, transactionId, transaction);
     }
     @Override

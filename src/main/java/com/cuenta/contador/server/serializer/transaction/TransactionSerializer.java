@@ -27,7 +27,8 @@ public class TransactionSerializer {
                 transactionJson.getCategory(),
                 transactionJson.getTypeName(),
                 transactionJson.getAmount(),
-                transactionJson.getCreatedOn()
+                transactionJson.getCreatedOn(),
+                transactionJson.getIsTaxable()
         );
     }
 
@@ -39,7 +40,8 @@ public class TransactionSerializer {
                 transactionJson.getName() != null? transactionJson.getName() : currTransaction.getName(),
                 transactionJson.getCategory() != null? transactionJson.getCategory() : currTransaction.getCategory(),
                 transactionJson.getAmount() != null? transactionJson.getAmount() : currTransaction.getAmount(),
-                transactionJson.getCreatedOn() != null? transactionJson.getCreatedOn() : currTransaction.getCreatedOn()
+                transactionJson.getCreatedOn() != null? transactionJson.getCreatedOn() : currTransaction.getCreatedOn(),
+                transactionJson.getIsTaxable() != null? transactionJson.getIsTaxable() : currTransaction.getIsTaxable()
         );
     }
 
@@ -52,6 +54,7 @@ public class TransactionSerializer {
         transactionJson.setCategory(transaction.getCategory());
         transactionJson.setAmount(transaction.getAmount());
         transactionJson.setCreatedOn(transaction.getCreatedOn());
+        transactionJson.setIsTaxable(transaction.getIsTaxable());
         return transactionJson;
     }
 
@@ -65,6 +68,7 @@ public class TransactionSerializer {
         transactionJson.setType(transaction.getTypeName());
         transactionJson.setAmount(transaction.getAmount());
         transactionJson.setCreatedOn(transaction.getCreatedOn());
+        transactionJson.setIsTaxable(transaction.getIsTaxable());
         return transactionJson;
     }
 }

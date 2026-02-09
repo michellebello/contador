@@ -102,7 +102,7 @@ public class FlywaySchemaHistory extends TableImpl<FlywaySchemaHistoryRecord> {
     /**
      * The column <code>contadordb.flyway_schema_history.success</code>.
      */
-    public final TableField<FlywaySchemaHistoryRecord, Byte> SUCCESS = createField(DSL.name("success"), SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<FlywaySchemaHistoryRecord, Boolean> SUCCESS = createField(DSL.name("success"), SQLDataType.BOOLEAN.nullable(false), this, "");
 
     private FlywaySchemaHistory(Name alias, Table<FlywaySchemaHistoryRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);

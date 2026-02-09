@@ -26,6 +26,9 @@ public class TransactionJson {
 //    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'")
     private LocalDateTime createdOn;
 
+    @JsonProperty
+    private Boolean isTaxable;
+
     public Integer getId() {
         return id;
     }
@@ -88,5 +91,13 @@ public class TransactionJson {
 
     public void setCreatedOn(LocalDateTime createdOn) {
         this.createdOn = createdOn;
+    }
+
+    public Boolean getIsTaxable(){
+        return isTaxable;
+    }
+
+    public void setIsTaxable(Boolean isTaxable){
+        this.isTaxable = isTaxable;
     }
 }

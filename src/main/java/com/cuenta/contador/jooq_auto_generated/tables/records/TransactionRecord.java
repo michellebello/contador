@@ -132,6 +132,20 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> {
         return (Integer) get(7);
     }
 
+    /**
+     * Setter for <code>contadordb.transaction.is_taxable</code>.
+     */
+    public void setIsTaxable(Boolean value) {
+        set(8, value);
+    }
+
+    /**
+     * Getter for <code>contadordb.transaction.is_taxable</code>.
+     */
+    public Boolean getIsTaxable() {
+        return (Boolean) get(8);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -155,7 +169,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> {
     /**
      * Create a detached, initialised TransactionRecord
      */
-    public TransactionRecord(Integer id, Integer userId, String name, String category, Double amount, Integer accountId, LocalDateTime createdOn, Integer typeId) {
+    public TransactionRecord(Integer id, Integer userId, String name, String category, Double amount, Integer accountId, LocalDateTime createdOn, Integer typeId, Boolean isTaxable) {
         super(Transaction.TRANSACTION);
 
         setId(id);
@@ -166,6 +180,7 @@ public class TransactionRecord extends UpdatableRecordImpl<TransactionRecord> {
         setAccountId(accountId);
         setCreatedOn(createdOn);
         setTypeId(typeId);
+        setIsTaxable(isTaxable);
         resetChangedOnNotNull();
     }
 }

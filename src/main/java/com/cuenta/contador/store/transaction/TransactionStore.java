@@ -11,8 +11,8 @@ import org.jooq.*;
 import jakarta.inject.Inject;
 import org.jooq.Record;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -29,10 +29,11 @@ public class TransactionStore {
         this.db = dbProvider.get();
     }
 
+
     public void storeTransaction(UserID userId, Transaction transaction){
         String transactionType = transaction.getTypeName();
+        System.out.println("transaction.isTaxable sent equals " + transaction.getIsTaxable());
         Integer typeId = db.select(TRANSACTION_TYPE.ID).from(TRANSACTION_TYPE).where(TRANSACTION_TYPE.NAME.eq(transactionType)).execute();
-
         db.insertInto(TRANSACTION)
           .set(TRANSACTION.USER_ID, userId.getIntId())
           .set(TRANSACTION.ACCOUNT_ID, transaction.getAccountId().getIntId())
@@ -41,6 +42,7 @@ public class TransactionStore {
           .set(TRANSACTION.TYPE_ID, typeId)
           .set(TRANSACTION.AMOUNT, transaction.getAmount())
           .set(TRANSACTION.CREATED_ON, transaction.getCreatedOn())
+          .set(TRANSACTION.IS_TAXABLE, transaction.getIsTaxable())
           .execute();
     }
 
@@ -55,7 +57,8 @@ public class TransactionStore {
             TRANSACTION.CATEGORY,
             TRANSACTION_TYPE.NAME,
             TRANSACTION.AMOUNT,
-            TRANSACTION.CREATED_ON
+            TRANSACTION.CREATED_ON,
+            TRANSACTION.IS_TAXABLE
           )
           .from(TRANSACTION)
           .join(ACCOUNT).on(TRANSACTION.ACCOUNT_ID.eq(ACCOUNT.ID))
@@ -81,7 +84,8 @@ public class TransactionStore {
           TRANSACTION.CATEGORY,
           TRANSACTION_TYPE.NAME,
           TRANSACTION.AMOUNT,
-          TRANSACTION.CREATED_ON
+          TRANSACTION.CREATED_ON,
+          TRANSACTION.IS_TAXABLE
         )
           .from(TRANSACTION)
           .join(ACCOUNT).on(TRANSACTION.ACCOUNT_ID.eq(ACCOUNT.ID))
@@ -105,12 +109,34 @@ public class TransactionStore {
           .map(this::fromJoinedRecord);
     }
 
+    public String getTransactionType(UserID userId, TransactionID transactionId) {
+        return db.select(TRANSACTION_TYPE.NAME)
+          .from(TRANSACTION_TYPE)
+          .join(TRANSACTION)
+          .on(TRANSACTION.TYPE_ID.eq(TRANSACTION_TYPE.ID))
+          .where(TRANSACTION.ID.eq(transactionId.getIntId()))
+          .and(TRANSACTION.USER_ID.eq(userId.getIntId()))
+          .fetchOne(
+            r-> r.get(TRANSACTION_TYPE.NAME)
+          );
+    }
+
+    public double getTransactionAmount(UserID userId, TransactionID transactionId){
+        Double amount =  db.select(TRANSACTION.AMOUNT)
+          .from(TRANSACTION)
+          .where(TRANSACTION.ID.eq(transactionId.getIntId()))
+          .and(TRANSACTION.USER_ID.eq(userId.getIntId()))
+          .fetchOne(TRANSACTION.AMOUNT);
+        return amount != null ? amount : 0.0;
+    }
+
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {
-        db.update(TRANSACTION)
+        var partialQuery = db.update(TRANSACTION)
                 .set(TRANSACTION.NAME, transaction.getName())
                 .set(TRANSACTION.CATEGORY, transaction.getCategory())
                 .set(TRANSACTION.AMOUNT, transaction.getAmount())
                 .set(TRANSACTION.CREATED_ON, transaction.getCreatedOn())
+                .set(TRANSACTION.IS_TAXABLE, transaction.getIsTaxable())
                 .where(TRANSACTION.ID.eq(transactionId.getIntId()))
                 .and(TRANSACTION.USER_ID.eq(userId.getIntId()))
                 .execute();
@@ -123,16 +149,6 @@ public class TransactionStore {
                 .execute();
     }
 
-    private Transaction fromRecord(TransactionRecord record){
-        return new Transaction(
-                TransactionID.of(record.getId()),
-                AccountID.of(record.getAccountId()),
-                record.getName(),
-                record.getCategory(),
-                record.getAmount(),
-                record.getCreatedOn()
-        );
-    }
 
     private Transaction fromJoinedRecord(Record record) {
         String last4AccountNum = record.get(ACCOUNT.NUMBER).substring(record.get(ACCOUNT.NUMBER).length()-4);
@@ -147,7 +163,8 @@ public class TransactionStore {
           record.get(TRANSACTION.CATEGORY),
           record.get(TRANSACTION_TYPE.NAME),
           record.get(TRANSACTION.AMOUNT),
-          record.get(TRANSACTION.CREATED_ON)
+          record.get(TRANSACTION.CREATED_ON),
+          record.get(TRANSACTION.IS_TAXABLE)
         );
 
     }

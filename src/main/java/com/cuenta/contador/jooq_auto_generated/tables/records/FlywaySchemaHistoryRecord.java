@@ -149,15 +149,15 @@ public class FlywaySchemaHistoryRecord extends UpdatableRecordImpl<FlywaySchemaH
     /**
      * Setter for <code>contadordb.flyway_schema_history.success</code>.
      */
-    public void setSuccess(Byte value) {
+    public void setSuccess(Boolean value) {
         set(9, value);
     }
 
     /**
      * Getter for <code>contadordb.flyway_schema_history.success</code>.
      */
-    public Byte getSuccess() {
-        return (Byte) get(9);
+    public Boolean getSuccess() {
+        return (Boolean) get(9);
     }
 
     // -------------------------------------------------------------------------
@@ -183,7 +183,7 @@ public class FlywaySchemaHistoryRecord extends UpdatableRecordImpl<FlywaySchemaH
     /**
      * Create a detached, initialised FlywaySchemaHistoryRecord
      */
-    public FlywaySchemaHistoryRecord(Integer installedRank, String version, String description, String type, String script, Integer checksum, String installedBy, LocalDateTime installedOn, Integer executionTime, Byte success) {
+    public FlywaySchemaHistoryRecord(Integer installedRank, String version, String description, String type, String script, Integer checksum, String installedBy, LocalDateTime installedOn, Integer executionTime, Boolean success) {
         super(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY);
 
         setInstalledRank(installedRank);

@@ -101,6 +101,11 @@ public class Transaction extends TableImpl<TransactionRecord> {
      */
     public final TableField<TransactionRecord, Integer> TYPE_ID = createField(DSL.name("type_id"), SQLDataType.INTEGER, this, "");
 
+    /**
+     * The column <code>contadordb.transaction.is_taxable</code>.
+     */
+    public final TableField<TransactionRecord, Boolean> IS_TAXABLE = createField(DSL.name("is_taxable"), SQLDataType.BOOLEAN.defaultValue(DSL.inline("0", SQLDataType.BOOLEAN)), this, "");
+
     private Transaction(Name alias, Table<TransactionRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }
