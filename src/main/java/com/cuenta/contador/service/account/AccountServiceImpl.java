@@ -67,10 +67,14 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public void updateAccountBalance(AccountID accountId, Double amount, String transactionType){
+    public void updateAccountBalanceFromUpdate(AccountID accountId, Double amount, String transactionType){
         UserID userId = UserContext.getUserID();
-        accountStore.updateAccountBalance(userId, accountId, amount, transactionType);
+        accountStore.updateAccountBalanceFromUpdate(userId, accountId, amount, transactionType);
     }
 
-
+    @Override
+    public void updateAccountBalanceFromDelete(AccountID accountId, Double amount, String transactionType){
+        UserID userId = UserContext.getUserID();
+        accountStore.updateAccountBalanceFromDelete(userId, accountId, amount, transactionType);
+    }
 }

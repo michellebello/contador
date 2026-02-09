@@ -122,14 +122,16 @@ public class AccountStore {
                 record.getBalance());
     }
 
-    public void updateAccountBalance(UserID userId, AccountID accountId, Double amount, String transactionType) {
+    public void updateAccountBalanceFromUpdate(UserID userId, AccountID accountId, Double amount, String transactionType) {
         String accountType = db.select(ACCOUNT.TYPE)
           .from(ACCOUNT)
           .where(ACCOUNT.ID.eq(accountId.getIntId()))
           .and(ACCOUNT.USER_ID.eq(userId.getIntId()))
           .fetchOne(ACCOUNT.TYPE);
 
-      if (accountType.equals("Credit")) {
+        assert accountType != null;
+
+        if (accountType.equals("Credit") || accountType.equals("Debit")) {
             if (transactionType.equals("Expense")){
                 db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
             } else {
@@ -142,5 +144,30 @@ public class AccountStore {
                 db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
             }
         }
+    }
+
+
+        public void updateAccountBalanceFromDelete(UserID userId, AccountID accountId, Double amount, String transactionType) {
+            String accountType = db.select(ACCOUNT.TYPE)
+              .from(ACCOUNT)
+              .where(ACCOUNT.ID.eq(accountId.getIntId()))
+              .and(ACCOUNT.USER_ID.eq(userId.getIntId()))
+              .fetchOne(ACCOUNT.TYPE);
+
+            assert accountType != null;
+
+            if (accountType.equals("Credit") || accountType.equals("Debit")) {
+                if (transactionType.equals("Expense")){
+                    db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.minus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+                } else {
+                    db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+                }
+            } else {
+                if (transactionType.equals("Expense")){
+                    db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+                } else {
+                    db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.minus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+                }
+            }
     }
 }

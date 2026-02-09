@@ -32,7 +32,6 @@ public class TransactionStore {
 
     public void storeTransaction(UserID userId, Transaction transaction){
         String transactionType = transaction.getTypeName();
-        System.out.println("transaction.isTaxable sent equals " + transaction.getIsTaxable());
         Integer typeId = db.select(TRANSACTION_TYPE.ID).from(TRANSACTION_TYPE).where(TRANSACTION_TYPE.NAME.eq(transactionType)).execute();
         db.insertInto(TRANSACTION)
           .set(TRANSACTION.USER_ID, userId.getIntId())
@@ -107,6 +106,15 @@ public class TransactionStore {
           .orderBy(TRANSACTION.CREATED_ON.desc())
           .fetch()
           .map(this::fromJoinedRecord);
+    }
+
+    public AccountID getTransactionAccountId(UserID userId, TransactionID transactionId){
+        Integer accountId = db.select(TRANSACTION.ACCOUNT_ID)
+          .from(TRANSACTION)
+          .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
+          .and(TRANSACTION.ID.eq(transactionId.getIntId()))
+          .fetchOne(TRANSACTION.ACCOUNT_ID);
+        return accountId != null ? AccountID.of(accountId) : null;
     }
 
     public String getTransactionType(UserID userId, TransactionID transactionId) {
