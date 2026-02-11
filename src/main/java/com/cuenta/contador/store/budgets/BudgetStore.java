@@ -3,6 +3,7 @@ package com.cuenta.contador.store.budgets;
 import com.cuenta.contador.infra.DSLContextProvider;
 import com.cuenta.contador.jooq_auto_generated.tables.records.BudgetAllocationRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.BudgetRecord;
+import com.cuenta.contador.service.budget.Budget.BudgetID;
 import com.cuenta.contador.service.budget.Budget;
 import com.cuenta.contador.service.budget.BudgetAllocation;
 import com.cuenta.contador.service.user.User.UserID;
@@ -19,24 +20,32 @@ import static com.cuenta.contador.jooq_auto_generated.Tables.BUDGET_ALLOCATION;
 public class BudgetStore {
   private final DSLContext db;
 
+  @Inject
   public BudgetStore(DSLContextProvider dbProvider){
     this.db = dbProvider.get();
   }
 
-  @Inject
-  public void storeBudget(UserID userId, Budget budget, List<BudgetAllocation> allocations){
+  public boolean budgetExists(BudgetID budgetId){
+    return db.selectFrom(BUDGET).where(BUDGET.ID.eq(budgetId.getIntId())).fetchOne() != null;
+  }
+
+  public void storeBudget(UserID userId, Budget budget){
     db.insertInto(BUDGET)
       .set(BUDGET.USER_ID, userId.getIntId())
       .set(BUDGET.MONTH_NUM, budget.getMonthNumber())
       .set(BUDGET.YEAR, budget.getYear())
       .set(BUDGET.TOTAL_AMOUNT, budget.getTotalAmount())
       .execute();
+  }
 
-    // insert budget_allocations here
+  public void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations){
+    if (!budgetExists(budgetId)){
+      throw new Error("BudgetId does not exists in db");
+    }
     List<BudgetAllocationRecord> records = new ArrayList<>();
-    allocations.forEach(allocation -> {
+    budgetAllocations.forEach(allocation -> {
       BudgetAllocationRecord record = db.newRecord(BUDGET_ALLOCATION);
-      record.set(BUDGET_ALLOCATION.BUDGET_ID, allocation.getBudgetId().getIntId());
+      record.set(BUDGET_ALLOCATION.BUDGET_ID, budgetId.getIntId());
       record.set(BUDGET_ALLOCATION.CATEGORY, allocation.getCategory());
       record.set(BUDGET_ALLOCATION.AMOUNT, allocation.getAmount());
       records.add(record);
@@ -53,6 +62,12 @@ public class BudgetStore {
     return record != null? fromRecord(record): null;
   }
 
+  public List<BudgetAllocation> getBudgetAllocations(Budget.BudgetID budgetID){
+    return db.selectFrom(BUDGET_ALLOCATION)
+      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetID.getIntId()))
+      .fetchInto(BudgetAllocation.class);
+  }
+
 //  public Budget updateBudget()
 //
 //  public void deleteBudget(){}
@@ -60,7 +75,6 @@ public class BudgetStore {
   private Budget fromRecord(BudgetRecord budgetRecord){
     return new Budget(
       Budget.BudgetID.of(budgetRecord.get(BUDGET.ID)),
-      UserID.of(budgetRecord.get(BUDGET.USER_ID)),
       budgetRecord.get(BUDGET.YEAR),
       budgetRecord.get(BUDGET.MONTH_NUM),
       budgetRecord.get(BUDGET.TOTAL_AMOUNT)

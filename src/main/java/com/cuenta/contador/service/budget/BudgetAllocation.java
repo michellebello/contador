@@ -5,19 +5,11 @@ public class BudgetAllocation {
   private String category;
   private Double amount;
 
-  public BudgetAllocation(Budget.BudgetID budgetId, String category, Double amount) {
-    this.budgetId = budgetId;
+  public BudgetAllocation(String category, Double amount) {
     this.category = category;
     this.amount = amount;
   }
 
-  public Budget.BudgetID getBudgetId() {
-    return budgetId;
-  }
-
-  public void setBudgetId(Budget.BudgetID budgetId) {
-    this.budgetId = budgetId;
-  }
 
   public String getCategory() {
     return category;

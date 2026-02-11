@@ -1,14 +1,10 @@
 package com.cuenta.contador.server.json.budget;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.util.List;
 
 public class BudgetJson {
   @JsonProperty
   private Integer id;
-
-  @JsonProperty
-  private Integer userId;
 
   @JsonProperty
   private Integer year;
@@ -19,24 +15,12 @@ public class BudgetJson {
   @JsonProperty
   private Double totalAmount;
 
-  @JsonProperty
-  private List<BudgetAllocationJson> budgetAllocationJsonList;
-
-
   public Integer getId() {
     return id;
   }
 
   public void setId(Integer id) {
     this.id = id;
-  }
-
-  public Integer getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Integer userId) {
-    this.userId = userId;
   }
 
   public Integer getYear() {
@@ -63,11 +47,4 @@ public class BudgetJson {
     this.totalAmount = totalAmount;
   }
 
-  public List<BudgetAllocationJson> getBudgetAllocationJsonList() {
-    return budgetAllocationJsonList;
-  }
-
-  public void setBudgetAllocationJsonList(List<BudgetAllocationJson> budgetAllocationJsonList) {
-    this.budgetAllocationJsonList = budgetAllocationJsonList;
-  }
 }

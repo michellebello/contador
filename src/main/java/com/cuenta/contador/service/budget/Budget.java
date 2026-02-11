@@ -6,14 +6,12 @@ import com.cuenta.contador.service.user.User.UserID;
 
 public class Budget {
   private BudgetID budgetId;
-  private UserID userId;
   private int year;
   private byte monthNumber;
   private Double totalAmount;
 
-  public Budget(BudgetID budgetId, UserID userId, int year, byte monthNumber, Double totalAmount) {
+  public Budget(BudgetID budgetId, int year, byte monthNumber, Double totalAmount) {
     this.budgetId = budgetId;
-    this.userId = userId;
     this.year = year;
     this.monthNumber = monthNumber;
     this.totalAmount = totalAmount;
@@ -25,14 +23,6 @@ public class Budget {
 
   public void setBudgetId(BudgetID budgetId) {
     this.budgetId = budgetId;
-  }
-
-  public UserID getUserId() {
-    return userId;
-  }
-
-  public void setUserId(UserID userId) {
-    this.userId = userId;
   }
 
   public int getYear() {
