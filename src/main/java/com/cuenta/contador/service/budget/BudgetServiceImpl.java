@@ -5,6 +5,8 @@ import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.store.budgets.BudgetStore;
 import jakarta.inject.Inject;
 
+import java.util.List;
+
 public class BudgetServiceImpl implements  BudgetService{
   private final BudgetStore budgetStore;
   @Inject
@@ -13,9 +15,9 @@ public class BudgetServiceImpl implements  BudgetService{
   }
 
   @Override
-  public void storeBudget(Budget budget){
+  public void storeBudget(Budget budget, List<BudgetAllocation> allocations){
     UserID userId = UserContext.getUserID();
-    budgetStore.storeBudget(userId, budget);
+    budgetStore.storeBudget(userId, budget, allocations);
   }
 
   @Override

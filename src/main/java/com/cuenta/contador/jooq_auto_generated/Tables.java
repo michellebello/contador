@@ -6,6 +6,7 @@ package com.cuenta.contador.jooq_auto_generated;
 
 import com.cuenta.contador.jooq_auto_generated.tables.Account;
 import com.cuenta.contador.jooq_auto_generated.tables.Budget;
+import com.cuenta.contador.jooq_auto_generated.tables.BudgetAllocation;
 import com.cuenta.contador.jooq_auto_generated.tables.Credentials;
 import com.cuenta.contador.jooq_auto_generated.tables.FlywaySchemaHistory;
 import com.cuenta.contador.jooq_auto_generated.tables.Session;
@@ -29,6 +30,11 @@ public class Tables {
      * The table <code>contadordb.budget</code>.
      */
     public static final Budget BUDGET = Budget.BUDGET;
+
+    /**
+     * The table <code>contadordb.budget_allocation</code>.
+     */
+    public static final BudgetAllocation BUDGET_ALLOCATION = BudgetAllocation.BUDGET_ALLOCATION;
 
     /**
      * The table <code>contadordb.credentials</code>.

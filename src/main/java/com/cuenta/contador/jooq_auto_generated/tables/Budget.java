@@ -6,6 +6,7 @@ package com.cuenta.contador.jooq_auto_generated.tables;
 
 import com.cuenta.contador.jooq_auto_generated.Contadordb;
 import com.cuenta.contador.jooq_auto_generated.Keys;
+import com.cuenta.contador.jooq_auto_generated.tables.BudgetAllocation.BudgetAllocationPath;
 import com.cuenta.contador.jooq_auto_generated.tables.Credentials.CredentialsPath;
 import com.cuenta.contador.jooq_auto_generated.tables.records.BudgetRecord;
 
@@ -180,6 +181,19 @@ public class Budget extends TableImpl<BudgetRecord> {
             _credentials = new CredentialsPath(this, Keys.BUDGET_IBFK_1, null);
 
         return _credentials;
+    }
+
+    private transient BudgetAllocationPath _budgetAllocation;
+
+    /**
+     * Get the implicit to-many join path to the
+     * <code>contadordb.budget_allocation</code> table
+     */
+    public BudgetAllocationPath budgetAllocation() {
+        if (_budgetAllocation == null)
+            _budgetAllocation = new BudgetAllocationPath(this, null, Keys.BUDGET_ALLOCATION_IBFK_1.getInverseKey());
+
+        return _budgetAllocation;
     }
 
     @Override

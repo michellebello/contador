@@ -5,6 +5,7 @@ package com.cuenta.contador.jooq_auto_generated;
 
 
 import com.cuenta.contador.jooq_auto_generated.tables.Account;
+import com.cuenta.contador.jooq_auto_generated.tables.BudgetAllocation;
 import com.cuenta.contador.jooq_auto_generated.tables.FlywaySchemaHistory;
 import com.cuenta.contador.jooq_auto_generated.tables.Session;
 import com.cuenta.contador.jooq_auto_generated.tables.Transaction;
@@ -26,6 +27,7 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index TRANSACTION_ACCOUNT_ID = Internal.createIndex(DSL.name("account_id"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.ACCOUNT_ID }, false);
+    public static final Index BUDGET_ALLOCATION_BUDGET_ID = Internal.createIndex(DSL.name("budget_id"), BudgetAllocation.BUDGET_ALLOCATION, new OrderField[] { BudgetAllocation.BUDGET_ALLOCATION.BUDGET_ID }, false);
     public static final Index FLYWAY_SCHEMA_HISTORY_FLYWAY_SCHEMA_HISTORY_S_IDX = Internal.createIndex(DSL.name("flyway_schema_history_s_idx"), FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, new OrderField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.SUCCESS }, false);
     public static final Index ACCOUNT_USER_ID = Internal.createIndex(DSL.name("user_id"), Account.ACCOUNT, new OrderField[] { Account.ACCOUNT.USER_ID }, false);
     public static final Index TRANSACTION_USER_ID = Internal.createIndex(DSL.name("user_id"), Transaction.TRANSACTION, new OrderField[] { Transaction.TRANSACTION.USER_ID }, false);
