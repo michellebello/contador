@@ -4,6 +4,8 @@ import com.cuenta.contador.service.account.AccountService;
 import com.cuenta.contador.service.account.AccountServiceImpl;
 import com.cuenta.contador.service.auth.AuthenticationService;
 import com.cuenta.contador.service.auth.AuthenticationServiceImpl;
+import com.cuenta.contador.service.budget.BudgetService;
+import com.cuenta.contador.service.budget.BudgetServiceImpl;
 import com.cuenta.contador.service.context.ContextService;
 import com.cuenta.contador.service.credential.CredentialService;
 import com.cuenta.contador.service.credential.CredentialServiceImpl;
@@ -26,5 +28,6 @@ public class ServiceBinder extends AbstractBinder {
         bind(ContextService.class).to(ContextService.class);
         bind(AccountServiceImpl.class).to(AccountService.class);
         bind(TransactionServiceImpl.class).to(TransactionService.class);
+        bind(BudgetServiceImpl.class).to(BudgetService.class);
     }
 }

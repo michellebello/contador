@@ -1,6 +1,7 @@
 package com.cuenta.contador.store;
 
 import com.cuenta.contador.store.account.AccountStore;
+import com.cuenta.contador.store.budgets.BudgetStore;
 import com.cuenta.contador.store.credential.CredentialStore;
 import com.cuenta.contador.store.session.SessionStore;
 import com.cuenta.contador.store.transaction.TransactionStore;
@@ -15,5 +16,6 @@ public class StoreBinder extends AbstractBinder {
         bind(UserStore.class).to(UserStore.class);
         bind(AccountStore.class).to(AccountStore.class);
         bind(TransactionStore.class).to(TransactionStore.class);
+        bind(BudgetStore.class).to(BudgetStore.class);
     }
 }
