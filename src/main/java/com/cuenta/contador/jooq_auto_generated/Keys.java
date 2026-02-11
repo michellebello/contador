@@ -5,6 +5,7 @@ package com.cuenta.contador.jooq_auto_generated;
 
 
 import com.cuenta.contador.jooq_auto_generated.tables.Account;
+import com.cuenta.contador.jooq_auto_generated.tables.Budget;
 import com.cuenta.contador.jooq_auto_generated.tables.Credentials;
 import com.cuenta.contador.jooq_auto_generated.tables.FlywaySchemaHistory;
 import com.cuenta.contador.jooq_auto_generated.tables.Session;
@@ -12,6 +13,7 @@ import com.cuenta.contador.jooq_auto_generated.tables.Transaction;
 import com.cuenta.contador.jooq_auto_generated.tables.TransactionType;
 import com.cuenta.contador.jooq_auto_generated.tables.User;
 import com.cuenta.contador.jooq_auto_generated.tables.records.AccountRecord;
+import com.cuenta.contador.jooq_auto_generated.tables.records.BudgetRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.CredentialsRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.FlywaySchemaHistoryRecord;
 import com.cuenta.contador.jooq_auto_generated.tables.records.SessionRecord;
@@ -39,6 +41,8 @@ public class Keys {
 
     public static final UniqueKey<AccountRecord> KEY_ACCOUNT_NUMBER = Internal.createUniqueKey(Account.ACCOUNT, DSL.name("KEY_account_number"), new TableField[] { Account.ACCOUNT.NUMBER }, true);
     public static final UniqueKey<AccountRecord> KEY_ACCOUNT_PRIMARY = Internal.createUniqueKey(Account.ACCOUNT, DSL.name("KEY_account_PRIMARY"), new TableField[] { Account.ACCOUNT.ID }, true);
+    public static final UniqueKey<BudgetRecord> KEY_BUDGET_PRIMARY = Internal.createUniqueKey(Budget.BUDGET, DSL.name("KEY_budget_PRIMARY"), new TableField[] { Budget.BUDGET.ID }, true);
+    public static final UniqueKey<BudgetRecord> KEY_BUDGET_USER_ID = Internal.createUniqueKey(Budget.BUDGET, DSL.name("KEY_budget_user_id"), new TableField[] { Budget.BUDGET.USER_ID, Budget.BUDGET.MONTH_NUM }, true);
     public static final UniqueKey<CredentialsRecord> KEY_CREDENTIALS_PRIMARY = Internal.createUniqueKey(Credentials.CREDENTIALS, DSL.name("KEY_credentials_PRIMARY"), new TableField[] { Credentials.CREDENTIALS.ID }, true);
     public static final UniqueKey<CredentialsRecord> KEY_CREDENTIALS_USERNAME = Internal.createUniqueKey(Credentials.CREDENTIALS, DSL.name("KEY_credentials_username"), new TableField[] { Credentials.CREDENTIALS.USERNAME }, true);
     public static final UniqueKey<FlywaySchemaHistoryRecord> KEY_FLYWAY_SCHEMA_HISTORY_PRIMARY = Internal.createUniqueKey(FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY, DSL.name("KEY_flyway_schema_history_PRIMARY"), new TableField[] { FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY.INSTALLED_RANK }, true);
@@ -53,6 +57,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<AccountRecord, CredentialsRecord> ACCOUNT_IBFK_1 = Internal.createForeignKey(Account.ACCOUNT, DSL.name("account_ibfk_1"), new TableField[] { Account.ACCOUNT.USER_ID }, Keys.KEY_CREDENTIALS_PRIMARY, new TableField[] { Credentials.CREDENTIALS.ID }, true);
+    public static final ForeignKey<BudgetRecord, CredentialsRecord> BUDGET_IBFK_1 = Internal.createForeignKey(Budget.BUDGET, DSL.name("budget_ibfk_1"), new TableField[] { Budget.BUDGET.USER_ID }, Keys.KEY_CREDENTIALS_PRIMARY, new TableField[] { Credentials.CREDENTIALS.ID }, true);
     public static final ForeignKey<SessionRecord, CredentialsRecord> SESSION_IBFK_1 = Internal.createForeignKey(Session.SESSION, DSL.name("session_ibfk_1"), new TableField[] { Session.SESSION.USERNAME }, Keys.KEY_CREDENTIALS_USERNAME, new TableField[] { Credentials.CREDENTIALS.USERNAME }, true);
     public static final ForeignKey<TransactionRecord, CredentialsRecord> TRANSACTION_IBFK_1 = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("transaction_ibfk_1"), new TableField[] { Transaction.TRANSACTION.USER_ID }, Keys.KEY_CREDENTIALS_PRIMARY, new TableField[] { Credentials.CREDENTIALS.ID }, true);
     public static final ForeignKey<TransactionRecord, AccountRecord> TRANSACTION_IBFK_2 = Internal.createForeignKey(Transaction.TRANSACTION, DSL.name("transaction_ibfk_2"), new TableField[] { Transaction.TRANSACTION.ACCOUNT_ID }, Keys.KEY_ACCOUNT_PRIMARY, new TableField[] { Account.ACCOUNT.ID }, true);

@@ -5,6 +5,7 @@ package com.cuenta.contador.jooq_auto_generated;
 
 
 import com.cuenta.contador.jooq_auto_generated.tables.Account;
+import com.cuenta.contador.jooq_auto_generated.tables.Budget;
 import com.cuenta.contador.jooq_auto_generated.tables.Credentials;
 import com.cuenta.contador.jooq_auto_generated.tables.FlywaySchemaHistory;
 import com.cuenta.contador.jooq_auto_generated.tables.Session;
@@ -37,6 +38,11 @@ public class Contadordb extends SchemaImpl {
      * The table <code>contadordb.account</code>.
      */
     public final Account ACCOUNT = Account.ACCOUNT;
+
+    /**
+     * The table <code>contadordb.budget</code>.
+     */
+    public final Budget BUDGET = Budget.BUDGET;
 
     /**
      * The table <code>contadordb.credentials</code>.
@@ -85,6 +91,7 @@ public class Contadordb extends SchemaImpl {
     public final List<Table<?>> getTables() {
         return Arrays.asList(
             Account.ACCOUNT,
+            Budget.BUDGET,
             Credentials.CREDENTIALS,
             FlywaySchemaHistory.FLYWAY_SCHEMA_HISTORY,
             Session.SESSION,

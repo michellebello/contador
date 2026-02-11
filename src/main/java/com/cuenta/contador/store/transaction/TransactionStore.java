@@ -11,7 +11,6 @@ import org.jooq.*;
 import jakarta.inject.Inject;
 import org.jooq.Record;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 

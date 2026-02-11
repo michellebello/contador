@@ -7,6 +7,7 @@ package com.cuenta.contador.jooq_auto_generated.tables;
 import com.cuenta.contador.jooq_auto_generated.Contadordb;
 import com.cuenta.contador.jooq_auto_generated.Keys;
 import com.cuenta.contador.jooq_auto_generated.tables.Account.AccountPath;
+import com.cuenta.contador.jooq_auto_generated.tables.Budget.BudgetPath;
 import com.cuenta.contador.jooq_auto_generated.tables.Session.SessionPath;
 import com.cuenta.contador.jooq_auto_generated.tables.Transaction.TransactionPath;
 import com.cuenta.contador.jooq_auto_generated.tables.User.UserPath;
@@ -168,6 +169,19 @@ public class Credentials extends TableImpl<CredentialsRecord> {
             _account = new AccountPath(this, null, Keys.ACCOUNT_IBFK_1.getInverseKey());
 
         return _account;
+    }
+
+    private transient BudgetPath _budget;
+
+    /**
+     * Get the implicit to-many join path to the <code>contadordb.budget</code>
+     * table
+     */
+    public BudgetPath budget() {
+        if (_budget == null)
+            _budget = new BudgetPath(this, null, Keys.BUDGET_IBFK_1.getInverseKey());
+
+        return _budget;
     }
 
     private transient SessionPath _session;
