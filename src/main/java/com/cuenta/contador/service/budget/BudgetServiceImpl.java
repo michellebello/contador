@@ -36,4 +36,10 @@ public class BudgetServiceImpl implements  BudgetService{
   public List<BudgetAllocation> getBudgetAllocations(Budget.BudgetID budgetId){
     return budgetStore.getBudgetAllocations(budgetId);
   }
+
+  @Override
+  public List<Budget> getAllBudgets(){
+    UserID userId = UserContext.getUserID();
+    return budgetStore.getAllBudgets(userId);
+  }
 }

@@ -11,6 +11,7 @@ import jakarta.inject.Inject;
 import org.jooq.DSLContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.cuenta.contador.jooq_auto_generated.Tables.BUDGET;
@@ -52,6 +53,12 @@ public class BudgetStore {
       records.add(record);
     });
     db.batchInsert(records).execute();
+  }
+
+  public List<Budget> getAllBudgets(UserID userId) {
+    return db.selectFrom(BUDGET)
+      .where(BUDGET.USER_ID.eq(userId.getIntId()))
+      .fetch().map(this::fromRecord);
   }
 
   public Budget getBudget(UserID userId, int year, byte month){

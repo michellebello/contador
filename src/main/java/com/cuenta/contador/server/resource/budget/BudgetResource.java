@@ -35,6 +35,16 @@ public class BudgetResource {
     return Response.status(Response.Status.CREATED).build();
   }
 
+  @GET
+  public List<BudgetJson> getBudgets(){
+    List<Budget> budgets = budgetService.getAllBudgets();
+    List<BudgetJson> budgetJsonList = new ArrayList<>();
+    budgets.forEach(budget -> {
+      budgetJsonList.add(budgetSerializer.toJson(budget));
+    });
+    return budgetJsonList;
+  }
+
   @POST
   @Path("/{budgetId}/allocations")
   public Response storeBudgetAllocations(@PathParam("budgetId") int budgetId,

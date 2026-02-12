@@ -8,4 +8,5 @@ public interface BudgetService {
   void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations);
   Budget getBudget(int year, byte month);
   List<BudgetAllocation> getBudgetAllocations(BudgetID budgetID);
+  List<Budget> getAllBudgets();
 }
