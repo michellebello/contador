@@ -5,7 +5,6 @@ import com.cuenta.contador.server.json.budget.BudgetJson;
 import com.cuenta.contador.service.budget.Budget;
 import com.cuenta.contador.service.budget.Budget.BudgetID;
 import com.cuenta.contador.service.budget.BudgetAllocation;
-import com.cuenta.contador.service.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,16 @@ public class BudgetSerializer {
     );
   }
 
+  // turns Budget -> BudgetJson
+  public BudgetJson toJson(Budget budget){
+    BudgetJson budgetJson = new BudgetJson();
+    budgetJson.setId(budget.getBudgetId().getIntId());
+    budgetJson.setYear(budget.getYear());
+    budgetJson.setMonthNumber(budget.getMonthNumber());
+    budgetJson.setTotalAmount(budget.getTotalAmount());
+    return budgetJson;
+  }
+
   // turns BudgetAllocation -> BudgetAllocationJson
   public BudgetAllocationJson toBudgetAllocationJson(BudgetAllocation budgetAllocation){
     BudgetAllocationJson budgetAllocationJson = new BudgetAllocationJson();
@@ -45,13 +54,5 @@ public class BudgetSerializer {
       listOfBudgetAllocationJson.add(toBudgetAllocationJson(budgetAllocation));
     });
     return listOfBudgetAllocationJson;
-  }
-
-  public BudgetJson toJoinedBudgetJson(Budget budget, List<BudgetAllocationJson> listOfAllocationJson){
-    BudgetJson budgetJson = new BudgetJson();
-    budgetJson.setId(budgetJson.getId());
-    budgetJson.setYear(budgetJson.getYear());
-    budgetJson.setMonthNumber(budgetJson.getMonthNumber());
-    return budgetJson;
   }
 }

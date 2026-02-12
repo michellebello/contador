@@ -7,5 +7,5 @@ public interface BudgetService {
   void storeBudget(Budget budget);
   void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations);
   Budget getBudget(int year, byte month);
-  List<BudgetAllocation> getBudgetAllocations(Budget.BudgetID budgetID);
+  List<BudgetAllocation> getBudgetAllocations(BudgetID budgetID);
 }

@@ -47,16 +47,25 @@ public class BudgetResource {
     return Response.status(Response.Status.CREATED).build();
   }
 
-//  @GET
-//  @Path("/{year}/{monthNum}")
-//  public Response getBudget(
-//    @PathParam("year") int year,
-//    @PathParam("monthNum") byte monthNum
-//  ) {
-//    Budget budget = budgetService.getBudget(year, monthNum);
-//    List<BudgetAllocation> budgetAllocations = budgetService.getBudgetAllocations(budget.getBudgetId());
-//    List<BudgetAllocationJson> budgetAllocationJson = budgetSerializer.fromListOfBudgetAllocationJson(budgetAllocations);
-//    BudgetJson budgetJson = budgetSerializer.toJoinedBudgetJson(budget, budgetAllocationJson);
-//    return Response.ok(budgetJson).build();
-//  }
+  @GET
+  @Path("/{year}/{monthNum}")
+  public Response getBudget(
+    @PathParam("year") int year,
+    @PathParam("monthNum") byte monthNum
+  ) {
+    Budget budget = budgetService.getBudget(year, monthNum);
+    BudgetJson budgetJson = budgetSerializer.toJson(budget);
+    return Response.ok(budgetJson).build();
+  }
+
+  @GET
+  @Path("/{budgetId}/allocations")
+  public List<BudgetAllocationJson> getBudgetAllocations(@PathParam("budgetId") int budgetId){
+    List<BudgetAllocation> budgetAllocations = budgetService.getBudgetAllocations(BudgetID.of(budgetId));
+    List<BudgetAllocationJson> budgetAllocationJson = new ArrayList<>();
+    budgetAllocations.forEach(budgetAllocation -> {
+      budgetAllocationJson.add(budgetSerializer.toBudgetAllocationJson(budgetAllocation));
+    });
+    return budgetAllocationJson;
+  }
 }

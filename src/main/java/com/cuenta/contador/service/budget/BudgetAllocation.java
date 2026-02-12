@@ -1,7 +1,6 @@
 package com.cuenta.contador.service.budget;
 
 public class BudgetAllocation {
-  private Budget.BudgetID budgetId;
   private String category;
   private Double amount;
 
@@ -9,7 +8,6 @@ public class BudgetAllocation {
     this.category = category;
     this.amount = amount;
   }
-
 
   public String getCategory() {
     return category;

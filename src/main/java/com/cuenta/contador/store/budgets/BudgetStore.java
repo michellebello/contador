@@ -9,7 +9,6 @@ import com.cuenta.contador.service.budget.BudgetAllocation;
 import com.cuenta.contador.service.user.User.UserID;
 import jakarta.inject.Inject;
 import org.jooq.DSLContext;
-import org.jooq.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,9 @@ public class BudgetStore {
   }
 
   public boolean budgetExists(BudgetID budgetId){
-    return db.selectFrom(BUDGET).where(BUDGET.ID.eq(budgetId.getIntId())).fetchOne() != null;
+    boolean boo = db.selectFrom(BUDGET).where(BUDGET.ID.eq(budgetId.getIntId())).fetchOne() != null;
+    System.out.println(boo);
+    return boo;
   }
 
   public void storeBudget(UserID userId, Budget budget){
@@ -63,14 +64,11 @@ public class BudgetStore {
   }
 
   public List<BudgetAllocation> getBudgetAllocations(Budget.BudgetID budgetID){
-    return db.selectFrom(BUDGET_ALLOCATION)
+    return db.select(BUDGET_ALLOCATION.CATEGORY, BUDGET_ALLOCATION.AMOUNT).
+      from(BUDGET_ALLOCATION)
       .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetID.getIntId()))
       .fetchInto(BudgetAllocation.class);
   }
-
-//  public Budget updateBudget()
-//
-//  public void deleteBudget(){}
 
   private Budget fromRecord(BudgetRecord budgetRecord){
     return new Budget(
