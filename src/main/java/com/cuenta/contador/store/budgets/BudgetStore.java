@@ -9,13 +9,15 @@ import com.cuenta.contador.service.budget.BudgetAllocation;
 import com.cuenta.contador.service.user.User.UserID;
 import jakarta.inject.Inject;
 import org.jooq.DSLContext;
+import org.jooq.Path;
 
+import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.cuenta.contador.jooq_auto_generated.Tables.BUDGET;
 import static com.cuenta.contador.jooq_auto_generated.Tables.BUDGET_ALLOCATION;
+import static org.jooq.impl.DSL.sum;
 
 public class BudgetStore {
   private final DSLContext db;
@@ -70,11 +72,49 @@ public class BudgetStore {
     return record != null? fromRecord(record): null;
   }
 
+  public Double getBudgetSpent(UserID userId, BudgetID budgetId){
+    Double spent = db.select(sum(BUDGET_ALLOCATION.AMOUNT))
+      .from(BUDGET_ALLOCATION)
+      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+      .fetchOne(0, Double.class);
+    spent = spent != null? spent : 0.0;
+    return spent;
+  }
+
   public List<BudgetAllocation> getBudgetAllocations(Budget.BudgetID budgetID){
     return db.select(BUDGET_ALLOCATION.CATEGORY, BUDGET_ALLOCATION.AMOUNT).
       from(BUDGET_ALLOCATION)
       .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetID.getIntId()))
       .fetchInto(BudgetAllocation.class);
+  }
+
+  public BudgetID getCurrentBudgetId(UserID userId){
+    YearMonth currMonth = YearMonth.now();
+    byte monthNum = (byte) currMonth.getMonthValue();
+    int year = currMonth.getYear();
+    Integer budgetId = db.select(BUDGET.ID)
+      .from(BUDGET)
+      .where(BUDGET.USER_ID.eq(userId.getIntId()))
+      .and(BUDGET.YEAR.eq(year))
+      .and(BUDGET.MONTH_NUM.eq(monthNum))
+      .fetchOne(BUDGET.ID);
+    return budgetId != null ? BudgetID.of(budgetId) : null;
+  }
+
+  public boolean budgetCategoryExists(UserID userId, String category){
+    BudgetID budgetId = getCurrentBudgetId(userId);
+    return db.selectFrom(BUDGET_ALLOCATION)
+      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+      .and(BUDGET_ALLOCATION.CATEGORY.eq(category))
+      .fetchOne() != null;
+  }
+
+  public void updateBudgetAllocation(BudgetID budgetId, String category, double transactionAmount){
+    db.update(BUDGET_ALLOCATION)
+      .set(BUDGET_ALLOCATION.AMOUNT, BUDGET_ALLOCATION.AMOUNT.minus(transactionAmount))
+      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+      .and(BUDGET_ALLOCATION.CATEGORY.eq(category))
+      .execute();
   }
 
   private Budget fromRecord(BudgetRecord budgetRecord){

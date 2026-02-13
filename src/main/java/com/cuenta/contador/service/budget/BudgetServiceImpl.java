@@ -33,6 +33,12 @@ public class BudgetServiceImpl implements  BudgetService{
   }
 
   @Override
+  public Double getBudgetSpent(BudgetID budgetId){
+    UserID userId = UserContext.getUserID();
+    return budgetStore.getBudgetSpent(userId, budgetId);
+  }
+
+  @Override
   public List<BudgetAllocation> getBudgetAllocations(Budget.BudgetID budgetId){
     return budgetStore.getBudgetAllocations(budgetId);
   }
@@ -41,5 +47,23 @@ public class BudgetServiceImpl implements  BudgetService{
   public List<Budget> getAllBudgets(){
     UserID userId = UserContext.getUserID();
     return budgetStore.getAllBudgets(userId);
+  }
+
+  @Override
+  public BudgetID getCurrentBudgetId(){
+    UserID userId = UserContext.getUserID();
+    return  budgetStore.getCurrentBudgetId(userId);
+  }
+
+  @Override
+  public boolean budgetCategoryExists(String category){
+    UserID userId = UserContext.getUserID();
+    return budgetStore.budgetCategoryExists(userId, category);
+  }
+
+  @Override
+  public void updateBudgetAllocation(BudgetID budgetId, String category, double transactionAmount){
+    System.out.println("update budget allocation triggered");
+    budgetStore.updateBudgetAllocation(budgetId, category, transactionAmount);
   }
 }

@@ -58,6 +58,17 @@ public class BudgetResource {
   }
 
   @GET
+  @Path("/{budgetId}/allocations")
+  public List<BudgetAllocationJson> getBudgetAllocations(@PathParam("budgetId") int budgetId){
+    List<BudgetAllocation> budgetAllocations = budgetService.getBudgetAllocations(BudgetID.of(budgetId));
+    List<BudgetAllocationJson> budgetAllocationJson = new ArrayList<>();
+    budgetAllocations.forEach(budgetAllocation -> {
+      budgetAllocationJson.add(budgetSerializer.toBudgetAllocationJson(budgetAllocation));
+    });
+    return budgetAllocationJson;
+  }
+
+  @GET
   @Path("/{year}/{monthNum}")
   public Response getBudget(
     @PathParam("year") int year,
@@ -69,13 +80,8 @@ public class BudgetResource {
   }
 
   @GET
-  @Path("/{budgetId}/allocations")
-  public List<BudgetAllocationJson> getBudgetAllocations(@PathParam("budgetId") int budgetId){
-    List<BudgetAllocation> budgetAllocations = budgetService.getBudgetAllocations(BudgetID.of(budgetId));
-    List<BudgetAllocationJson> budgetAllocationJson = new ArrayList<>();
-    budgetAllocations.forEach(budgetAllocation -> {
-      budgetAllocationJson.add(budgetSerializer.toBudgetAllocationJson(budgetAllocation));
-    });
-    return budgetAllocationJson;
+  @Path("/{budgetId}/spent")
+  public Double getBudgetSpent(@PathParam("budgetId") int budgetId){
+    return budgetService.getBudgetSpent(BudgetID.of(budgetId));
   }
 }
