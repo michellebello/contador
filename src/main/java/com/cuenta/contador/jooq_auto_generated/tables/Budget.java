@@ -83,6 +83,11 @@ public class Budget extends TableImpl<BudgetRecord> {
      */
     public final TableField<BudgetRecord, Double> TOTAL_AMOUNT = createField(DSL.name("total_amount"), SQLDataType.DOUBLE.nullable(false), this, "");
 
+    /**
+     * The column <code>contadordb.budget.total_spent</code>.
+     */
+    public final TableField<BudgetRecord, Double> TOTAL_SPENT = createField(DSL.name("total_spent"), SQLDataType.DOUBLE.defaultValue(DSL.inline("0", SQLDataType.DOUBLE)), this, "");
+
     private Budget(Name alias, Table<BudgetRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

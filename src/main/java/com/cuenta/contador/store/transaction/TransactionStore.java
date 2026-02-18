@@ -12,7 +12,9 @@ import jakarta.inject.Inject;
 import org.jooq.Record;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
+import java.util.Set;
 
 
 import static com.cuenta.contador.infra.ID.getIntIds;
@@ -106,6 +108,7 @@ public class TransactionStore {
           .fetch()
           .map(this::fromJoinedRecord);
     }
+
 
     public AccountID getTransactionAccountId(UserID userId, TransactionID transactionId){
         Integer accountId = db.select(TRANSACTION.ACCOUNT_ID)

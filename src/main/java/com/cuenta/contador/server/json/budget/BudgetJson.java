@@ -15,6 +15,9 @@ public class BudgetJson {
   @JsonProperty
   private Double totalAmount;
 
+  @JsonProperty
+  private Double totalSpent;
+
   public Integer getId() {
     return id;
   }
@@ -47,4 +50,11 @@ public class BudgetJson {
     this.totalAmount = totalAmount;
   }
 
+  public Double getTotalSpent() {
+    return totalSpent;
+  }
+
+  public void setTotalSpent(Double totalSpent) {
+    this.totalSpent = totalSpent;
+  }
 }

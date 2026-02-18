@@ -9,6 +9,9 @@ public class BudgetAllocationJson {
   @JsonProperty
   private Double amount;
 
+  @JsonProperty
+  private Double spent;
+
   public String getCategory() {
     return category;
   }
@@ -25,4 +28,11 @@ public class BudgetAllocationJson {
     this.amount = amount;
   }
 
+  public Double getSpent() {
+    return spent;
+  }
+
+  public void setSpent(Double spent) {
+    this.spent = spent;
+  }
 }

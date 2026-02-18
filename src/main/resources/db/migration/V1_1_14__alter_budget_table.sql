@@ -1,0 +1,3 @@
+ALTER TABLE `budget`
+DROP COLUMN `spent`,
+ADD COLUMN `total_spent` DOUBLE DEFAULT 0;

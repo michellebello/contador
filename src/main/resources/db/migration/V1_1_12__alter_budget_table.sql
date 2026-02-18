@@ -1,0 +1,2 @@
+ALTER TABLE `budget`
+ADD COLUMN spent INT DEFAULT 0;

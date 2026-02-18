@@ -74,6 +74,20 @@ public class BudgetAllocationRecord extends UpdatableRecordImpl<BudgetAllocation
         return (Double) get(3);
     }
 
+    /**
+     * Setter for <code>contadordb.budget_allocation.spent</code>.
+     */
+    public void setSpent(Double value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>contadordb.budget_allocation.spent</code>.
+     */
+    public Double getSpent() {
+        return (Double) get(4);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -97,13 +111,14 @@ public class BudgetAllocationRecord extends UpdatableRecordImpl<BudgetAllocation
     /**
      * Create a detached, initialised BudgetAllocationRecord
      */
-    public BudgetAllocationRecord(Integer id, Integer budgetId, String category, Double amount) {
+    public BudgetAllocationRecord(Integer id, Integer budgetId, String category, Double amount, Double spent) {
         super(BudgetAllocation.BUDGET_ALLOCATION);
 
         setId(id);
         setBudgetId(budgetId);
         setCategory(category);
         setAmount(amount);
+        setSpent(spent);
         resetChangedOnNotNull();
     }
 }

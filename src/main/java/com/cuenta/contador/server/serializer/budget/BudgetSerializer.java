@@ -17,7 +17,8 @@ public class BudgetSerializer {
       budgetJson.getId() == null ? null : BudgetID.of(budgetJson.getId()),
       budgetJson.getYear(),
       budgetJson.getMonthNumber(),
-      budgetJson.getTotalAmount()
+      budgetJson.getTotalAmount(),
+      budgetJson.getTotalSpent()
     );
   }
 
@@ -25,7 +26,8 @@ public class BudgetSerializer {
   public BudgetAllocation fromBudgetAllocationJson(BudgetAllocationJson budgetAllocationJson){
     return new BudgetAllocation(
         budgetAllocationJson.getCategory(),
-        budgetAllocationJson.getAmount()
+        budgetAllocationJson.getAmount(),
+        budgetAllocationJson.getSpent()
     );
   }
 
@@ -36,6 +38,7 @@ public class BudgetSerializer {
     budgetJson.setYear(budget.getYear());
     budgetJson.setMonthNumber(budget.getMonthNumber());
     budgetJson.setTotalAmount(budget.getTotalAmount());
+    budgetJson.setTotalSpent(budget.getTotalSpent());
     return budgetJson;
   }
 
@@ -44,15 +47,8 @@ public class BudgetSerializer {
     BudgetAllocationJson budgetAllocationJson = new BudgetAllocationJson();
     budgetAllocationJson.setCategory(budgetAllocation.getCategory());
     budgetAllocationJson.setAmount(budgetAllocation.getAmount());
+    budgetAllocationJson.setSpent(budgetAllocation.getSpent());
     return budgetAllocationJson;
   }
 
-  // turns List<BudgetAllocationJson> -> List<BudgetAllocation>
-  public List<BudgetAllocationJson> fromListOfBudgetAllocationJson(List<BudgetAllocation> budgetAllocationList){
-    List<BudgetAllocationJson> listOfBudgetAllocationJson = new ArrayList<>();
-    budgetAllocationList.forEach(budgetAllocation -> {
-      listOfBudgetAllocationJson.add(toBudgetAllocationJson(budgetAllocation));
-    });
-    return listOfBudgetAllocationJson;
-  }
 }

@@ -10,11 +10,14 @@ public class Budget {
   private byte monthNumber;
   private Double totalAmount;
 
-  public Budget(BudgetID budgetId, int year, byte monthNumber, Double totalAmount) {
+  private Double totalSpent;
+
+  public Budget(BudgetID budgetId, int year, byte monthNumber, Double totalAmount, Double totalSpent) {
     this.budgetId = budgetId;
     this.year = year;
     this.monthNumber = monthNumber;
     this.totalAmount = totalAmount;
+    this.totalSpent = totalSpent;
   }
 
   public BudgetID getBudgetId() {
@@ -48,6 +51,15 @@ public class Budget {
   public void setTotalAmount(Double totalAmount) {
     this.totalAmount = totalAmount;
   }
+
+  public Double getTotalSpent() {
+    return totalSpent;
+  }
+
+  public void setTotalSpent(Double totalSpent) {
+    this.totalSpent = totalSpent;
+  }
+
 
   public static class BudgetID extends ID<Budget> {
     public BudgetID(int id){

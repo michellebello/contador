@@ -12,8 +12,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Path("budgets")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -47,8 +46,7 @@ public class BudgetResource {
 
   @POST
   @Path("/{budgetId}/allocations")
-  public Response storeBudgetAllocations(@PathParam("budgetId") int budgetId,
-    List<BudgetAllocationJson> budgetAllocationJsonList){
+  public Response storeBudgetAllocations(@PathParam("budgetId") int budgetId, List<BudgetAllocationJson> budgetAllocationJsonList){
     List<BudgetAllocation> budgetAllocationList = new ArrayList<>();
     budgetAllocationJsonList.forEach(budgetAllocationJson -> {
       budgetAllocationList.add(budgetSerializer.fromBudgetAllocationJson(budgetAllocationJson));
@@ -58,14 +56,37 @@ public class BudgetResource {
   }
 
   @GET
+  @Path("/allocations")
+  public Map<String, List<BudgetAllocationJson>> getAllBudgetAllocations(){
+    Map<BudgetID, List<BudgetAllocation>> allocationsMap = budgetService.getAllBudgetAllocations();
+    Map<String, List<BudgetAllocationJson>> allocationJsonMap = new HashMap<>();
+    for (Map.Entry<BudgetID, List<BudgetAllocation>> entry: allocationsMap.entrySet()){
+      List<BudgetAllocationJson> allocationJsonList = new ArrayList<>();
+      for (BudgetAllocation allocation: entry.getValue()){
+        allocationJsonList.add(budgetSerializer.toBudgetAllocationJson(allocation));
+      }
+      allocationJsonMap.put(entry.getKey().toString(), allocationJsonList);
+    }
+    return allocationJsonMap;
+  }
+
+  @GET
   @Path("/{budgetId}/allocations")
-  public List<BudgetAllocationJson> getBudgetAllocations(@PathParam("budgetId") int budgetId){
+  public List<BudgetAllocationJson> getBudgetAllocationsById(@PathParam("budgetId") int budgetId){
     List<BudgetAllocation> budgetAllocations = budgetService.getBudgetAllocations(BudgetID.of(budgetId));
     List<BudgetAllocationJson> budgetAllocationJson = new ArrayList<>();
     budgetAllocations.forEach(budgetAllocation -> {
       budgetAllocationJson.add(budgetSerializer.toBudgetAllocationJson(budgetAllocation));
     });
     return budgetAllocationJson;
+  }
+
+  @GET
+  @Path("/current")
+  public Response getCurrentBudget(){
+    Budget budget = budgetService.getCurrentBudget();
+    BudgetJson budgetJson = budgetSerializer.toJson(budget);
+    return Response.ok(budgetJson).build();
   }
 
   @GET

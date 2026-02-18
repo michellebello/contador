@@ -79,6 +79,11 @@ public class BudgetAllocation extends TableImpl<BudgetAllocationRecord> {
      */
     public final TableField<BudgetAllocationRecord, Double> AMOUNT = createField(DSL.name("amount"), SQLDataType.DOUBLE.nullable(false), this, "");
 
+    /**
+     * The column <code>contadordb.budget_allocation.spent</code>.
+     */
+    public final TableField<BudgetAllocationRecord, Double> SPENT = createField(DSL.name("spent"), SQLDataType.DOUBLE.defaultValue(DSL.inline("0", SQLDataType.DOUBLE)), this, "");
+
     private BudgetAllocation(Name alias, Table<BudgetAllocationRecord> aliased) {
         this(alias, aliased, (Field<?>[]) null, null);
     }

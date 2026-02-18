@@ -88,6 +88,20 @@ public class BudgetRecord extends UpdatableRecordImpl<BudgetRecord> {
         return (Double) get(4);
     }
 
+    /**
+     * Setter for <code>contadordb.budget.total_spent</code>.
+     */
+    public void setTotalSpent(Double value) {
+        set(5, value);
+    }
+
+    /**
+     * Getter for <code>contadordb.budget.total_spent</code>.
+     */
+    public Double getTotalSpent() {
+        return (Double) get(5);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -111,7 +125,7 @@ public class BudgetRecord extends UpdatableRecordImpl<BudgetRecord> {
     /**
      * Create a detached, initialised BudgetRecord
      */
-    public BudgetRecord(Integer id, Integer userId, Integer year, Byte monthNum, Double totalAmount) {
+    public BudgetRecord(Integer id, Integer userId, Integer year, Byte monthNum, Double totalAmount, Double totalSpent) {
         super(Budget.BUDGET);
 
         setId(id);
@@ -119,6 +133,7 @@ public class BudgetRecord extends UpdatableRecordImpl<BudgetRecord> {
         setYear(year);
         setMonthNum(monthNum);
         setTotalAmount(totalAmount);
+        setTotalSpent(totalSpent);
         resetChangedOnNotNull();
     }
 }

@@ -1,9 +1,10 @@
 package com.cuenta.contador.service.budget;
 
 import com.cuenta.contador.service.budget.Budget.BudgetID;
-import com.cuenta.contador.service.user.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface BudgetService {
   void storeBudget(Budget budget);
@@ -11,8 +12,12 @@ public interface BudgetService {
   Budget getBudget(int year, byte month);
   Double getBudgetSpent(BudgetID budgetId);
   List<BudgetAllocation> getBudgetAllocations(BudgetID budgetID);
+  Map<BudgetID, List<BudgetAllocation>> getAllBudgetAllocations();
   List<Budget> getAllBudgets();
+  BudgetID getBudgetId(LocalDateTime createdOn);
   BudgetID getCurrentBudgetId();
   boolean budgetCategoryExists(String category);
   void updateBudgetAllocation(BudgetID budgetId, String category, double transactionAmount);
+  void updateBudgetSpent(BudgetID budgetId, Double transactionAmount);
+  Budget getCurrentBudget();
 }

@@ -6,7 +6,9 @@ import com.cuenta.contador.service.budget.Budget.BudgetID;
 import com.cuenta.contador.store.budgets.BudgetStore;
 import jakarta.inject.Inject;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public class BudgetServiceImpl implements  BudgetService{
   private final BudgetStore budgetStore;
@@ -44,9 +46,21 @@ public class BudgetServiceImpl implements  BudgetService{
   }
 
   @Override
+  public Map<BudgetID, List<BudgetAllocation>> getAllBudgetAllocations(){
+    UserID userId = UserContext.getUserID();
+    return budgetStore.getAllBudgetAllocations(userId);
+  }
+
+  @Override
   public List<Budget> getAllBudgets(){
     UserID userId = UserContext.getUserID();
     return budgetStore.getAllBudgets(userId);
+  }
+
+  @Override
+  public BudgetID getBudgetId(LocalDateTime createdOn){
+    UserID userId = UserContext.getUserID();
+    return budgetStore.getBudgetId(userId, createdOn);
   }
 
   @Override
@@ -65,5 +79,17 @@ public class BudgetServiceImpl implements  BudgetService{
   public void updateBudgetAllocation(BudgetID budgetId, String category, double transactionAmount){
     System.out.println("update budget allocation triggered");
     budgetStore.updateBudgetAllocation(budgetId, category, transactionAmount);
+  }
+
+  @Override
+  public void updateBudgetSpent(BudgetID budgetId, Double transactionAmount){
+    System.out.println("budget store update budget total spent triggered");
+    budgetStore.updateBudgetSpent(budgetId, transactionAmount);
+  }
+
+  @Override
+  public Budget getCurrentBudget(){
+    UserID userId = UserContext.getUserID();
+    return budgetStore.getCurrentBudget(userId);
   }
 }

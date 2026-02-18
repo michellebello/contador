@@ -1,7 +1,7 @@
 package com.cuenta.contador.service.transaction;
 
-import com.cuenta.contador.jooq_auto_generated.tables.Budget;
 import com.cuenta.contador.service.account.AccountService;
+import com.cuenta.contador.service.budget.Budget.BudgetID;
 import com.cuenta.contador.service.budget.BudgetService;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
@@ -29,11 +29,11 @@ public class TransactionServiceImpl implements TransactionService{
     public void storeTransaction(Transaction transaction){
         UserID userId = UserContext.getUserID();
         String category = transaction.getCategory();
-        System.out.println("category is " + category);
         accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), transaction.getAmount(), transaction.getTypeName());
         if (budgetService.budgetCategoryExists(category)){
-            System.out.println("if block triggered");
-            budgetService.updateBudgetAllocation(budgetService.getCurrentBudgetId(), category, transaction.getAmount());
+            BudgetID budgetID = budgetService.getBudgetId(transaction.getCreatedOn());
+            budgetService.updateBudgetAllocation(budgetID, category, transaction.getAmount());
+            budgetService.updateBudgetSpent(budgetID, transaction.getAmount());
         }
         transactionStore.storeTransaction(userId, transaction);
     }
