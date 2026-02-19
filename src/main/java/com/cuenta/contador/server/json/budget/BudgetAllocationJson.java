@@ -4,6 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BudgetAllocationJson {
   @JsonProperty
+  private Integer id;
+
+  @JsonProperty
+  private Integer budgetId;
+
+  @JsonProperty
   private String category;
 
   @JsonProperty
@@ -11,6 +17,22 @@ public class BudgetAllocationJson {
 
   @JsonProperty
   private Double spent;
+
+  public Integer getId() {
+    return id;
+  }
+
+  public void setId(Integer id) {
+    this.id = id;
+  }
+
+  public Integer getBudgetId() {
+    return budgetId;
+  }
+
+  public void setBudgetId(Integer budgetId) {
+    this.budgetId = budgetId;
+  }
 
   public String getCategory() {
     return category;

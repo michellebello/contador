@@ -92,4 +92,10 @@ public class BudgetServiceImpl implements  BudgetService{
     UserID userId = UserContext.getUserID();
     return budgetStore.getCurrentBudget(userId);
   }
+
+  @Override
+  public boolean budgetExists(BudgetID budgetId) {
+    UserID userId = UserContext.getUserID();
+    return budgetStore.budgetExists(budgetId);
+  }
 }

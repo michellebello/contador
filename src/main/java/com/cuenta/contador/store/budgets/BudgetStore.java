@@ -88,21 +88,22 @@ public class BudgetStore {
     return spent;
   }
 
-  public List<BudgetAllocation> getBudgetAllocations(Budget.BudgetID budgetID){
-    return db.select(BUDGET_ALLOCATION.CATEGORY, BUDGET_ALLOCATION.AMOUNT, BUDGET_ALLOCATION.SPENT).
-      from(BUDGET_ALLOCATION)
+  public List<BudgetAllocation> getBudgetAllocations(Budget.BudgetID budgetID) {
+    return db.selectFrom(BUDGET_ALLOCATION)
       .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetID.getIntId()))
       .fetchInto(BudgetAllocation.class);
   }
 
   public Map<BudgetID, List<BudgetAllocation>> getAllBudgetAllocations(UserID userId) {
-    return db.select(BUDGET_ALLOCATION.BUDGET_ID, BUDGET_ALLOCATION.CATEGORY, BUDGET_ALLOCATION.AMOUNT, BUDGET_ALLOCATION.SPENT)
+    return db.select(BUDGET_ALLOCATION.ID, BUDGET_ALLOCATION.BUDGET_ID, BUDGET_ALLOCATION.CATEGORY, BUDGET_ALLOCATION.AMOUNT, BUDGET_ALLOCATION.SPENT)
       .from(BUDGET_ALLOCATION)
       .join(BUDGET).on(BUDGET.ID.eq(BUDGET_ALLOCATION.BUDGET_ID))
       .where(BUDGET.USER_ID.eq(userId.getIntId()))
       .fetchGroups(
         record -> new BudgetID(record.get(BUDGET_ALLOCATION.BUDGET_ID)),
         record -> new BudgetAllocation(
+          record.get(BUDGET_ALLOCATION.ID),
+          BudgetID.of(record.get(BUDGET_ALLOCATION.BUDGET_ID)),
           record.get(BUDGET_ALLOCATION.CATEGORY),
           record.get(BUDGET_ALLOCATION.AMOUNT),
           record.get(BUDGET_ALLOCATION.SPENT))

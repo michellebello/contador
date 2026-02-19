@@ -70,6 +70,24 @@ public class BudgetResource {
     return allocationJsonMap;
   }
 
+  @PATCH
+  @Path("/{budgetId}/{allocationId}")
+  public Response editBudgetAllocation(@PathParam("budgetId") int budgetId, @PathParam("allocationId") int allocationId, BudgetAllocationJson budgetAllocationJson){
+    if (budgetAllocationJson == null){
+      return Response.status(Response.Status.NO_CONTENT).entity("Empty body").build();
+    }
+    BudgetID id = BudgetID.of(budgetId);
+    if (!budgetService.budgetExists(id)){
+      return Response.status(Response.Status.NOT_FOUND).entity("Budget id does not exist").build();
+    }
+    try {
+      budgetService.updateBudgetAllocation(id, budgetAllocationJson.getCategory(), budgetAllocationJson.getAmount());
+      return Response.ok("Budget allocation successfully updated").build();
+    } catch (Exception e){
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
+    }
+  }
+
   @GET
   @Path("/{budgetId}/allocations")
   public List<BudgetAllocationJson> getBudgetAllocationsById(@PathParam("budgetId") int budgetId){

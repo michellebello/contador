@@ -25,6 +25,8 @@ public class BudgetSerializer {
   // turns BudgetAllocationJson -> BudgetAllocation
   public BudgetAllocation fromBudgetAllocationJson(BudgetAllocationJson budgetAllocationJson){
     return new BudgetAllocation(
+        budgetAllocationJson.getId(),
+        BudgetID.of(budgetAllocationJson.getBudgetId()),
         budgetAllocationJson.getCategory(),
         budgetAllocationJson.getAmount(),
         budgetAllocationJson.getSpent()
@@ -45,6 +47,10 @@ public class BudgetSerializer {
   // turns BudgetAllocation -> BudgetAllocationJson
   public BudgetAllocationJson toBudgetAllocationJson(BudgetAllocation budgetAllocation){
     BudgetAllocationJson budgetAllocationJson = new BudgetAllocationJson();
+    budgetAllocationJson.setId(budgetAllocation.getId());
+    if (budgetAllocation.getBudgetId() != null) {
+      budgetAllocationJson.setBudgetId(budgetAllocation.getBudgetId().getIntId());
+    }
     budgetAllocationJson.setCategory(budgetAllocation.getCategory());
     budgetAllocationJson.setAmount(budgetAllocation.getAmount());
     budgetAllocationJson.setSpent(budgetAllocation.getSpent());

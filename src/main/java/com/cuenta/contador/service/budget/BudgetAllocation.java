@@ -1,14 +1,41 @@
 package com.cuenta.contador.service.budget;
+import com.cuenta.contador.service.budget.Budget.BudgetID;
 
 public class BudgetAllocation {
+  private int id;
+  private BudgetID budgetId;
   private String category;
   private Double amount;
   private Double spent;
 
-  public BudgetAllocation(String category, Double amount, Double spent) {
+  public BudgetAllocation(int id, BudgetID budgetId, String category, Double amount, Double spent) {
+    this.id = id;
+    this.budgetId = budgetId;
     this.category = category;
     this.amount = amount;
     this.spent = spent;
+  }
+  public BudgetAllocation(int id, String category, Double amount, Double spent) {
+    this.id = id;
+    this.category = category;
+    this.amount = amount;
+    this.spent = spent;
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public Budget.BudgetID getBudgetId() {
+    return budgetId;
+  }
+
+  public void setBudgetId(BudgetID budgetId) {
+    this.budgetId = budgetId;
   }
 
   public String getCategory() {
