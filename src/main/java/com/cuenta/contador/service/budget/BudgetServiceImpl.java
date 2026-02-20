@@ -77,14 +77,17 @@ public class BudgetServiceImpl implements  BudgetService{
 
   @Override
   public void updateBudgetAllocation(BudgetID budgetId, String category, double transactionAmount){
-    System.out.println("update budget allocation triggered");
     budgetStore.updateBudgetAllocation(budgetId, category, transactionAmount);
   }
 
   @Override
   public void updateBudgetSpent(BudgetID budgetId, Double transactionAmount){
-    System.out.println("budget store update budget total spent triggered");
     budgetStore.updateBudgetSpent(budgetId, transactionAmount);
+  }
+
+  @Override
+  public void updateBudgetAllocationTotal(BudgetID budgetId, Integer allocationId, Double allocationTotal) throws Exception {
+    budgetStore.updateBudgetAllocationTotal(budgetId, allocationId, allocationTotal);
   }
 
   @Override

@@ -19,6 +19,7 @@ import java.util.Map;
 
 import static com.cuenta.contador.jooq_auto_generated.Tables.BUDGET;
 import static com.cuenta.contador.jooq_auto_generated.Tables.BUDGET_ALLOCATION;
+import static org.jooq.impl.DSL.all;
 import static org.jooq.impl.DSL.sum;
 
 public class BudgetStore {
@@ -159,8 +160,50 @@ public class BudgetStore {
       .execute();
   }
 
+  public void updateBudgetAllocationTotal(BudgetID budgetId, Integer allocationId, Double allocationTotal) throws Exception {
+    Double currTotal = db.select(BUDGET_ALLOCATION.AMOUNT)
+      .from(BUDGET_ALLOCATION)
+      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+      .and(BUDGET_ALLOCATION.ID.eq(allocationId))
+      .fetchOne(BUDGET_ALLOCATION.AMOUNT);
+
+    if (currTotal == null){
+      throw new Exception("Current total not found");
+    }
+
+    double difference = currTotal - allocationTotal;
+    System.out.println("difference is " + difference);
+
+    db.update(BUDGET_ALLOCATION)
+      .set(BUDGET_ALLOCATION.AMOUNT, allocationTotal)
+      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+      .and(BUDGET_ALLOCATION.ID.eq(allocationId))
+      .execute();
+    if (difference > 0){
+      System.out.println("doing line if");
+      updateBudgetTotal(budgetId, false, difference);
+    } else {
+      difference *= -1;
+      System.out.println("doing line else");
+      updateBudgetTotal(budgetId, true, difference );
+    }
+  }
+
+  public void updateBudgetTotal(BudgetID budgetId, boolean add, double difference){
+    if (add) {
+      db.update(BUDGET)
+        .set(BUDGET.TOTAL_AMOUNT, BUDGET.TOTAL_AMOUNT.plus(difference))
+        .where(BUDGET.ID.eq(budgetId.getIntId()))
+        .execute();
+    } else {
+      db.update(BUDGET)
+        .set(BUDGET.TOTAL_AMOUNT, BUDGET.TOTAL_AMOUNT.minus(difference))
+        .where(BUDGET.ID.eq(budgetId.getIntId()))
+        .execute();
+    }
+  }
+
   public void updateBudgetSpent(BudgetID budgetId, double transactionAmount) {
-    System.out.print("method called!");
     db.update(BUDGET)
       .set(BUDGET.TOTAL_SPENT, BUDGET.TOTAL_SPENT.plus(transactionAmount))
       .where(BUDGET.ID.eq(budgetId.getIntId()))

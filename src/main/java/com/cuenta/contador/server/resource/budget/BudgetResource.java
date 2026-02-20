@@ -81,7 +81,7 @@ public class BudgetResource {
       return Response.status(Response.Status.NOT_FOUND).entity("Budget id does not exist").build();
     }
     try {
-      budgetService.updateBudgetAllocation(id, budgetAllocationJson.getCategory(), budgetAllocationJson.getAmount());
+      budgetService.updateBudgetAllocationTotal(id, allocationId ,budgetAllocationJson.getAmount());
       return Response.ok("Budget allocation successfully updated").build();
     } catch (Exception e){
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
