@@ -91,6 +91,11 @@ public class BudgetServiceImpl implements  BudgetService{
   }
 
   @Override
+  public void deleteBudgetAllocation(BudgetID budgetId, Integer allocationId) throws Exception {
+    budgetStore.deleteBudgetAllocation(budgetId, allocationId);
+  }
+
+  @Override
   public Budget getCurrentBudget(){
     UserID userId = UserContext.getUserID();
     return budgetStore.getCurrentBudget(userId);

@@ -31,9 +31,14 @@ public class BudgetStore {
   }
 
   public boolean budgetExists(BudgetID budgetId){
-    boolean boo = db.selectFrom(BUDGET).where(BUDGET.ID.eq(budgetId.getIntId())).fetchOne() != null;
-    System.out.println(boo);
-    return boo;
+    return db.selectFrom(BUDGET).where(BUDGET.ID.eq(budgetId.getIntId())).fetchOne() != null;
+  }
+
+  private boolean budgetAllocationExists(BudgetID budgetId, int allocationId){
+    return db.selectFrom(BUDGET_ALLOCATION)
+      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+      .and(BUDGET_ALLOCATION.ID.eq(allocationId))
+      .fetchOne() != null;
   }
 
   public void storeBudget(UserID userId, Budget budget){
@@ -167,12 +172,12 @@ public class BudgetStore {
       .and(BUDGET_ALLOCATION.ID.eq(allocationId))
       .fetchOne(BUDGET_ALLOCATION.AMOUNT);
 
+    //TO DO: do we need this?
     if (currTotal == null){
       throw new Exception("Current total not found");
     }
 
     double difference = currTotal - allocationTotal;
-    System.out.println("difference is " + difference);
 
     db.update(BUDGET_ALLOCATION)
       .set(BUDGET_ALLOCATION.AMOUNT, allocationTotal)
@@ -180,11 +185,9 @@ public class BudgetStore {
       .and(BUDGET_ALLOCATION.ID.eq(allocationId))
       .execute();
     if (difference > 0){
-      System.out.println("doing line if");
       updateBudgetTotal(budgetId, false, difference);
     } else {
       difference *= -1;
-      System.out.println("doing line else");
       updateBudgetTotal(budgetId, true, difference );
     }
   }
@@ -207,6 +210,16 @@ public class BudgetStore {
     db.update(BUDGET)
       .set(BUDGET.TOTAL_SPENT, BUDGET.TOTAL_SPENT.plus(transactionAmount))
       .where(BUDGET.ID.eq(budgetId.getIntId()))
+      .execute();
+  }
+
+  public void deleteBudgetAllocation(BudgetID budgetId, int allocationId) throws Exception {
+    if (!budgetAllocationExists(budgetId, allocationId)){
+      throw new Exception("Budget allocation does not exist");
+    }
+    db.deleteFrom(BUDGET_ALLOCATION)
+      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+      .and(BUDGET_ALLOCATION.ID.eq(allocationId))
       .execute();
   }
 

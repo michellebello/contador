@@ -88,6 +88,17 @@ public class BudgetResource {
     }
   }
 
+  @DELETE
+  @Path("/{budgetId}/{allocationId}")
+  public Response deleteBudgetAllocation(@PathParam("budgetId") int budgetId, @PathParam("allocationId") int allocationId){
+    try {
+      budgetService.deleteBudgetAllocation(BudgetID.of(budgetId), allocationId);
+      return Response.ok("Budget allocation deleted").build();
+    } catch (Exception e){
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
+    }
+  }
+
   @GET
   @Path("/{budgetId}/allocations")
   public List<BudgetAllocationJson> getBudgetAllocationsById(@PathParam("budgetId") int budgetId){
