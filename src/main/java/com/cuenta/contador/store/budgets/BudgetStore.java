@@ -76,6 +76,12 @@ public class BudgetStore {
     if (!budgetExists(budgetId)){
       throw new Exception("BudgetId does not exists in db");
     }
+    boolean hasAllocations = db.fetchExists(db.selectFrom(BUDGET_ALLOCATION).where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId())));
+    if (hasAllocations){
+      db.deleteFrom(BUDGET_ALLOCATION)
+        .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+        .execute();
+    }
     db.deleteFrom(BUDGET)
       .where(BUDGET.USER_ID.eq(userId.getIntId()))
       .and(BUDGET.ID.eq(budgetId.getIntId()))

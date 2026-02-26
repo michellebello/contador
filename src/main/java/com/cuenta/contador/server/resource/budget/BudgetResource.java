@@ -56,7 +56,7 @@ public class BudgetResource {
       return Response.ok("Budget deleted").build();
     } catch (Exception e){
       if (Objects.equals(e.getMessage(), "BudgetId does not exists in db")) {
-        return Response.status(Response.Status.).entity("BudgetId does not exists in db").build();
+        return Response.status(Response.Status.NOT_FOUND).entity("BudgetId does not exists in db").build();
       }
       return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
     }
