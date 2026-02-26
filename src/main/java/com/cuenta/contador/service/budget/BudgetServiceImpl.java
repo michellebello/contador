@@ -18,13 +18,13 @@ public class BudgetServiceImpl implements  BudgetService{
   }
 
   @Override
-  public void storeBudget(Budget budget){
+  public BudgetID storeBudget(Budget budget) throws Exception {
     UserID userId = UserContext.getUserID();
-    budgetStore.storeBudget(userId, budget);
+    return budgetStore.storeBudget(userId, budget);
   }
 
   @Override
-  public void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations){
+  public void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations) throws Exception {
     budgetStore.storeBudgetAllocations(budgetId, budgetAllocations);
   }
 
@@ -105,5 +105,11 @@ public class BudgetServiceImpl implements  BudgetService{
   public boolean budgetExists(BudgetID budgetId) {
     UserID userId = UserContext.getUserID();
     return budgetStore.budgetExists(budgetId);
+  }
+
+  @Override
+  public void deleteBudget(BudgetID budgetId) throws Exception {
+    UserID userId = UserContext.getUserID();
+    budgetStore.deleteBudget(userId, budgetId);
   }
 }

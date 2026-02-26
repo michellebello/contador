@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface BudgetService {
-  void storeBudget(Budget budget);
-  void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations);
+  BudgetID storeBudget(Budget budget) throws Exception;
+  void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations) throws Exception;
   Budget getBudget(int year, byte month);
   Double getBudgetSpent(BudgetID budgetId);
   List<BudgetAllocation> getBudgetAllocations(BudgetID budgetID);
@@ -23,4 +23,5 @@ public interface BudgetService {
   void deleteBudgetAllocation(BudgetID budgetId, Integer allocationId) throws Exception;
   Budget getCurrentBudget();
   boolean budgetExists(BudgetID budgetID);
+  void deleteBudget(BudgetID budgetId) throws Exception;
 }

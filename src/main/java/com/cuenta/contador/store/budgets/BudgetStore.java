@@ -41,19 +41,24 @@ public class BudgetStore {
       .fetchOne() != null;
   }
 
-  public void storeBudget(UserID userId, Budget budget){
-    db.insertInto(BUDGET)
+  public BudgetID storeBudget(UserID userId, Budget budget) throws Exception {
+    BudgetRecord record = db.insertInto(BUDGET)
       .set(BUDGET.USER_ID, userId.getIntId())
       .set(BUDGET.MONTH_NUM, budget.getMonthNumber())
       .set(BUDGET.YEAR, budget.getYear())
       .set(BUDGET.TOTAL_AMOUNT, budget.getTotalAmount())
       .set(BUDGET.TOTAL_SPENT, 0.0)
-      .execute();
+      .returning(BUDGET.ID)
+      .fetchOne();
+    if (record == null){
+      throw new Exception("Budget for such period already exists");
+    }
+    return BudgetID.of(record.getValue(BUDGET.ID));
   }
 
-  public void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations){
+  public void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations) throws Exception {
     if (!budgetExists(budgetId)){
-      throw new Error("BudgetId does not exists in db");
+      throw new Exception("BudgetId does not exists in db");
     }
     List<BudgetAllocationRecord> records = new ArrayList<>();
     budgetAllocations.forEach(allocation -> {
@@ -65,6 +70,16 @@ public class BudgetStore {
       records.add(record);
     });
     db.batchInsert(records).execute();
+  }
+
+  public void deleteBudget(UserID userId, BudgetID budgetId) throws Exception {
+    if (!budgetExists(budgetId)){
+      throw new Exception("BudgetId does not exists in db");
+    }
+    db.deleteFrom(BUDGET)
+      .where(BUDGET.USER_ID.eq(userId.getIntId()))
+      .and(BUDGET.ID.eq(budgetId.getIntId()))
+      .execute();
   }
 
   public List<Budget> getAllBudgets(UserID userId) {
@@ -172,7 +187,6 @@ public class BudgetStore {
       .and(BUDGET_ALLOCATION.ID.eq(allocationId))
       .fetchOne(BUDGET_ALLOCATION.AMOUNT);
 
-    //TO DO: do we need this?
     if (currTotal == null){
       throw new Exception("Current total not found");
     }

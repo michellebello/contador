@@ -15,11 +15,17 @@ public class BudgetAllocation {
     this.amount = amount;
     this.spent = spent;
   }
+
   public BudgetAllocation(int id, String category, Double amount, Double spent) {
     this.id = id;
     this.category = category;
     this.amount = amount;
     this.spent = spent;
+  }
+
+  public BudgetAllocation( String category, Double amount) {
+    this.category = category;
+    this.amount = amount;
   }
 
   public int getId() {

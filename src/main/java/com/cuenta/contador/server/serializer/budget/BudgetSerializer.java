@@ -33,6 +33,13 @@ public class BudgetSerializer {
     );
   }
 
+  public BudgetAllocation fromBudgetAllocationJsonNoId(BudgetAllocationJson budgetAllocationJson){
+    return new BudgetAllocation(
+      budgetAllocationJson.getCategory(),
+      budgetAllocationJson.getAmount()
+    );
+  }
+
   // turns Budget -> BudgetJson
   public BudgetJson toJson(Budget budget){
     BudgetJson budgetJson = new BudgetJson();

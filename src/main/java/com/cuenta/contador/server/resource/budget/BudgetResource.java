@@ -28,10 +28,14 @@ public class BudgetResource {
   }
 
   @POST
-  public Response storeBudget(BudgetJson budgetJson){
+  public Response storeBudget(BudgetJson budgetJson) throws Exception {
     Budget budget = budgetSerializer.fromBudgetJson(budgetJson);
-    budgetService.storeBudget(budget);
-    return Response.status(Response.Status.CREATED).build();
+    try{
+      BudgetID budgetId = budgetService.storeBudget(budget);
+      return Response.ok(budgetId.getIntId()).build();
+    } catch (Exception e) {
+      return Response.status(Response.Status.CONFLICT).entity("Budget for this period already exists").build();
+    }
   }
 
   @GET
@@ -44,12 +48,27 @@ public class BudgetResource {
     return budgetJsonList;
   }
 
+  @DELETE
+  @Path("/{budgetId}")
+  public Response deleteBudget(@PathParam("budgetId") int budgetId){
+    try {
+      budgetService.deleteBudget(BudgetID.of(budgetId));
+      return Response.ok("Budget deleted").build();
+    } catch (Exception e){
+      if (Objects.equals(e.getMessage(), "BudgetId does not exists in db")) {
+        return Response.status(Response.Status.).entity("BudgetId does not exists in db").build();
+      }
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
+    }
+  }
+
   @POST
   @Path("/{budgetId}/allocations")
-  public Response storeBudgetAllocations(@PathParam("budgetId") int budgetId, List<BudgetAllocationJson> budgetAllocationJsonList){
+  public Response storeBudgetAllocations(@PathParam("budgetId") int budgetId, List<BudgetAllocationJson> budgetAllocationJsonList) throws Exception {
+    System.out.println("budget id sent from fe is " + budgetId);
     List<BudgetAllocation> budgetAllocationList = new ArrayList<>();
     budgetAllocationJsonList.forEach(budgetAllocationJson -> {
-      budgetAllocationList.add(budgetSerializer.fromBudgetAllocationJson(budgetAllocationJson));
+      budgetAllocationList.add(budgetSerializer.fromBudgetAllocationJsonNoId(budgetAllocationJson));
     });
     budgetService.storeBudgetAllocations(BudgetID.of(budgetId), budgetAllocationList);
     return Response.status(Response.Status.CREATED).build();
