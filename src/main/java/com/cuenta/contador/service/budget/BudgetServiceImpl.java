@@ -1,5 +1,6 @@
 package com.cuenta.contador.service.budget;
 
+import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.service.budget.Budget.BudgetID;
@@ -73,6 +74,12 @@ public class BudgetServiceImpl implements  BudgetService{
   public boolean budgetCategoryExists(BudgetID budgetId, String category){
     UserID userId = UserContext.getUserID();
     return budgetStore.budgetCategoryExists(userId, budgetId, category);
+  }
+
+  @Override
+  public void updateBudgetTotal(BudgetID budgetId, Double newTotal) throws Exception {
+    UserID userId = UserContext.getUserID();
+    budgetStore.updateBudgetTotal(userId, budgetId, newTotal);
   }
 
   @Override

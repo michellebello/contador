@@ -48,6 +48,27 @@ public class BudgetResource {
     return budgetJsonList;
   }
 
+  @PATCH
+  @Path("/{budgetId}")
+  public Response updateBudgetTotal(@PathParam("budgetId") int budgetId, BudgetJson budgetJson){
+    BudgetID id = BudgetID.of(budgetId);
+    if (!budgetService.budgetExists(id)){
+      return Response.status(Response.Status.NOT_FOUND).entity("Budget id does not exist").build();
+    }
+    if (budgetJson.getTotalAmount() == null || budgetJson.getTotalAmount().isNaN()){
+      return Response.status(Response.Status.NO_CONTENT).entity("Budget id does not exist").build();
+    }
+    try {
+      budgetService.updateBudgetTotal(id, budgetJson.getTotalAmount());
+      return Response.ok("Budget updated").build();
+    } catch (Exception e){
+      if (Objects.equals(e.getMessage(), "BudgetId does not exists in db")) {
+        return Response.status(Response.Status.NOT_FOUND).entity("BudgetId does not exists in db").build();
+      }
+      return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
+    }
+  }
+
   @DELETE
   @Path("/{budgetId}")
   public Response deleteBudget(@PathParam("budgetId") int budgetId){

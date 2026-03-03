@@ -11,7 +11,6 @@ import jakarta.inject.Inject;
 import org.jooq.DSLContext;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,6 @@ import java.util.Map;
 
 import static com.cuenta.contador.jooq_auto_generated.Tables.BUDGET;
 import static com.cuenta.contador.jooq_auto_generated.Tables.BUDGET_ALLOCATION;
-import static org.jooq.impl.DSL.all;
 import static org.jooq.impl.DSL.sum;
 
 public class BudgetStore {
@@ -83,6 +81,17 @@ public class BudgetStore {
         .execute();
     }
     db.deleteFrom(BUDGET)
+      .where(BUDGET.USER_ID.eq(userId.getIntId()))
+      .and(BUDGET.ID.eq(budgetId.getIntId()))
+      .execute();
+  }
+
+  public void updateBudgetTotal(UserID userId, BudgetID budgetId, Double newTotal) throws Exception {
+    if (!budgetExists(budgetId)){
+      throw new Exception("BudgetId does not exists in db");
+    }
+    db.update(BUDGET)
+      .set(BUDGET.TOTAL_AMOUNT, newTotal)
       .where(BUDGET.USER_ID.eq(userId.getIntId()))
       .and(BUDGET.ID.eq(budgetId.getIntId()))
       .execute();
