@@ -70,9 +70,9 @@ public class BudgetServiceImpl implements  BudgetService{
   }
 
   @Override
-  public boolean budgetCategoryExists(String category){
+  public boolean budgetCategoryExists(BudgetID budgetId, String category){
     UserID userId = UserContext.getUserID();
-    return budgetStore.budgetCategoryExists(userId, category);
+    return budgetStore.budgetCategoryExists(userId, budgetId, category);
   }
 
   @Override

@@ -16,7 +16,7 @@ public interface BudgetService {
   List<Budget> getAllBudgets();
   BudgetID getBudgetId(LocalDateTime createdOn);
   BudgetID getCurrentBudgetId();
-  boolean budgetCategoryExists(String category);
+  boolean budgetCategoryExists(BudgetID budgetId, String category);
   void updateBudgetAllocation(BudgetID budgetId, String category, double transactionAmount);
   void updateBudgetSpent(BudgetID budgetId, Double transactionAmount);
   void updateBudgetAllocationTotal(BudgetID budgetId, Integer allocationId, Double allocationTotal) throws Exception;

@@ -167,11 +167,11 @@ public class BudgetStore {
       .and(BUDGET.YEAR.eq(year))
       .and(BUDGET.MONTH_NUM.eq(monthNum))
       .fetchOne(BUDGET.ID);
+    System.out.println("budgetId " + budgetId);
     return budgetId != null ? BudgetID.of(budgetId) : null;
   }
 
-  public boolean budgetCategoryExists(UserID userId, String category){
-    BudgetID budgetId = getCurrentBudgetId(userId);
+  public boolean budgetCategoryExists(UserID userId, BudgetID budgetId, String category){
     return db.selectFrom(BUDGET_ALLOCATION)
       .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
       .and(BUDGET_ALLOCATION.CATEGORY.eq(category))

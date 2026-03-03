@@ -30,10 +30,13 @@ public class TransactionServiceImpl implements TransactionService{
         UserID userId = UserContext.getUserID();
         String category = transaction.getCategory();
         accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), transaction.getAmount(), transaction.getTypeName());
-        if (budgetService.budgetCategoryExists(category)){
-            BudgetID budgetID = budgetService.getBudgetId(transaction.getCreatedOn());
-            budgetService.updateBudgetAllocation(budgetID, category, transaction.getAmount());
-            budgetService.updateBudgetSpent(budgetID, transaction.getAmount());
+        BudgetID currBudgetId = budgetService.getCurrentBudgetId();
+        if (currBudgetId != null){
+            boolean categoryExists = budgetService.budgetCategoryExists(currBudgetId, category);
+            if (categoryExists){
+                budgetService.updateBudgetAllocation(currBudgetId, category, transaction.getAmount());
+                budgetService.updateBudgetSpent(currBudgetId, transaction.getAmount());
+            }
         }
         transactionStore.storeTransaction(userId, transaction);
     }
