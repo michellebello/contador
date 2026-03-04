@@ -97,6 +97,13 @@ public class BudgetStore {
       .execute();
   }
 
+  public Budget getBudgetFromId(UserID userId, BudgetID budgetId){
+    BudgetRecord record = db.selectFrom(BUDGET).where(BUDGET.ID.eq(budgetId.getIntId()))
+      .and(BUDGET.USER_ID.eq(userId.getIntId()))
+      .fetchOne();
+    return record != null? fromRecord(record) : null;
+  }
+
   public List<Budget> getAllBudgets(UserID userId) {
     return db.selectFrom(BUDGET)
       .where(BUDGET.USER_ID.eq(userId.getIntId()))

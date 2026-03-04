@@ -86,7 +86,6 @@ public class BudgetResource {
   @POST
   @Path("/{budgetId}/allocations")
   public Response storeBudgetAllocations(@PathParam("budgetId") int budgetId, List<BudgetAllocationJson> budgetAllocationJsonList) throws Exception {
-    System.out.println("budget id sent from fe is " + budgetId);
     List<BudgetAllocation> budgetAllocationList = new ArrayList<>();
     budgetAllocationJsonList.forEach(budgetAllocationJson -> {
       budgetAllocationList.add(budgetSerializer.fromBudgetAllocationJsonNoId(budgetAllocationJson));
@@ -148,6 +147,19 @@ public class BudgetResource {
       budgetAllocationJson.add(budgetSerializer.toBudgetAllocationJson(budgetAllocation));
     });
     return budgetAllocationJson;
+  }
+
+  @GET
+  @Path("/{budgetId}")
+  public Response getBudgetFromId(@PathParam("budgetId") int budgetId){
+    Budget budget = budgetService.getBudgetFromId(BudgetID.of(budgetId));
+    try {
+      BudgetJson budgetJson = budgetSerializer.toJson(budget);
+      return Response.ok(budgetJson).build();
+    } catch (Exception e){
+      return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
   }
 
   @GET

@@ -21,6 +21,7 @@ public interface BudgetService {
   void updateBudgetSpent(BudgetID budgetId, Double transactionAmount);
   void updateBudgetAllocationTotal(BudgetID budgetId, Integer allocationId, Double allocationTotal) throws Exception;
   void deleteBudgetAllocation(BudgetID budgetId, Integer allocationId) throws Exception;
+  Budget getBudgetFromId(BudgetID budgetId);
   Budget getCurrentBudget();
   boolean budgetExists(BudgetID budgetID);
   void deleteBudget(BudgetID budgetId) throws Exception;

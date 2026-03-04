@@ -30,6 +30,12 @@ public class BudgetServiceImpl implements  BudgetService{
   }
 
   @Override
+  public Budget getBudgetFromId(BudgetID budgetId){
+    UserID userId = UserContext.getUserID();
+    return budgetStore.getBudgetFromId(userId, budgetId);
+  }
+
+  @Override
   public Budget getBudget(int year, byte month){
     UserID userId = UserContext.getUserID();
     return budgetStore.getBudget(userId, year, month);
