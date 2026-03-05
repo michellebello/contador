@@ -1,8 +1,6 @@
 package com.cuenta.contador.service.transaction;
 
-import com.cuenta.contador.service.account.AccountService;
-import com.cuenta.contador.service.budget.Budget.BudgetID;
-import com.cuenta.contador.service.budget.BudgetService;
+import com.cuenta.contador.service.account.Account.AccountID;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.store.transaction.TransactionStore;
@@ -13,31 +11,16 @@ import java.util.List;
 import jakarta.inject.Inject;
 
 public class TransactionServiceImpl implements TransactionService{
-    private final AccountService accountService;
-    private final BudgetService budgetService;
     private final TransactionStore transactionStore;
 
     @Inject
-    public TransactionServiceImpl(TransactionStore transactionStore, BudgetService budgetService, AccountService accountService){
+    public TransactionServiceImpl(TransactionStore transactionStore){
         this.transactionStore = transactionStore;
-        this.budgetService = budgetService;
-        this.accountService = accountService;
     }
 
 
     @Override
-    public void storeTransaction(Transaction transaction){
-        UserID userId = UserContext.getUserID();
-        String category = transaction.getCategory();
-        accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), transaction.getAmount(), transaction.getTypeName());
-        BudgetID currBudgetId = budgetService.getCurrentBudgetId();
-        if (currBudgetId != null){
-            boolean categoryExists = budgetService.budgetCategoryExists(currBudgetId, category);
-            if (categoryExists){
-                budgetService.updateBudgetAllocation(currBudgetId, category, transaction.getAmount());
-                budgetService.updateBudgetSpent(currBudgetId, transaction.getAmount());
-            }
-        }
+    public void storeTransaction(UserID userId, Transaction transaction){
         transactionStore.storeTransaction(userId, transaction);
     }
 
@@ -53,32 +36,28 @@ public class TransactionServiceImpl implements TransactionService{
         return transactionStore.getTransactions(userId, ids, after, before);
     }
 
-    @Override
-    public void updateTransaction(TransactionID transactionId, Transaction transaction){
-        UserID userId = UserContext.getUserID();
-        if (transaction.getAmount() != null){
-            double prev = transactionStore.getTransactionAmount(userId, transactionId);
-            String transType = transactionStore.getTransactionType(userId, transactionId);
-            double difference = (prev - transaction.getAmount());
-            if (transType.equals("Expense")) {
-                if (difference >= 0) {
-                    difference *= -1;
-                    accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), difference, transType);
-                } else {
-                    accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), difference, transType);
-                }
-            }
 
-        }
+    @Override
+    public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction){
         transactionStore.updateTransaction(userId, transactionId, transaction);
     }
+
     @Override
-    public void deleteTransaction(TransactionID transactionId){
-        UserID userId = UserContext.getUserID();
-        Double amountToDelete = transactionStore.getTransactionAmount(userId, transactionId);
-        accountService.updateAccountBalanceFromDelete(transactionStore.getTransactionAccountId(userId, transactionId),
-          amountToDelete,
-          transactionStore.getTransactionType(userId, transactionId));
+    public double getTransactionAmount(UserID userId, TransactionID transactionId){
+        return transactionStore.getTransactionAmount(userId, transactionId);
+    }
+
+    @Override
+    public String getTransactionType(UserID userId, TransactionID transactionId){
+        return transactionStore.getTransactionType(userId, transactionId);
+    }
+    @Override
+    public void deleteTransaction(UserID userId, TransactionID transactionId){
         transactionStore.deleteTransaction(userId, transactionId);
+    }
+
+    @Override
+    public AccountID getTransactionAccountId(UserID userId, TransactionID transactionId){
+        return transactionStore.getTransactionAccountId(userId, transactionId);
     }
 }

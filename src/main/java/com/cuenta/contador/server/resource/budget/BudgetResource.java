@@ -52,7 +52,7 @@ public class BudgetResource {
   @Path("/{budgetId}")
   public Response updateBudgetTotal(@PathParam("budgetId") int budgetId, BudgetJson budgetJson){
     BudgetID id = BudgetID.of(budgetId);
-    if (!budgetService.budgetExists(id)){
+    if (budgetService.budgetExists(id)){
       return Response.status(Response.Status.NOT_FOUND).entity("Budget id does not exist").build();
     }
     if (budgetJson.getTotalAmount() == null || budgetJson.getTotalAmount().isNaN()){
@@ -116,7 +116,7 @@ public class BudgetResource {
       return Response.status(Response.Status.NO_CONTENT).entity("Empty body").build();
     }
     BudgetID id = BudgetID.of(budgetId);
-    if (!budgetService.budgetExists(id)){
+    if (budgetService.budgetExists(id)){
       return Response.status(Response.Status.NOT_FOUND).entity("Budget id does not exist").build();
     }
     try {

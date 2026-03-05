@@ -9,7 +9,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DSLContextProvider implements Provider<DSLContext> {
-
     @Override
     public DSLContext get() {
         DBCredentials credentials = DBCredentials.fromDefaultFile();

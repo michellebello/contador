@@ -12,9 +12,7 @@ import jakarta.inject.Inject;
 import org.jooq.Record;
 
 import java.time.LocalDate;
-import java.time.temporal.TemporalUnit;
 import java.util.List;
-import java.util.Set;
 
 
 import static com.cuenta.contador.infra.ID.getIntIds;
@@ -103,12 +101,13 @@ public class TransactionStore {
             partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
         }
 
+
         return partialQuery
           .orderBy(TRANSACTION.CREATED_ON.desc())
+          .limit(20)
           .fetch()
           .map(this::fromJoinedRecord);
     }
-
 
     public AccountID getTransactionAccountId(UserID userId, TransactionID transactionId){
         Integer accountId = db.select(TRANSACTION.ACCOUNT_ID)
@@ -141,7 +140,7 @@ public class TransactionStore {
     }
 
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {
-        var partialQuery = db.update(TRANSACTION)
+        db.update(TRANSACTION)
                 .set(TRANSACTION.NAME, transaction.getName())
                 .set(TRANSACTION.CATEGORY, transaction.getCategory())
                 .set(TRANSACTION.AMOUNT, transaction.getAmount())

@@ -1,6 +1,6 @@
 package com.cuenta.contador.service.budget;
 
-import com.cuenta.contador.service.user.User;
+import com.cuenta.contador.service.transaction.TransactionService;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.service.budget.Budget.BudgetID;

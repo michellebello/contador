@@ -28,10 +28,11 @@ public class AuthenticationFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext filterContext) throws IOException {
-        if (FilterUtils.isPublicUri(filterContext.getUriInfo())) {
-            return;
-        }
-        verifySession(filterContext);
+        return;
+//        if (FilterUtils.isPublicUri(filterContext.getUriInfo())) {
+//            return;
+//        }
+//        verifySession(filterContext);
     }
 
     private void verifySession(ContainerRequestContext filterContext) {

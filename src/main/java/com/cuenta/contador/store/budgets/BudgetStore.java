@@ -29,7 +29,7 @@ public class BudgetStore {
   }
 
   public boolean budgetExists(BudgetID budgetId){
-    return db.selectFrom(BUDGET).where(BUDGET.ID.eq(budgetId.getIntId())).fetchOne() != null;
+    return db.selectFrom(BUDGET).where(BUDGET.ID.eq(budgetId.getIntId())).fetchOne() == null;
   }
 
   private boolean budgetAllocationExists(BudgetID budgetId, int allocationId){
@@ -55,7 +55,7 @@ public class BudgetStore {
   }
 
   public void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations) throws Exception {
-    if (!budgetExists(budgetId)){
+    if (budgetExists(budgetId)){
       throw new Exception("BudgetId does not exists in db");
     }
     List<BudgetAllocationRecord> records = new ArrayList<>();
@@ -71,7 +71,7 @@ public class BudgetStore {
   }
 
   public void deleteBudget(UserID userId, BudgetID budgetId) throws Exception {
-    if (!budgetExists(budgetId)){
+    if (budgetExists(budgetId)){
       throw new Exception("BudgetId does not exists in db");
     }
     boolean hasAllocations = db.fetchExists(db.selectFrom(BUDGET_ALLOCATION).where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId())));
@@ -87,7 +87,7 @@ public class BudgetStore {
   }
 
   public void updateBudgetTotal(UserID userId, BudgetID budgetId, Double newTotal) throws Exception {
-    if (!budgetExists(budgetId)){
+    if (budgetExists(budgetId)){
       throw new Exception("BudgetId does not exists in db");
     }
     db.update(BUDGET)
@@ -183,7 +183,6 @@ public class BudgetStore {
       .and(BUDGET.YEAR.eq(year))
       .and(BUDGET.MONTH_NUM.eq(monthNum))
       .fetchOne(BUDGET.ID);
-    System.out.println("budgetId " + budgetId);
     return budgetId != null ? BudgetID.of(budgetId) : null;
   }
 

@@ -2,6 +2,7 @@ package com.cuenta.contador.server.resource.transaction;
 
 import com.cuenta.contador.server.json.transaction.TransactionJson;
 import com.cuenta.contador.server.serializer.transaction.TransactionSerializer;
+import com.cuenta.contador.service.coordinator.transaction.TransactionCoordinatorService;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.service.transaction.TransactionService;
@@ -21,18 +22,20 @@ import java.util.List;
 public class TransactionResource {
     private static final String TRANSACTION_ID = "transactionId";
     private final TransactionService transactionService;
+    private final TransactionCoordinatorService transactionCoordinatorService;
     private final TransactionSerializer transactionSerializer;
 
     @Inject
-    public TransactionResource(TransactionService transactionService, TransactionSerializer transactionSerializer) {
+    public TransactionResource(TransactionService transactionService, TransactionCoordinatorService transactionCoordinatorService, TransactionSerializer transactionSerializer) {
         this.transactionService = transactionService;
+        this.transactionCoordinatorService = transactionCoordinatorService;
         this.transactionSerializer = transactionSerializer;
     }
 
     @POST
     public Response storeTransaction(TransactionJson transactionJson){
         Transaction transaction = transactionSerializer.fromTransactionJson(transactionJson);
-        transactionService.storeTransaction(transaction);
+        transactionCoordinatorService.createAndProcessTransaction(transaction);
         return Response.status(Response.Status.CREATED).build();
     }
 
@@ -54,7 +57,7 @@ public class TransactionResource {
             @QueryParam("after") String afterString,
             @QueryParam("before") String beforeString
     ) {
-        // make sure no whitespace
+        System.out.println("DEBUG: Entering Resource.getTransactions");
         afterString = afterString != null? afterString.trim() : null;
         LocalDate after = afterString != null? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
 
@@ -79,7 +82,7 @@ public class TransactionResource {
         }
         Transaction transactionToUpdate = transactionSerializer.fromPartialTransactionJson(transactionJson, currTransaction);
         try {
-            transactionService.updateTransaction(TransactionID.of(transactionId), transactionToUpdate);
+            transactionCoordinatorService.updateTransaction(TransactionID.of(transactionId), transactionToUpdate);
             return Response.ok("Transaction successfully updated.").build();
         } catch (Exception e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
@@ -94,7 +97,7 @@ public class TransactionResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Transaction with id " + transactionId + " not found.").build();
         }
         try {
-            transactionService.deleteTransaction(TransactionID.of(transactionId));
+            transactionCoordinatorService.deleteTransaction(TransactionID.of(transactionId));
             return Response.ok("Successfully deleted transaction").build();
         } catch (Exception e){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Server error try again").build();
