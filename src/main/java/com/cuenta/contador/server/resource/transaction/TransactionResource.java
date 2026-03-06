@@ -57,7 +57,6 @@ public class TransactionResource {
             @QueryParam("after") String afterString,
             @QueryParam("before") String beforeString
     ) {
-        System.out.println("DEBUG: Entering Resource.getTransactions");
         afterString = afterString != null? afterString.trim() : null;
         LocalDate after = afterString != null? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
 

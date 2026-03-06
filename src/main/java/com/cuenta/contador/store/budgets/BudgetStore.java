@@ -64,7 +64,8 @@ public class BudgetStore {
       record.set(BUDGET_ALLOCATION.BUDGET_ID, budgetId.getIntId());
       record.set(BUDGET_ALLOCATION.CATEGORY, allocation.getCategory());
       record.set(BUDGET_ALLOCATION.AMOUNT, allocation.getAmount());
-      record.set(BUDGET_ALLOCATION.SPENT, allocation.getSpent());
+      Double spent = allocation.getSpent() == null ? 0.0 : allocation.getSpent();
+      record.set(BUDGET_ALLOCATION.SPENT, spent);
       records.add(record);
     });
     db.batchInsert(records).execute();
@@ -194,11 +195,25 @@ public class BudgetStore {
   }
 
   public void updateBudgetAllocation(BudgetID budgetId, String category, double transactionAmount){
-    db.update(BUDGET_ALLOCATION)
-      .set(BUDGET_ALLOCATION.SPENT, BUDGET_ALLOCATION.SPENT.plus(transactionAmount))
-      .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
-      .and(BUDGET_ALLOCATION.CATEGORY.eq(category))
-      .execute();
+    Double currSpent = db.select(BUDGET_ALLOCATION.SPENT)
+        .from(BUDGET_ALLOCATION)
+        .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+        .and(BUDGET_ALLOCATION.CATEGORY.eq(category))
+        .fetchOne(BUDGET_ALLOCATION.SPENT);
+    if (currSpent != null) {
+      db.update(BUDGET_ALLOCATION)
+        .set(BUDGET_ALLOCATION.SPENT, BUDGET_ALLOCATION.SPENT.plus(transactionAmount))
+        .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+        .and(BUDGET_ALLOCATION.CATEGORY.eq(category))
+        .execute();
+    } else {
+      db.update(BUDGET_ALLOCATION)
+        .set(BUDGET_ALLOCATION.SPENT, transactionAmount)
+        .where(BUDGET_ALLOCATION.BUDGET_ID.eq(budgetId.getIntId()))
+        .and(BUDGET_ALLOCATION.CATEGORY.eq(category))
+        .execute();
+    }
+
   }
 
   public void updateBudgetAllocationTotal(BudgetID budgetId, Integer allocationId, Double allocationTotal) throws Exception {

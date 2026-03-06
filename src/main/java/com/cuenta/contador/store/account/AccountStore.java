@@ -103,25 +103,6 @@ public class AccountStore {
                 .execute();
     }
 
-    private AccountRecord toRecord(UserID userId, Account account){
-        AccountRecord record = new AccountRecord();
-        record.setUserId(userId.getIntId());
-        record.setName(account.getName());
-        record.setNumber(account.getNumber());
-        record.setType(account.getType());
-        record.setBalance(account.getBalance());
-        return record;
-    }
-
-    private Account fromRecord(AccountRecord record){
-        return new Account(
-                AccountID.of(record.getId()),
-                record.getName(),
-                record.getNumber(),
-                record.getType(),
-                record.getBalance());
-    }
-
     public void updateAccountBalanceFromUpdate(UserID userId, AccountID accountId, Double amount, String transactionType) {
         String accountType = db.select(ACCOUNT.TYPE)
           .from(ACCOUNT)
@@ -147,27 +128,48 @@ public class AccountStore {
     }
 
 
-        public void updateAccountBalanceFromDelete(UserID userId, AccountID accountId, Double amount, String transactionType) {
-            String accountType = db.select(ACCOUNT.TYPE)
-              .from(ACCOUNT)
-              .where(ACCOUNT.ID.eq(accountId.getIntId()))
-              .and(ACCOUNT.USER_ID.eq(userId.getIntId()))
-              .fetchOne(ACCOUNT.TYPE);
+    public void updateAccountBalanceFromDelete(UserID userId, AccountID accountId, Double amount, String transactionType) {
+        String accountType = db.select(ACCOUNT.TYPE)
+          .from(ACCOUNT)
+          .where(ACCOUNT.ID.eq(accountId.getIntId()))
+          .and(ACCOUNT.USER_ID.eq(userId.getIntId()))
+          .fetchOne(ACCOUNT.TYPE);
 
-            assert accountType != null;
+        assert accountType != null;
 
-            if (accountType.equals("Credit") || accountType.equals("Debit")) {
-                if (transactionType.equals("Expense")){
-                    db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.minus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
-                } else {
-                    db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
-                }
+        if (accountType.equals("Credit") || accountType.equals("Debit")) {
+            if (transactionType.equals("Expense")){
+                db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.minus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
             } else {
-                if (transactionType.equals("Expense")){
-                    db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
-                } else {
-                    db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.minus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
-                }
+                db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
             }
+        } else {
+            if (transactionType.equals("Expense")){
+                db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.plus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+            } else {
+                db.update(ACCOUNT).set(ACCOUNT.BALANCE, ACCOUNT.BALANCE.minus(amount)).where(ACCOUNT.USER_ID.eq(userId.getIntId())).and(ACCOUNT.ID.eq(accountId.getIntId())).execute();
+            }
+        }
     }
+
+    private AccountRecord toRecord(UserID userId, Account account){
+        AccountRecord record = new AccountRecord();
+        record.setUserId(userId.getIntId());
+        record.setName(account.getName());
+        record.setNumber(account.getNumber());
+        record.setType(account.getType());
+        record.setBalance(account.getBalance());
+        return record;
+    }
+
+    private Account fromRecord(AccountRecord record){
+        return new Account(
+                AccountID.of(record.getId()),
+                record.getName(),
+                record.getNumber(),
+                record.getType(),
+                record.getBalance());
+    }
+
+
 }

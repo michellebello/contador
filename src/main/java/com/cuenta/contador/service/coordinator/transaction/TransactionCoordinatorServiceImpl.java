@@ -2,8 +2,8 @@ package com.cuenta.contador.service.coordinator.transaction;
 
 import com.cuenta.contador.service.account.AccountService;
 import com.cuenta.contador.service.budget.Budget;
+import com.cuenta.contador.service.budget.Budget.BudgetID;
 import com.cuenta.contador.service.budget.BudgetService;
-import com.cuenta.contador.service.coordinator.transaction.TransactionCoordinatorService;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.service.transaction.TransactionService;
@@ -26,9 +26,8 @@ public class TransactionCoordinatorServiceImpl implements TransactionCoordinator
   public void createAndProcessTransaction(Transaction transaction){
     User.UserID userId = UserContext.getUserID();
     String category = transaction.getCategory();
-
     accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), transaction.getAmount(), transaction.getTypeName());
-    Budget.BudgetID currBudgetId = budgetService.getCurrentBudgetId();
+    BudgetID currBudgetId = budgetService.getCurrentBudgetId();
     if (currBudgetId != null){
       boolean categoryExists = budgetService.budgetCategoryExists(currBudgetId, category);
       if (categoryExists){
@@ -41,29 +40,36 @@ public class TransactionCoordinatorServiceImpl implements TransactionCoordinator
 
   public void updateTransaction(TransactionID transactionId, Transaction transaction){
     User.UserID userId = UserContext.getUserID();
+    Transaction oldTransaction = transactionService.getTransaction(transactionId);
+
     if (transaction.getAmount() != null){
-      double prev = transactionService.getTransactionAmount(userId, transactionId);
-      String transType = transactionService.getTransactionType(userId, transactionId);
-      double difference = (prev - transaction.getAmount());
-      if (transType.equals("Expense")) {
-        if (difference >= 0) {
-          difference *= -1;
-          accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), difference, transType);
-        } else {
-          accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), difference, transType);
+      double difference = oldTransaction.getAmount() - transaction.getAmount();
+      accountService.updateAccountBalanceFromUpdate(transaction.getAccountId(), difference, transaction.getTypeName());
+      if (transaction.getTypeName().equals("Expense")){
+        BudgetID currBudgetId = budgetService.getCurrentBudgetId();
+        if (currBudgetId != null){
+          double adjustment = -difference;
+          if (budgetService.budgetCategoryExists(currBudgetId, oldTransaction.getCategory())){
+            budgetService.updateBudgetAllocation(currBudgetId, oldTransaction.getCategory(), adjustment);
+            budgetService.updateBudgetSpent(currBudgetId, adjustment);
+          }
         }
       }
-
     }
     transactionService.updateTransaction(userId, transactionId, transaction);
   }
 
   public void deleteTransaction(TransactionID transactionId){
     User.UserID userId = UserContext.getUserID();
-    Double amountToDelete = transactionService.getTransactionAmount(userId, transactionId);
-    accountService.updateAccountBalanceFromDelete(transactionService.getTransactionAccountId(userId, transactionId),
-      amountToDelete,
-      transactionService.getTransactionType(userId, transactionId));
+    Transaction oldTransaction = transactionService.getTransaction(transactionId);
+    accountService.updateAccountBalanceFromDelete(transactionService.getTransactionAccountId(userId, transactionId), oldTransaction.getAmount(), transactionService.getTransactionType(userId, transactionId));
+    if (oldTransaction.getTypeName().equals("Expense")) {
+      BudgetID currBudgetId = budgetService.getCurrentBudgetId();
+      if (currBudgetId != null && budgetService.budgetCategoryExists(currBudgetId, oldTransaction.getCategory())) {
+        budgetService.updateBudgetAllocation(currBudgetId, oldTransaction.getCategory(), -oldTransaction.getAmount());
+        budgetService.updateBudgetSpent(currBudgetId, -oldTransaction.getAmount());
+      }
+    }
     transactionService.deleteTransaction(userId, transactionId);
   }
 }

@@ -7,6 +7,7 @@ import com.cuenta.contador.service.budget.Budget;
 import com.cuenta.contador.service.budget.Budget.BudgetID;
 import com.cuenta.contador.service.budget.BudgetAllocation;
 import com.cuenta.contador.service.budget.BudgetService;
+import com.cuenta.contador.service.coordinator.budget.BudgetCoordinatorService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -18,11 +19,14 @@ import java.util.*;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class BudgetResource {
+
+  private final BudgetCoordinatorService budgetCoordinatorService;
   private final BudgetSerializer budgetSerializer;
   private final BudgetService budgetService;
 
   @Inject
-  public BudgetResource(BudgetSerializer budgetSerializer, BudgetService budgetService){
+  public BudgetResource(BudgetCoordinatorService budgetCoordinatorService, BudgetSerializer budgetSerializer, BudgetService budgetService){
+    this.budgetCoordinatorService = budgetCoordinatorService;
     this.budgetSerializer = budgetSerializer;
     this.budgetService = budgetService;
   }
@@ -31,7 +35,7 @@ public class BudgetResource {
   public Response storeBudget(BudgetJson budgetJson) throws Exception {
     Budget budget = budgetSerializer.fromBudgetJson(budgetJson);
     try{
-      BudgetID budgetId = budgetService.storeBudget(budget);
+      BudgetID budgetId = budgetCoordinatorService.createAndProcessNewBudget(budget);
       return Response.ok(budgetId.getIntId()).build();
     } catch (Exception e) {
       return Response.status(Response.Status.CONFLICT).entity("Budget for this period already exists").build();
@@ -90,7 +94,7 @@ public class BudgetResource {
     budgetAllocationJsonList.forEach(budgetAllocationJson -> {
       budgetAllocationList.add(budgetSerializer.fromBudgetAllocationJsonNoId(budgetAllocationJson));
     });
-    budgetService.storeBudgetAllocations(BudgetID.of(budgetId), budgetAllocationList);
+    budgetCoordinatorService.storeBudgetAllocations(BudgetID.of(budgetId), budgetAllocationList);
     return Response.status(Response.Status.CREATED).build();
   }
 

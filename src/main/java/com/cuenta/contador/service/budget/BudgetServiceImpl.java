@@ -19,8 +19,7 @@ public class BudgetServiceImpl implements  BudgetService{
   }
 
   @Override
-  public BudgetID storeBudget(Budget budget) throws Exception {
-    UserID userId = UserContext.getUserID();
+  public BudgetID storeBudget(UserID userId, Budget budget) throws Exception {
     return budgetStore.storeBudget(userId, budget);
   }
 

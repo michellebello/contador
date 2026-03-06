@@ -1,13 +1,14 @@
 package com.cuenta.contador.service.budget;
 
 import com.cuenta.contador.service.budget.Budget.BudgetID;
+import com.cuenta.contador.service.user.User.UserID;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 public interface BudgetService {
-  BudgetID storeBudget(Budget budget) throws Exception;
+  BudgetID storeBudget(UserID userId, Budget budget) throws Exception;
   void storeBudgetAllocations(BudgetID budgetId, List<BudgetAllocation> budgetAllocations) throws Exception;
   Budget getBudget(int year, byte month);
   Double getBudgetSpent(BudgetID budgetId);
