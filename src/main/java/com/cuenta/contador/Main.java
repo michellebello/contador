@@ -44,7 +44,7 @@ public class Main {
                 .register(ResponseLogger.class)
                 .register(UserContextWriteFilter.class)
                 .register(UserContextClearFilter.class)
-                .register((CORSFilter.class));
+                .register(CORSFilter.class);
 
         // Create and start a new instance of the Grizzly HTTP server
         return GrizzlyHttpServerFactory.createHttpServer(URI.create(BASE_URI), rc);

@@ -11,8 +11,11 @@ import org.jooq.*;
 import jakarta.inject.Inject;
 import org.jooq.Record;
 
+import java.lang.Package;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 import static com.cuenta.contador.infra.ID.getIntIds;
@@ -102,6 +105,7 @@ public class TransactionStore {
         }
 
 
+
         return partialQuery
           .orderBy(TRANSACTION.CREATED_ON.desc())
           .limit(20)
@@ -140,12 +144,16 @@ public class TransactionStore {
     }
 
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction) {
+        Map<Field<?>, Object> values = new HashMap<>();
+        if (transaction.getName() != null) values.put(TRANSACTION.NAME, transaction.getName());
+        if (transaction.getCategory() != null) values.put(TRANSACTION.CATEGORY, transaction.getCategory());
+        if (transaction.getAmount() != null) values.put(TRANSACTION.AMOUNT, transaction.getAmount());
+        if (transaction.getCreatedOn() != null) values.put(TRANSACTION.CREATED_ON, transaction.getCreatedOn());
+        if (transaction.getIsTaxable() != null) values.put(TRANSACTION.IS_TAXABLE, transaction.getIsTaxable());
+        if (values.isEmpty()) return;
+        System.out.println("values to update " + values.toString());
         db.update(TRANSACTION)
-                .set(TRANSACTION.NAME, transaction.getName())
-                .set(TRANSACTION.CATEGORY, transaction.getCategory())
-                .set(TRANSACTION.AMOUNT, transaction.getAmount())
-                .set(TRANSACTION.CREATED_ON, transaction.getCreatedOn())
-                .set(TRANSACTION.IS_TAXABLE, transaction.getIsTaxable())
+                .set(values)
                 .where(TRANSACTION.ID.eq(transactionId.getIntId()))
                 .and(TRANSACTION.USER_ID.eq(userId.getIntId()))
                 .execute();

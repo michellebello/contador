@@ -19,30 +19,34 @@ public class TransactionSerializer {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
     // fromTransactionJson (takes in TransactionJson and returns a Transaction)
-    public Transaction fromTransactionJson(TransactionJson transactionJson){
+    public Transaction fromTransactionJson(TransactionJson transactionJson) {
         return new Transaction(
-                transactionJson.getId() == null ? null : TransactionID.of(transactionJson.getId()),
-                AccountID.of(transactionJson.getAccountId()),
-                transactionJson.getName(),
-                transactionJson.getCategory(),
-                transactionJson.getTypeName(),
-                transactionJson.getAmount(),
-                transactionJson.getCreatedOn(),
-                transactionJson.getIsTaxable()
+          transactionJson.getId() == null ? null : TransactionID.of(transactionJson.getId()),
+          AccountID.of(transactionJson.getAccountId()),
+          "",
+          transactionJson.getName(),
+          transactionJson.getCategory(),
+          transactionJson.getTypeName(),
+          transactionJson.getAmount(),
+          transactionJson.getCreatedOn(),
+          transactionJson.getIsTaxable()
         );
     }
 
     // need to have partial fromTransactionJson for PATCH endpoint
     public Transaction fromPartialTransactionJson(TransactionJson transactionJson, Transaction currTransaction){
         return new Transaction(
-                currTransaction.getId(),
-                transactionJson.getAccountId() != null? AccountID.of(transactionJson.getAccountId()) : currTransaction.getAccountId(),
-                transactionJson.getName() != null? transactionJson.getName() : currTransaction.getName(),
-                transactionJson.getCategory() != null? transactionJson.getCategory() : currTransaction.getCategory(),
-                transactionJson.getAmount() != null? transactionJson.getAmount() : currTransaction.getAmount(),
-                transactionJson.getCreatedOn() != null? transactionJson.getCreatedOn() : currTransaction.getCreatedOn(),
-                transactionJson.getIsTaxable() != null? transactionJson.getIsTaxable() : currTransaction.getIsTaxable()
+          currTransaction.getId(),
+          transactionJson.getAccountId() != null ? AccountID.of(transactionJson.getAccountId()) : currTransaction.getAccountId(),
+          currTransaction.getAccountNumber(),
+          transactionJson.getName() != null ? transactionJson.getName() : currTransaction.getName(),
+          transactionJson.getCategory() != null ? transactionJson.getCategory() : currTransaction.getCategory(),
+          currTransaction.getTypeName(),
+          transactionJson.getAmount() != null ? transactionJson.getAmount() : currTransaction.getAmount(),
+          transactionJson.getCreatedOn() != null ? transactionJson.getCreatedOn() : currTransaction.getCreatedOn(),
+          transactionJson.getIsTaxable() != null ? transactionJson.getIsTaxable() : currTransaction.getIsTaxable()
         );
+
     }
 
     // toTransactionJson (takes in Transaction and returns a TransactionJson)

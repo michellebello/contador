@@ -35,8 +35,6 @@ public class CORSFilter implements ContainerRequestFilter, ContainerResponseFilt
         responseContext.getHeaders().putSingle("Access-Control-Allow-Headers", "Content-Type, Authorization, CONTADOR_TOKEN");
         responseContext.getHeaders().putSingle("Access-Control-Allow-Credentials", "true");
     }
-
-
 }
 
 

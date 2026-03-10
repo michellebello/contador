@@ -84,6 +84,7 @@ public class TransactionResource {
             transactionCoordinatorService.updateTransaction(TransactionID.of(transactionId), transactionToUpdate);
             return Response.ok("Transaction successfully updated.").build();
         } catch (Exception e){
+            System.out.println(e.getMessage());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
         }
     }

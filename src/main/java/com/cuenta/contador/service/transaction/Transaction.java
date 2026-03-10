@@ -41,17 +41,6 @@ public class Transaction {
         this.isTaxable = isTaxable;
     }
 
-    public Transaction(TransactionID id, AccountID accountId, String name, String category, String typeName, Double amount, LocalDateTime createdOn, Boolean isTaxable) {
-        this.id = id;
-        this.accountId = accountId;
-        this.name = name;
-        this.category = category;
-        this.typeName = typeName;
-        this.amount = amount;
-        this.createdOn = createdOn;
-        this.isTaxable = isTaxable;
-    }
-
     public Transaction(TransactionID id, AccountID accountId, String name, String category, Double amount, LocalDateTime createdOn, Boolean isTaxable) {
         this.id = id;
         this.accountId = accountId;
