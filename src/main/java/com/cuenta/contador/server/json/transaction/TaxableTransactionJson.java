@@ -1,7 +1,6 @@
 package com.cuenta.contador.server.json.transaction;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.annotation.Nullable;
 
 import java.time.LocalDateTime;
 
@@ -15,7 +14,6 @@ public class TaxableTransactionJson {
   @JsonProperty
   private String name;
   @JsonProperty
-  @Nullable
   private String note;
   @JsonProperty
   private String typeName;
@@ -58,12 +56,11 @@ public class TaxableTransactionJson {
     this.name = name;
   }
 
-  @Nullable
   public String getNote() {
     return note;
   }
 
-  public void setNote(@Nullable String note) {
+  public void setNote( String note) {
     this.note = note;
   }
 

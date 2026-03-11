@@ -12,6 +12,7 @@ public interface TransactionService {
     Transaction getTransaction(TransactionID id);
     List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before);
     List<TaxableTransaction> getTaxableTransactions();
+    void addTransactionNote(TaxableTransactionNoteUpdate noteUpdate);
     void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction);
     void deleteTransaction(UserID userId, TransactionID transactionId);
     double getTransactionAmount(UserID userId, TransactionID transactionId);

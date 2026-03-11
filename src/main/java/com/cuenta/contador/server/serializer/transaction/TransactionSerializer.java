@@ -1,14 +1,17 @@
 package com.cuenta.contador.server.serializer.transaction;
 
 import com.cuenta.contador.server.json.transaction.TaxableTransactionJson;
+import com.cuenta.contador.server.json.transaction.TaxableTransactionNoteUpdateJson;
 import com.cuenta.contador.server.json.transaction.TransactionJson;
 import com.cuenta.contador.service.account.Account.AccountID;
 import com.cuenta.contador.service.transaction.TaxableTransaction;
+import com.cuenta.contador.service.transaction.TaxableTransactionNoteUpdate;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.json.Json;
 
 public class TransactionSerializer {
 
@@ -48,7 +51,13 @@ public class TransactionSerializer {
           transactionJson.getCreatedOn() != null ? transactionJson.getCreatedOn() : currTransaction.getCreatedOn(),
           transactionJson.getIsTaxable() != null ? transactionJson.getIsTaxable() : currTransaction.getIsTaxable()
         );
+    }
 
+    public TaxableTransactionNoteUpdate fromTaxableTransactionNoteUpdateJson(TaxableTransactionNoteUpdateJson transactionNoteUpdateJson){
+        return new TaxableTransactionNoteUpdate(
+          TransactionID.of(transactionNoteUpdateJson.getId()),
+          transactionNoteUpdateJson.getNote()
+        );
     }
 
     // toTransactionJson (takes in Transaction and returns a TransactionJson)
@@ -84,7 +93,7 @@ public class TransactionSerializer {
         transactionJson.setAccountId(transaction.getAccountId().getIntId());
         transactionJson.setAccountNumber(transaction.getAccountNumber());
         transactionJson.setName(transaction.getName());
-        transactionJson.setNote(transaction.getNote() != null?  transactionJson.getNote() : "");
+        transactionJson.setNote(transaction.getNote() != null? transaction.getNote() : "");
         transactionJson.setCategory(transaction.getCategory());
         transactionJson.setTypeName(transaction.getTypeName());
         transactionJson.setAmount(transaction.getAmount());

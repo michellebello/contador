@@ -1,10 +1,12 @@
 package com.cuenta.contador.server.resource.transaction;
 
 import com.cuenta.contador.server.json.transaction.TaxableTransactionJson;
+import com.cuenta.contador.server.json.transaction.TaxableTransactionNoteUpdateJson;
 import com.cuenta.contador.server.json.transaction.TransactionJson;
 import com.cuenta.contador.server.serializer.transaction.TransactionSerializer;
 import com.cuenta.contador.service.coordinator.transaction.TransactionCoordinatorService;
 import com.cuenta.contador.service.transaction.TaxableTransaction;
+import com.cuenta.contador.service.transaction.TaxableTransactionNoteUpdate;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.service.transaction.TransactionService;
@@ -75,6 +77,21 @@ public class TransactionResource {
     public List<TaxableTransactionJson> getTaxableTransactions(){
         List<TaxableTransaction> transactions = transactionService.getTaxableTransactions();
         return transactions.stream().map(transactionSerializer::toTaxableTransactionJson).toList();
+    }
+
+    @POST
+    @Path("/taxable/")
+    public Response addTaxableTransactionNote(TaxableTransactionNoteUpdateJson noteUpdateJson) {
+        if (noteUpdateJson ==  null){
+            return Response.status(Response.Status.NO_CONTENT).entity("No data provided").build();
+        }
+        TaxableTransactionNoteUpdate noteUpdate = transactionSerializer.fromTaxableTransactionNoteUpdateJson(noteUpdateJson);
+        try {
+            transactionService.addTransactionNote(noteUpdate);
+            return Response.ok("Note added").build();
+        } catch (Exception e){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error, try again").build();
+        }
     }
 
     @PATCH

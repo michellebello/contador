@@ -3,6 +3,7 @@ package com.cuenta.contador.store.transaction;
 import com.cuenta.contador.infra.DSLContextProvider;
 import com.cuenta.contador.service.account.Account.AccountID;
 import com.cuenta.contador.service.transaction.TaxableTransaction;
+import com.cuenta.contador.service.transaction.TaxableTransactionNoteUpdate;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.jooq_auto_generated.tables.records.TransactionRecord;
@@ -134,6 +135,15 @@ public class TransactionStore {
           .orderBy(TRANSACTION.CREATED_ON.desc())
           .fetch()
           .map(this::fromTaxableRecord);
+    }
+
+    public void addTransactionNote(UserID userId, TaxableTransactionNoteUpdate noteUpdate) {
+        db.update(TRANSACTION)
+          .set(TRANSACTION.NOTE, noteUpdate.getNote())
+          .where(TRANSACTION.IS_TAXABLE.eq(true))
+          .and(TRANSACTION.ID.eq(noteUpdate.getId().getIntId()))
+          .and(TRANSACTION.USER_ID.eq(userId.getIntId()))
+          .execute();
     }
 
 
