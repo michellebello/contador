@@ -36,6 +36,11 @@ public class TransactionServiceImpl implements TransactionService{
         return transactionStore.getTransactions(userId, ids, after, before);
     }
 
+    @Override
+    public List<Transaction> getTaxableTransactions(){
+        UserID userId = UserContext.getUserID();
+        return transactionStore.getTaxableTransactions(userId);
+    }
 
     @Override
     public void updateTransaction(UserID userId, TransactionID transactionId, Transaction transaction){

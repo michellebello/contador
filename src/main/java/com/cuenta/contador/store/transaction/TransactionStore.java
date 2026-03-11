@@ -113,6 +113,27 @@ public class TransactionStore {
           .map(this::fromJoinedRecord);
     }
 
+    public List<Transaction> getTaxableTransactions(UserID userId){
+        return db.select(TRANSACTION.ID,
+            TRANSACTION.ACCOUNT_ID,
+            ACCOUNT.NAME,
+            ACCOUNT.NUMBER,
+            TRANSACTION.NAME,
+            TRANSACTION.CATEGORY,
+            TRANSACTION_TYPE.NAME,
+            TRANSACTION.AMOUNT,
+            TRANSACTION.CREATED_ON,
+            TRANSACTION.IS_TAXABLE)
+          .from(TRANSACTION)
+          .join(ACCOUNT).on(TRANSACTION.ACCOUNT_ID.eq(ACCOUNT.ID))
+          .join(TRANSACTION_TYPE).on(TRANSACTION.TYPE_ID.eq(TRANSACTION_TYPE.ID))
+          .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
+          .and(TRANSACTION.IS_TAXABLE.eq(true))
+          .orderBy(TRANSACTION.CREATED_ON.desc())
+          .fetch()
+          .map(this::fromJoinedRecord);
+    }
+
     public AccountID getTransactionAccountId(UserID userId, TransactionID transactionId){
         Integer accountId = db.select(TRANSACTION.ACCOUNT_ID)
           .from(TRANSACTION)

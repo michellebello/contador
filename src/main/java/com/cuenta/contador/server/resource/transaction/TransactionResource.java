@@ -68,6 +68,12 @@ public class TransactionResource {
         return transactions.stream().map(transactionSerializer::toJoinedTransactionJson).toList();
     }
 
+    @GET
+    @Path("/taxable")
+    public List<TransactionJson> getTaxableTransactions(){
+        List<Transaction> transactions = transactionService.getTaxableTransactions();
+        return transactions.stream().map(transactionSerializer::toJoinedTransactionJson).toList();
+    }
 
     @PATCH
     @Path("{" + TRANSACTION_ID + "}")
