@@ -2,6 +2,7 @@ package com.cuenta.contador.store.transaction;
 
 import com.cuenta.contador.infra.DSLContextProvider;
 import com.cuenta.contador.service.account.Account.AccountID;
+import com.cuenta.contador.service.transaction.TaxableTransaction;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.jooq_auto_generated.tables.records.TransactionRecord;
@@ -113,12 +114,13 @@ public class TransactionStore {
           .map(this::fromJoinedRecord);
     }
 
-    public List<Transaction> getTaxableTransactions(UserID userId){
+    public List<TaxableTransaction> getTaxableTransactions(UserID userId){
         return db.select(TRANSACTION.ID,
             TRANSACTION.ACCOUNT_ID,
             ACCOUNT.NAME,
             ACCOUNT.NUMBER,
             TRANSACTION.NAME,
+            TRANSACTION.NOTE,
             TRANSACTION.CATEGORY,
             TRANSACTION_TYPE.NAME,
             TRANSACTION.AMOUNT,
@@ -131,8 +133,9 @@ public class TransactionStore {
           .and(TRANSACTION.IS_TAXABLE.eq(true))
           .orderBy(TRANSACTION.CREATED_ON.desc())
           .fetch()
-          .map(this::fromJoinedRecord);
+          .map(this::fromTaxableRecord);
     }
+
 
     public AccountID getTransactionAccountId(UserID userId, TransactionID transactionId){
         Integer accountId = db.select(TRANSACTION.ACCOUNT_ID)
@@ -172,7 +175,6 @@ public class TransactionStore {
         if (transaction.getCreatedOn() != null) values.put(TRANSACTION.CREATED_ON, transaction.getCreatedOn());
         if (transaction.getIsTaxable() != null) values.put(TRANSACTION.IS_TAXABLE, transaction.getIsTaxable());
         if (values.isEmpty()) return;
-        System.out.println("values to update " + values.toString());
         db.update(TRANSACTION)
                 .set(values)
                 .where(TRANSACTION.ID.eq(transactionId.getIntId()))
@@ -192,7 +194,6 @@ public class TransactionStore {
         String last4AccountNum = record.get(ACCOUNT.NUMBER).substring(record.get(ACCOUNT.NUMBER).length()-4);
         String accountName = record.get(ACCOUNT.NAME);
         String formattedAccountNum = accountName + " " + last4AccountNum;
-
         return new Transaction(
           TransactionID.of(record.get(TRANSACTION.ID)),
           AccountID.of(record.get(TRANSACTION.ACCOUNT_ID)),
@@ -204,7 +205,23 @@ public class TransactionStore {
           record.get(TRANSACTION.CREATED_ON),
           record.get(TRANSACTION.IS_TAXABLE)
         );
+    }
 
+    private TaxableTransaction fromTaxableRecord(Record record) {
+        String last4AccountNum = record.get(ACCOUNT.NUMBER).substring(record.get(ACCOUNT.NUMBER).length()-4);
+        String accountName = record.get(ACCOUNT.NAME);
+        String formattedAccountNum = accountName + " " + last4AccountNum;
+        return new TaxableTransaction(
+          TransactionID.of(record.get(TRANSACTION.ID)),
+          AccountID.of(record.get(TRANSACTION.ACCOUNT_ID)),
+          formattedAccountNum,
+          record.get(TRANSACTION.NAME),
+          record.get(TRANSACTION.NOTE),
+          record.get(TRANSACTION.CATEGORY),
+          record.get(TRANSACTION_TYPE.NAME),
+          record.get(TRANSACTION.AMOUNT),
+          record.get(TRANSACTION.CREATED_ON)
+        );
     }
 
     private TransactionRecord toRecord(UserID userId, Transaction transaction) {

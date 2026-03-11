@@ -1,8 +1,10 @@
 package com.cuenta.contador.server.resource.transaction;
 
+import com.cuenta.contador.server.json.transaction.TaxableTransactionJson;
 import com.cuenta.contador.server.json.transaction.TransactionJson;
 import com.cuenta.contador.server.serializer.transaction.TransactionSerializer;
 import com.cuenta.contador.service.coordinator.transaction.TransactionCoordinatorService;
+import com.cuenta.contador.service.transaction.TaxableTransaction;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.service.transaction.TransactionService;
@@ -70,9 +72,9 @@ public class TransactionResource {
 
     @GET
     @Path("/taxable")
-    public List<TransactionJson> getTaxableTransactions(){
-        List<Transaction> transactions = transactionService.getTaxableTransactions();
-        return transactions.stream().map(transactionSerializer::toJoinedTransactionJson).toList();
+    public List<TaxableTransactionJson> getTaxableTransactions(){
+        List<TaxableTransaction> transactions = transactionService.getTaxableTransactions();
+        return transactions.stream().map(transactionSerializer::toTaxableTransactionJson).toList();
     }
 
     @PATCH

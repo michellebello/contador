@@ -1,7 +1,9 @@
 package com.cuenta.contador.server.serializer.transaction;
 
+import com.cuenta.contador.server.json.transaction.TaxableTransactionJson;
 import com.cuenta.contador.server.json.transaction.TransactionJson;
 import com.cuenta.contador.service.account.Account.AccountID;
+import com.cuenta.contador.service.transaction.TaxableTransaction;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -73,6 +75,20 @@ public class TransactionSerializer {
         transactionJson.setAmount(transaction.getAmount());
         transactionJson.setCreatedOn(transaction.getCreatedOn());
         transactionJson.setIsTaxable(transaction.getIsTaxable());
+        return transactionJson;
+    }
+
+    public TaxableTransactionJson toTaxableTransactionJson(TaxableTransaction transaction){
+        TaxableTransactionJson transactionJson = new TaxableTransactionJson();
+        transactionJson.setId(transaction.getId().getIntId());
+        transactionJson.setAccountId(transaction.getAccountId().getIntId());
+        transactionJson.setAccountNumber(transaction.getAccountNumber());
+        transactionJson.setName(transaction.getName());
+        transactionJson.setNote(transaction.getNote() != null?  transactionJson.getNote() : "");
+        transactionJson.setCategory(transaction.getCategory());
+        transactionJson.setTypeName(transaction.getTypeName());
+        transactionJson.setAmount(transaction.getAmount());
+        transactionJson.setCreatedOn(transaction.getCreatedOn());
         return transactionJson;
     }
 }

@@ -1,0 +1,2 @@
+ALTER TABLE `transaction`
+ADD COLUMN note VARCHAR(55) DEFAULT NULL;
