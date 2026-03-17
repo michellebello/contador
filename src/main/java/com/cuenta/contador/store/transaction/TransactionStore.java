@@ -13,7 +13,6 @@ import org.jooq.*;
 import jakarta.inject.Inject;
 import org.jooq.Record;
 
-import java.lang.Package;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -106,8 +105,6 @@ public class TransactionStore {
             partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
         }
 
-
-
         return partialQuery
           .orderBy(TRANSACTION.CREATED_ON.desc())
           .limit(20)
@@ -115,8 +112,8 @@ public class TransactionStore {
           .map(this::fromJoinedRecord);
     }
 
-    public List<TaxableTransaction> getTaxableTransactions(UserID userId){
-        return db.select(TRANSACTION.ID,
+    public List<TaxableTransaction> getTaxableTransactions(UserID userId, LocalDate startDate, LocalDate endDate, String category){
+        var partialQuery = db.select(TRANSACTION.ID,
             TRANSACTION.ACCOUNT_ID,
             ACCOUNT.NAME,
             ACCOUNT.NUMBER,
@@ -132,7 +129,13 @@ public class TransactionStore {
           .join(TRANSACTION_TYPE).on(TRANSACTION.TYPE_ID.eq(TRANSACTION_TYPE.ID))
           .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
           .and(TRANSACTION.IS_TAXABLE.eq(true))
-          .orderBy(TRANSACTION.CREATED_ON.desc())
+          .and(TRANSACTION.CREATED_ON.between(startDate.atStartOfDay(), endDate.atStartOfDay()));
+
+          if (category!= null){
+              partialQuery = partialQuery.and(TRANSACTION.CATEGORY.eq(category));
+          }
+
+          return partialQuery.orderBy(TRANSACTION.CREATED_ON.desc())
           .fetch()
           .map(this::fromTaxableRecord);
     }

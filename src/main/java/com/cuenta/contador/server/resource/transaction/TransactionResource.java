@@ -16,8 +16,10 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.jooq.impl.QOM;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Path("transactions")
@@ -74,8 +76,25 @@ public class TransactionResource {
 
     @GET
     @Path("/taxable")
-    public List<TaxableTransactionJson> getTaxableTransactions(){
-        List<TaxableTransaction> transactions = transactionService.getTaxableTransactions();
+    public List<TaxableTransactionJson> getTaxableTransactions(
+      @QueryParam("month") Integer month,
+      @QueryParam("year") Integer year,
+      @QueryParam("category") String category
+    ){
+        int yearFilter = (year != null) ? year: LocalDateTime.now().getYear();
+
+        LocalDate monthStart;
+        LocalDate monthEnd;
+
+        if (month != null) {
+            monthStart = LocalDate.from(LocalDate.of(yearFilter, month, 1).atStartOfDay());
+            monthEnd = LocalDate.from(monthStart.plusMonths(1).atStartOfDay());
+        } else {
+            monthStart = LocalDate.from(LocalDate.of(yearFilter, 1, 1).atStartOfDay());
+            monthEnd = LocalDate.from(monthStart.plusYears(1).atStartOfDay());
+        }
+
+        List<TaxableTransaction> transactions = transactionService.getTaxableTransactions(monthStart, monthEnd, category);
         return transactions.stream().map(transactionSerializer::toTaxableTransactionJson).toList();
     }
 

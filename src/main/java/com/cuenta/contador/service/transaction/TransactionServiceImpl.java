@@ -1,7 +1,6 @@
 package com.cuenta.contador.service.transaction;
 
 import com.cuenta.contador.service.account.Account.AccountID;
-import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.store.transaction.TransactionStore;
@@ -38,9 +37,9 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<TaxableTransaction> getTaxableTransactions(){
+    public List<TaxableTransaction> getTaxableTransactions(LocalDate startDate, LocalDate endDate, String category){
         UserID userId = UserContext.getUserID();
-        return transactionStore.getTaxableTransactions(userId);
+        return transactionStore.getTaxableTransactions(userId, startDate, endDate, category);
     }
 
     @Override
