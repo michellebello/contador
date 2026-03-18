@@ -131,7 +131,7 @@ public class TransactionStore {
           .and(TRANSACTION.IS_TAXABLE.eq(true))
           .and(TRANSACTION.CREATED_ON.between(startDate.atStartOfDay(), endDate.atStartOfDay()));
 
-          if (category!= null){
+          if (!category.isEmpty()){
               partialQuery = partialQuery.and(TRANSACTION.CATEGORY.eq(category));
           }
 

@@ -94,7 +94,8 @@ public class TransactionResource {
             monthEnd = LocalDate.from(monthStart.plusYears(1).atStartOfDay());
         }
 
-        List<TaxableTransaction> transactions = transactionService.getTaxableTransactions(monthStart, monthEnd, category);
+        String categoryFilter = (category != null)? category : "";
+        List<TaxableTransaction> transactions = transactionService.getTaxableTransactions(monthStart, monthEnd, categoryFilter);
         return transactions.stream().map(transactionSerializer::toTaxableTransactionJson).toList();
     }
 
