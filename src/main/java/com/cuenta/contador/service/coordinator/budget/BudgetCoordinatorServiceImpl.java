@@ -44,7 +44,7 @@ public class BudgetCoordinatorServiceImpl implements BudgetCoordinatorService{
     LocalDate monthStart = LocalDate.of(budget.getYear(), budget.getMonthNumber(), 1);
     LocalDate today = LocalDate.now();
 
-    List<Transaction> prevTransactions = transactionService.getTransactions(List.of(), monthStart, today);
+    List<Transaction> prevTransactions = transactionService.getTransactions(List.of(), monthStart, today, 0, 20);
 
     for (Transaction t : prevTransactions) {
       String category = t.getCategory();

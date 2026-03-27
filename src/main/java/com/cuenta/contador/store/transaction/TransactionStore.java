@@ -76,7 +76,7 @@ public class TransactionStore {
     }
 
 
-    public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before){
+    public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before, int page, int pageSize){
         var partialQuery = db.select(
           TRANSACTION.ID,
           TRANSACTION.ACCOUNT_ID,
@@ -107,7 +107,8 @@ public class TransactionStore {
 
         return partialQuery
           .orderBy(TRANSACTION.CREATED_ON.desc())
-          .limit(20)
+          .limit(pageSize)
+          .offset(page*pageSize)
           .fetch()
           .map(this::fromJoinedRecord);
     }

@@ -61,15 +61,17 @@ public class TransactionResource {
     @GET
     public List<TransactionJson> getTransactions(
             @QueryParam("after") String afterString,
-            @QueryParam("before") String beforeString
+            @QueryParam("before") String beforeString,
+            @QueryParam("page") @DefaultValue("0") int page,
+            @QueryParam("pageSize") @DefaultValue("20") int pageSize
     ) {
-        afterString = afterString != null? afterString.trim() : null;
+        afterString = (afterString != null && !afterString.isEmpty())? afterString.trim() : null;
         LocalDate after = afterString != null? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
 
-        beforeString = beforeString != null? beforeString.trim() : null;
+        beforeString = (beforeString != null && !beforeString.isEmpty()) ? beforeString.trim() : null;
         LocalDate before = beforeString != null? LocalDate.parse(beforeString) : LocalDate.now();
 
-        List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before);
+        List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before, page, pageSize);
 
         return transactions.stream().map(transactionSerializer::toJoinedTransactionJson).toList();
     }

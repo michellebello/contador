@@ -1,13 +1,13 @@
 package com.cuenta.contador.service.credential;
 
 import com.cuenta.contador.service.auth.Encryptor;
-import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.store.credential.CredentialStore;
 
 import jakarta.inject.Inject;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 public class CredentialServiceImpl implements CredentialService {
     private final CredentialStore credentialStore;
