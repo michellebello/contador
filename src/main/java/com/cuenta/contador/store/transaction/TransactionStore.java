@@ -113,6 +113,26 @@ public class TransactionStore {
           .map(this::fromJoinedRecord);
     }
 
+    public Map<String, Double> getTransactionBreakdown(UserID userId, LocalDate after, LocalDate before){
+        var transactionRecords = db.select(
+          TRANSACTION.USER_ID,
+          TRANSACTION.CATEGORY,
+          TRANSACTION.AMOUNT,
+          TRANSACTION.CREATED_ON
+        )
+          .from(TRANSACTION)
+          .where(TRANSACTION.USER_ID.eq(userId.getIntId()))
+          .and(TRANSACTION.CREATED_ON.ge(after.atStartOfDay()))
+          .and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
+
+        Map<String, Double> categoryTotals = new HashMap<>();
+        for (Record r: transactionRecords){
+            String category = r.get(TRANSACTION.CATEGORY);
+            categoryTotals.put(category, categoryTotals.getOrDefault(category, 0.0) + r.get(TRANSACTION.AMOUNT));
+        }
+        return categoryTotals;
+    }
+
     public List<TaxableTransaction> getTaxableTransactions(UserID userId, LocalDate startDate, LocalDate endDate, String category){
         var partialQuery = db.select(TRANSACTION.ID,
             TRANSACTION.ACCOUNT_ID,
@@ -202,7 +222,6 @@ public class TransactionStore {
                 .and(TRANSACTION.ID.eq(transactionId.getIntId()))
                 .execute();
     }
-
 
     private Transaction fromJoinedRecord(Record record) {
         String last4AccountNum = record.get(ACCOUNT.NUMBER).substring(record.get(ACCOUNT.NUMBER).length()-4);

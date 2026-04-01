@@ -1,6 +1,7 @@
 package com.cuenta.contador.service.transaction;
 
 import com.cuenta.contador.service.account.Account.AccountID;
+import com.cuenta.contador.service.user.User;
 import com.cuenta.contador.service.user.User.UserID;
 import com.cuenta.contador.service.user.UserContext;
 import com.cuenta.contador.store.transaction.TransactionStore;
@@ -8,6 +9,8 @@ import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+
 import jakarta.inject.Inject;
 
 public class TransactionServiceImpl implements TransactionService{
@@ -34,6 +37,12 @@ public class TransactionServiceImpl implements TransactionService{
     public List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before, int page, int pageSize){
         UserID userId = UserContext.getUserID();
         return transactionStore.getTransactions(userId, ids, after, before, page, pageSize);
+    }
+
+    @Override
+    public Map<String, Double> getTransactionBreakdown(LocalDate after, LocalDate before){
+        UserID userId = UserContext.getUserID();
+        return transactionStore.getTransactionBreakdown(userId, after, before);
     }
 
     @Override

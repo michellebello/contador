@@ -21,6 +21,7 @@ import org.jooq.impl.QOM;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Path("transactions")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -74,6 +75,20 @@ public class TransactionResource {
         List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before, page, pageSize);
 
         return transactions.stream().map(transactionSerializer::toJoinedTransactionJson).toList();
+    }
+
+    @GET
+    @Path("/chart")
+    public Map<String, Double> getTransactionsForChart(
+      @QueryParam("after") String afterString,
+      @QueryParam("before") String beforeString
+    ) {
+        afterString = (afterString != null && !afterString.isEmpty())? afterString.trim() : null;
+        LocalDate after = afterString != null? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
+
+        beforeString = (beforeString != null && !beforeString.isEmpty()) ? beforeString.trim() : null;
+        LocalDate before = beforeString != null? LocalDate.parse(beforeString) : LocalDate.now();
+        return transactionService.getTransactionBreakdown(after, before);
     }
 
     @GET
