@@ -4,6 +4,7 @@ import com.cuenta.contador.infra.DSLContextProvider;
 import com.cuenta.contador.service.account.Account.AccountID;
 import com.cuenta.contador.service.transaction.TaxableTransaction;
 import com.cuenta.contador.service.transaction.TaxableTransactionNoteUpdate;
+import com.cuenta.contador.service.transaction.PaginatedTransaction;
 import com.cuenta.contador.service.transaction.Transaction;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
 import com.cuenta.contador.jooq_auto_generated.tables.records.TransactionRecord;
@@ -76,7 +77,7 @@ public class TransactionStore {
     }
 
 
-    public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before, int page, int pageSize){
+    public List<Transaction> getTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before){
         var partialQuery = db.select(
           TRANSACTION.ID,
           TRANSACTION.ACCOUNT_ID,
@@ -104,15 +105,54 @@ public class TransactionStore {
         if (before != null) {
             partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
         }
-
         return partialQuery
           .orderBy(TRANSACTION.CREATED_ON.desc())
-          .limit(pageSize)
-          .offset(page*pageSize)
+          .limit(20)
           .fetch()
           .map(this::fromJoinedRecord);
     }
 
+    public PaginatedTransaction getPaginatedTransactions(UserID userId, List<TransactionID> ids, LocalDate after, LocalDate before, int cursor){
+        var partialQuery = db.select(
+          TRANSACTION.ID,
+            TRANSACTION.ACCOUNT_ID,
+            ACCOUNT.NAME,
+            ACCOUNT.NUMBER,
+            TRANSACTION.NAME,
+            TRANSACTION.CATEGORY,
+            TRANSACTION_TYPE.NAME,
+            TRANSACTION.AMOUNT,
+            TRANSACTION.CREATED_ON,
+            TRANSACTION.IS_TAXABLE
+          )
+          .from(TRANSACTION)
+          .join(ACCOUNT).on(TRANSACTION.ACCOUNT_ID.eq(ACCOUNT.ID))
+          .join(TRANSACTION_TYPE).on(TRANSACTION.TYPE_ID.eq(TRANSACTION_TYPE.ID))
+          .where(TRANSACTION.USER_ID.eq(userId.getIntId()));
+
+            if (!ids.isEmpty()){
+                partialQuery = partialQuery.and(TRANSACTION.ID.in(getIntIds(ids)));
+            }
+            if (after != null) {
+                partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.ge(after.atStartOfDay()));
+            }
+
+            if (before != null) {
+                partialQuery = partialQuery.and(TRANSACTION.CREATED_ON.lt(before.plusDays(1).atStartOfDay()));
+            }
+
+            if (cursor > 0){
+                partialQuery = partialQuery.and(TRANSACTION.ID.lt(cursor));
+            }
+            List<Transaction> transactions = partialQuery
+              .orderBy(TRANSACTION.ID.desc())
+              .limit(20)
+              .fetch()
+              .map(this::fromJoinedRecord);
+
+        Integer nextCursor = transactions.isEmpty() ? null: transactions.get(transactions.size()-1).getId().getIntId();
+        return new PaginatedTransaction(transactions, nextCursor, transactions.size()==20);
+    }
     public Map<String, Double> getTransactionBreakdown(UserID userId, LocalDate after, LocalDate before){
         var transactionRecords = db.select(
           TRANSACTION.USER_ID,

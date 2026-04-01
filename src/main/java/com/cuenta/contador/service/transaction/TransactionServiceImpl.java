@@ -34,9 +34,15 @@ public class TransactionServiceImpl implements TransactionService{
     }
 
     @Override
-    public List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before, int page, int pageSize){
+    public List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before){
         UserID userId = UserContext.getUserID();
-        return transactionStore.getTransactions(userId, ids, after, before, page, pageSize);
+        return transactionStore.getTransactions(userId, ids, after, before);
+    }
+
+    @Override
+    public PaginatedTransaction getPaginatedTransactions(List<TransactionID> ids, LocalDate after, LocalDate before, int cursor){
+        UserID userId = UserContext.getUserID();
+        return transactionStore.getPaginatedTransactions(userId, ids, after, before, cursor);
     }
 
     @Override

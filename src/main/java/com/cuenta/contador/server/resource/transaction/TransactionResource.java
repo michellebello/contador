@@ -1,15 +1,13 @@
 package com.cuenta.contador.server.resource.transaction;
 
+import com.cuenta.contador.server.json.transaction.PaginatedTransactionJson;
 import com.cuenta.contador.server.json.transaction.TaxableTransactionJson;
 import com.cuenta.contador.server.json.transaction.TaxableTransactionNoteUpdateJson;
 import com.cuenta.contador.server.json.transaction.TransactionJson;
 import com.cuenta.contador.server.serializer.transaction.TransactionSerializer;
 import com.cuenta.contador.service.coordinator.transaction.TransactionCoordinatorService;
-import com.cuenta.contador.service.transaction.TaxableTransaction;
-import com.cuenta.contador.service.transaction.TaxableTransactionNoteUpdate;
-import com.cuenta.contador.service.transaction.Transaction;
+import com.cuenta.contador.service.transaction.*;
 import com.cuenta.contador.service.transaction.Transaction.TransactionID;
-import com.cuenta.contador.service.transaction.TransactionService;
 
 import jakarta.inject.Inject;
 import jakarta.ws.rs.PathParam;
@@ -60,11 +58,10 @@ public class TransactionResource {
     }
 
     @GET
-    public List<TransactionJson> getTransactions(
+    public PaginatedTransactionJson getTransactions(
             @QueryParam("after") String afterString,
             @QueryParam("before") String beforeString,
-            @QueryParam("page") @DefaultValue("0") int page,
-            @QueryParam("pageSize") @DefaultValue("20") int pageSize
+            @QueryParam("cursor") int cursor
     ) {
         afterString = (afterString != null && !afterString.isEmpty())? afterString.trim() : null;
         LocalDate after = afterString != null? LocalDate.parse(afterString) : LocalDate.of(2025, 1, 1);
@@ -72,9 +69,8 @@ public class TransactionResource {
         beforeString = (beforeString != null && !beforeString.isEmpty()) ? beforeString.trim() : null;
         LocalDate before = beforeString != null? LocalDate.parse(beforeString) : LocalDate.now();
 
-        List<Transaction> transactions = transactionService.getTransactions(List.of(), after, before, page, pageSize);
-
-        return transactions.stream().map(transactionSerializer::toJoinedTransactionJson).toList();
+        PaginatedTransaction paginatedTransaction = transactionService.getPaginatedTransactions(List.of(), after, before, cursor);
+        return transactionSerializer.toPaginatedTransactionJson(paginatedTransaction);
     }
 
     @GET

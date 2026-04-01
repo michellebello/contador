@@ -1,9 +1,11 @@
 package com.cuenta.contador.server.serializer.transaction;
 
+import com.cuenta.contador.server.json.transaction.PaginatedTransactionJson;
 import com.cuenta.contador.server.json.transaction.TaxableTransactionJson;
 import com.cuenta.contador.server.json.transaction.TaxableTransactionNoteUpdateJson;
 import com.cuenta.contador.server.json.transaction.TransactionJson;
 import com.cuenta.contador.service.account.Account.AccountID;
+import com.cuenta.contador.service.transaction.PaginatedTransaction;
 import com.cuenta.contador.service.transaction.TaxableTransaction;
 import com.cuenta.contador.service.transaction.TaxableTransactionNoteUpdate;
 import com.cuenta.contador.service.transaction.Transaction;
@@ -12,6 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.json.Json;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionSerializer {
 
@@ -58,6 +63,18 @@ public class TransactionSerializer {
           TransactionID.of(transactionNoteUpdateJson.getId()),
           transactionNoteUpdateJson.getNote()
         );
+    }
+
+    public PaginatedTransactionJson toPaginatedTransactionJson(PaginatedTransaction paginatedTransaction){
+        List<TransactionJson> transactionJsonList = new ArrayList<>();
+        paginatedTransaction.getTransactionList().forEach(t -> {
+            transactionJsonList.add(toJoinedTransactionJson(t));
+        });
+        PaginatedTransactionJson paginatedTransactionJson = new PaginatedTransactionJson();
+        paginatedTransactionJson.setTransactionJsonList(transactionJsonList);
+        paginatedTransactionJson.setCursor(paginatedTransaction.getCursor());
+        paginatedTransactionJson.setHasMore(paginatedTransaction.getHasMore());
+        return paginatedTransactionJson;
     }
 
     // toTransactionJson (takes in Transaction and returns a TransactionJson)

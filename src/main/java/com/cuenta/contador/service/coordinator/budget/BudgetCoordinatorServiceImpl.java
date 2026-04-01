@@ -11,7 +11,6 @@ import com.cuenta.contador.service.user.UserContext;
 import jakarta.inject.Inject;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,7 +43,7 @@ public class BudgetCoordinatorServiceImpl implements BudgetCoordinatorService{
     LocalDate monthStart = LocalDate.of(budget.getYear(), budget.getMonthNumber(), 1);
     LocalDate today = LocalDate.now();
 
-    List<Transaction> prevTransactions = transactionService.getTransactions(List.of(), monthStart, today, 0, 20);
+    List<Transaction> prevTransactions = transactionService.getTransactions(List.of(), monthStart, today);
 
     for (Transaction t : prevTransactions) {
       String category = t.getCategory();

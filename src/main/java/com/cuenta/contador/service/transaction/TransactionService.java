@@ -11,7 +11,8 @@ import java.util.Map;
 public interface TransactionService {
     void storeTransaction(UserID userId, Transaction transaction);
     Transaction getTransaction(TransactionID id);
-    List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before, int page, int pageSize);
+    List<Transaction> getTransactions(List<TransactionID> ids, LocalDate after, LocalDate before);
+    PaginatedTransaction getPaginatedTransactions(List<TransactionID> ids, LocalDate after, LocalDate before, int cursor);
     Map<String, Double> getTransactionBreakdown(LocalDate after, LocalDate before);
     List<TaxableTransaction> getTaxableTransactions(LocalDate startDate, LocalDate endDate, String category);
     void addTransactionNote(TaxableTransactionNoteUpdate noteUpdate);
